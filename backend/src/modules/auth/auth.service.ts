@@ -11,11 +11,30 @@ export const SESSION_COOKIE_NAME = 'safa_twin_session';
 const SESSION_DURATION_MILLISECONDS =
   8 * 60 * 60 * 1000;
 
+interface UserAuthorizationData {
+  id: number;
+  name: string;
+  email: string;
+
+  userRoles: Array<{
+    role: {
+      slug: string;
+
+      rolePermissions: Array<{
+        permission: {
+          slug: string;
+        };
+      }>;
+    };
+  }>;
+}
+
 export interface AuthenticatedUser {
   id: number;
   name: string;
   email: string;
   roles: string[];
+  permissions: string[];
 }
 
 export interface LoginResult {
@@ -34,6 +53,33 @@ function hashSessionToken(token: string): string {
     .digest('hex');
 }
 
+function mapAuthenticatedUser(
+  user: UserAuthorizationData,
+): AuthenticatedUser {
+  const roles = user.userRoles
+    .map((userRole) => userRole.role.slug)
+    .sort();
+
+  const permissions = Array.from(
+    new Set(
+      user.userRoles.flatMap((userRole) =>
+        userRole.role.rolePermissions.map(
+          (rolePermission) =>
+            rolePermission.permission.slug,
+        ),
+      ),
+    ),
+  ).sort();
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    roles,
+    permissions,
+  };
+}
+
 export async function authenticateUser(
   email: string,
   password: string,
@@ -44,6 +90,7 @@ export async function authenticateUser(
     where: {
       email: normalizedEmail,
     },
+
     select: {
       id: true,
       name: true,
@@ -57,6 +104,16 @@ export async function authenticateUser(
           role: {
             select: {
               slug: true,
+
+              rolePermissions: {
+                select: {
+                  permission: {
+                    select: {
+                      slug: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -94,6 +151,7 @@ export async function authenticateUser(
     prisma.session.deleteMany({
       where: {
         userId: user.id,
+
         expiresAt: {
           lt: now,
         },
@@ -113,6 +171,7 @@ export async function authenticateUser(
       where: {
         id: user.id,
       },
+
       data: {
         lastLoginAt: now,
       },
@@ -122,15 +181,7 @@ export async function authenticateUser(
   return {
     sessionToken,
     expiresAt,
-
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      roles: user.userRoles.map(
-        (userRole) => userRole.role.slug,
-      ),
-    },
+    user: mapAuthenticatedUser(user),
   };
 }
 
@@ -144,6 +195,7 @@ export async function getAuthenticatedUser(
     where: {
       tokenHash,
     },
+
     select: {
       expiresAt: true,
 
@@ -160,6 +212,16 @@ export async function getAuthenticatedUser(
               role: {
                 select: {
                   slug: true,
+
+                  rolePermissions: {
+                    select: {
+                      permission: {
+                        select: {
+                          slug: true,
+                        },
+                      },
+                    },
+                  },
                 },
               },
             },
@@ -194,19 +256,13 @@ export async function getAuthenticatedUser(
     where: {
       tokenHash,
     },
+
     data: {
       lastUsedAt: now,
     },
   });
 
-  return {
-    id: session.user.id,
-    name: session.user.name,
-    email: session.user.email,
-    roles: session.user.userRoles.map(
-      (userRole) => userRole.role.slug,
-    ),
-  };
+  return mapAuthenticatedUser(session.user);
 }
 
 export async function deleteSession(

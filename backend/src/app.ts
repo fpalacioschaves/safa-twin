@@ -7,6 +7,7 @@ import express, {
 
 import { prisma } from './config/database.js';
 import { authRouter } from './modules/auth/auth.routes.js';
+import { usersRouter } from './modules/users/users.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -41,12 +42,14 @@ export function createApp(): Express {
   );
 
   app.use('/api/auth', authRouter);
+  app.use('/api/users', usersRouter);
 
   app.use((request: Request, response: Response) => {
     response.status(404).json({
       error: {
         code: 'ROUTE_NOT_FOUND',
-        message: 'La ruta solicitada no existe.',
+        message:
+          'La ruta solicitada no existe.',
         path: request.originalUrl,
       },
     });

@@ -10,10 +10,20 @@ import type {
   AuthenticatedUser,
 } from '../types/auth';
 
+import {
+  UsersPage,
+} from './UsersPage';
+
+import './DashboardPage.css';
+
 interface DashboardPageProps {
   user: AuthenticatedUser;
   onLogout: () => void;
 }
+
+type ActiveSection =
+  | 'dashboard'
+  | 'users';
 
 function formatRole(role: string): string {
   return role
@@ -32,6 +42,12 @@ export function DashboardPage({
   const [isLoggingOut, setIsLoggingOut] =
     useState(false);
 
+  const [activeSection, setActiveSection] =
+    useState<ActiveSection>('dashboard');
+
+  const canListUsers =
+    user.permissions.includes('users.list');
+
   async function handleLogout(): Promise<void> {
     setIsLoggingOut(true);
 
@@ -42,6 +58,11 @@ export function DashboardPage({
       setIsLoggingOut(false);
     }
   }
+
+  const pageTitle =
+    activeSection === 'users'
+      ? 'Gestión de usuarios'
+      : `Bienvenido, ${user.name}`;
 
   return (
     <div className="app-shell">
@@ -61,16 +82,41 @@ export function DashboardPage({
           className="sidebar-nav"
           aria-label="Navegación principal"
         >
-          <a
-            className="nav-link nav-link-active"
-            href="#panel"
+          <button
+            className={
+              activeSection === 'dashboard'
+                ? 'nav-link nav-button nav-link-active'
+                : 'nav-link nav-button'
+            }
+            type="button"
+            onClick={() => {
+              setActiveSection('dashboard');
+            }}
           >
             Panel principal
-          </a>
+          </button>
 
-          <span className="nav-link nav-link-disabled">
-            Usuarios
-          </span>
+          {canListUsers
+            ? (
+              <button
+                className={
+                  activeSection === 'users'
+                    ? 'nav-link nav-button nav-link-active'
+                    : 'nav-link nav-button'
+                }
+                type="button"
+                onClick={() => {
+                  setActiveSection('users');
+                }}
+              >
+                Usuarios
+              </button>
+            )
+            : (
+              <span className="nav-link nav-link-disabled">
+                Usuarios
+              </span>
+            )}
 
           <span className="nav-link nav-link-disabled">
             Cursos y grupos
@@ -94,12 +140,12 @@ export function DashboardPage({
         <header className="topbar">
           <div>
             <p className="eyebrow">
-              Panel principal
+              {activeSection === 'users'
+                ? 'Administración'
+                : 'Panel principal'}
             </p>
 
-            <h1>
-              Bienvenido, {user.name}
-            </h1>
+            <h1>{pageTitle}</h1>
           </div>
 
           <button
@@ -116,73 +162,91 @@ export function DashboardPage({
           </button>
         </header>
 
-        <main className="dashboard-content">
-          <section className="welcome-card">
-            <div>
-              <p className="eyebrow">
-                Sesión activa
-              </p>
-
-              <h2>
-                SAFA Twin está conectado
-              </h2>
-
-              <p>
-                El frontend React está comunicándose
-                correctamente con la API y la sesión
-                está almacenada en MariaDB.
-              </p>
-            </div>
-
-            <span className="status-badge">
-              Sistema operativo
-            </span>
-          </section>
-
-          <section className="dashboard-grid">
-            <article className="info-card">
-              <h2>Usuario</h2>
-
-              <dl className="user-details">
+        {activeSection === 'users'
+          ? (
+            <UsersPage />
+          )
+          : (
+            <main className="dashboard-content">
+              <section className="welcome-card">
                 <div>
-                  <dt>Nombre</dt>
-                  <dd>{user.name}</dd>
+                  <p className="eyebrow">
+                    Sesión activa
+                  </p>
+
+                  <h2>
+                    SAFA Twin está conectado
+                  </h2>
+
+                  <p>
+                    El frontend React está
+                    comunicándose correctamente con
+                    la API y la sesión está almacenada
+                    en MariaDB.
+                  </p>
                 </div>
 
-                <div>
-                  <dt>Correo</dt>
-                  <dd>{user.email}</dd>
-                </div>
-              </dl>
-            </article>
+                <span className="status-badge">
+                  Sistema operativo
+                </span>
+              </section>
 
-            <article className="info-card">
-              <h2>Roles asignados</h2>
+              <section className="dashboard-grid">
+                <article className="info-card">
+                  <h2>Usuario</h2>
 
-              <div className="role-list">
-                {user.roles.map((role) => (
-                  <span
-                    className="role-badge"
-                    key={role}
-                  >
-                    {formatRole(role)}
-                  </span>
-                ))}
-              </div>
-            </article>
+                  <dl className="user-details">
+                    <div>
+                      <dt>Nombre</dt>
+                      <dd>{user.name}</dd>
+                    </div>
 
-            <article className="info-card">
-              <h2>Estado de la Fase 1</h2>
+                    <div>
+                      <dt>Correo</dt>
+                      <dd>{user.email}</dd>
+                    </div>
+                  </dl>
+                </article>
 
-              <ul className="status-list">
-                <li>Base de datos conectada</li>
-                <li>Administrador creado</li>
-                <li>Sesión persistente activa</li>
-                <li>Frontend autenticado</li>
-              </ul>
-            </article>
-          </section>
-        </main>
+                <article className="info-card">
+                  <h2>Roles asignados</h2>
+
+                  <div className="role-list">
+                    {user.roles.map((role) => (
+                      <span
+                        className="role-badge"
+                        key={role}
+                      >
+                        {formatRole(role)}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+
+                <article className="info-card">
+                  <h2>Estado de la Fase 1</h2>
+
+                  <ul className="status-list">
+                    <li>
+                      Base de datos conectada
+                    </li>
+
+                    <li>
+                      Administrador creado
+                    </li>
+
+                    <li>
+                      Sesión persistente activa
+                    </li>
+
+                    <li>
+                      Gestión de usuarios iniciada
+                    </li>
+                  </ul>
+                </article>
+              </section>
+            </main>
+          )}
       </div>
     </div>
   );
