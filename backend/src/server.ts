@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-import { createApp } from './app';
+import { createApp } from './app.js';
 
 const host = process.env.HOST ?? '127.0.0.1';
 const portText = process.env.PORT ?? '3000';

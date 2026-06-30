@@ -5,17 +5,42 @@ import express, {
   type Response,
 } from 'express';
 
+import { prisma } from './config/database.js';
+import { authRouter } from './modules/auth/auth.routes.js';
+
 export function createApp(): Express {
   const app = express();
 
-  app.use(express.json());
+  app.disable('x-powered-by');
 
-  app.get('/api/health', (_request: Request, response: Response) => {
-    response.status(200).json({
-      status: 'ok',
-      service: 'safa-twin-api',
-    });
-  });
+  app.use(
+    express.json({
+      limit: '1mb',
+    }),
+  );
+
+  app.get(
+    '/api/health',
+    async (
+      _request: Request,
+      response: Response,
+      next: NextFunction,
+    ) => {
+      try {
+        await prisma.$queryRaw`SELECT 1`;
+
+        response.status(200).json({
+          status: 'ok',
+          service: 'safa-twin-api',
+          database: 'connected',
+        });
+      } catch (error: unknown) {
+        next(error);
+      }
+    },
+  );
+
+  app.use('/api/auth', authRouter);
 
   app.use((request: Request, response: Response) => {
     response.status(404).json({
@@ -34,12 +59,16 @@ export function createApp(): Express {
       response: Response,
       _next: NextFunction,
     ) => {
-      console.error('Error no controlado:', error);
+      console.error(
+        'Error no controlado:',
+        error,
+      );
 
       response.status(500).json({
         error: {
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Se ha producido un error interno.',
+          message:
+            'Se ha producido un error interno.',
         },
       });
     },
