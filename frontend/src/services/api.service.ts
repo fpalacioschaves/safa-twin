@@ -1,4 +1,5 @@
 import type {
+  ApiErrorDetail,
   ApiErrorResponse,
 } from '../types/auth';
 
@@ -7,16 +8,20 @@ export class ApiError extends Error {
 
   public readonly code: string | null;
 
+  public readonly details: ApiErrorDetail[];
+
   public constructor(
     status: number,
     message: string,
     code: string | null = null,
+    details: ApiErrorDetail[] = [],
   ) {
     super(message);
 
     this.name = 'ApiError';
     this.status = status;
     this.code = code;
+    this.details = details;
   }
 }
 
@@ -58,6 +63,8 @@ export async function apiRequest<T>(
 
     let code: string | null = null;
 
+    let details: ApiErrorDetail[] = [];
+
     try {
       const errorResponse =
         await response.json() as ApiErrorResponse;
@@ -69,6 +76,15 @@ export async function apiRequest<T>(
       if (errorResponse.error?.code) {
         code = errorResponse.error.code;
       }
+
+      if (
+        Array.isArray(
+          errorResponse.error?.details,
+        )
+      ) {
+        details =
+          errorResponse.error.details;
+      }
     } catch {
       // La respuesta no contenía JSON válido.
     }
@@ -77,6 +93,7 @@ export async function apiRequest<T>(
       response.status,
       message,
       code,
+      details,
     );
   }
 

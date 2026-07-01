@@ -50,6 +50,8 @@ export function requirePermission(
         return;
       }
 
+      response.locals.authenticatedUser = user;
+
       if (
         !user.permissions.includes(permissionSlug)
       ) {

@@ -37,3 +37,51 @@ export interface ListUsersParameters {
   pageSize: number;
   status: UserStatusFilter;
 }
+
+export interface AssignableRole {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+}
+
+export interface ListAssignableRolesResponse {
+  items: AssignableRole[];
+}
+
+export interface UserDetail {
+  id: number;
+  name: string;
+  email: string;
+  isActive: boolean;
+  lastLoginAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  roles: AssignableRole[];
+}
+
+export interface GetUserResponse {
+  user: UserDetail;
+}
+
+export interface CreateUserInput {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+  roleIds: number[];
+}
+
+export interface UpdateUserInput {
+  name: string;
+  email: string;
+  roleIds: number[];
+  password?: string;
+  passwordConfirmation?: string;
+}
+
+export interface UserMutationResponse {
+  message: string;
+  user: UserDetail;
+}

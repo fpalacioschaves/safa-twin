@@ -48,6 +48,23 @@ export function DashboardPage({
   const canListUsers =
     user.permissions.includes('users.list');
 
+  const canCreateUsers =
+    user.permissions.includes('users.create')
+    && user.permissions.includes('roles.list')
+    && user.permissions.includes('roles.assign');
+
+  const canEditUsers =
+    user.permissions.includes('users.view')
+    && user.permissions.includes('users.update')
+    && user.permissions.includes('roles.list')
+    && user.permissions.includes('roles.assign');
+
+  const canChangeUserStatus =
+    user.permissions.includes('users.update');
+
+  const canArchiveUsers =
+    user.permissions.includes('users.archive');
+
   async function handleLogout(): Promise<void> {
     setIsLoggingOut(true);
 
@@ -164,7 +181,17 @@ export function DashboardPage({
 
         {activeSection === 'users'
           ? (
-            <UsersPage />
+            <UsersPage
+              currentUserId={user.id}
+              canCreateUsers={canCreateUsers}
+              canEditUsers={canEditUsers}
+              canChangeUserStatus={
+                canChangeUserStatus
+              }
+              canArchiveUsers={
+                canArchiveUsers
+              }
+            />
           )
           : (
             <main className="dashboard-content">
@@ -240,7 +267,7 @@ export function DashboardPage({
                     </li>
 
                     <li>
-                      Gestión de usuarios iniciada
+                      Gestión de usuarios completa
                     </li>
                   </ul>
                 </article>
