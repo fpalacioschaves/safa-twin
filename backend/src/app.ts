@@ -20,6 +20,10 @@ import {
 } from './modules/academic-years/academic-years.routes.js';
 
 import {
+  assessmentSchemesRouter,
+} from './modules/assessment-schemes/assessment-schemes.routes.js';
+
+import {
   authRouter,
 } from './modules/auth/auth.routes.js';
 
@@ -38,6 +42,10 @@ import {
 import {
   gradeStatusesRouter,
 } from './modules/grade-statuses/grade-statuses.routes.js';
+
+import {
+  gradesRouter,
+} from './modules/grades/grades.routes.js';
 
 import {
   modulesRouter,
@@ -143,8 +151,18 @@ export function createApp(): Express {
   );
 
   app.use(
+    '/api/assessment-schemes',
+    assessmentSchemesRouter,
+  );
+
+  app.use(
     '/api/grade-statuses',
     gradeStatusesRouter,
+  );
+
+  app.use(
+    '/api/grades',
+    gradesRouter,
   );
 
   app.use(

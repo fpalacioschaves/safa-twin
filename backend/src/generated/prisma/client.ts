@@ -126,3 +126,23 @@ export type Evaluation = Prisma.EvaluationModel
  * 
  */
 export type GradeStatus = Prisma.GradeStatusModel
+/**
+ * Model AssessmentScheme
+ * 
+ */
+export type AssessmentScheme = Prisma.AssessmentSchemeModel
+/**
+ * Model AssessmentComponent
+ * 
+ */
+export type AssessmentComponent = Prisma.AssessmentComponentModel
+/**
+ * Model Grade
+ * 
+ */
+export type Grade = Prisma.GradeModel
+/**
+ * Model GradeComponentScore
+ * 
+ */
+export type GradeComponentScore = Prisma.GradeComponentScoreModel

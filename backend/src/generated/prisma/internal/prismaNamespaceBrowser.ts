@@ -67,7 +67,11 @@ export const ModelName = {
   Student: 'Student',
   Enrolment: 'Enrolment',
   Evaluation: 'Evaluation',
-  GradeStatus: 'GradeStatus'
+  GradeStatus: 'GradeStatus',
+  AssessmentScheme: 'AssessmentScheme',
+  AssessmentComponent: 'AssessmentComponent',
+  Grade: 'Grade',
+  GradeComponentScore: 'GradeComponentScore'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -352,6 +356,74 @@ export const GradeStatusScalarFieldEnum = {
 export type GradeStatusScalarFieldEnum = (typeof GradeStatusScalarFieldEnum)[keyof typeof GradeStatusScalarFieldEnum]
 
 
+export const AssessmentSchemeScalarFieldEnum = {
+  id: 'id',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  moduleId: 'moduleId',
+  name: 'name',
+  isDual: 'isDual',
+  isActive: 'isActive',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AssessmentSchemeScalarFieldEnum = (typeof AssessmentSchemeScalarFieldEnum)[keyof typeof AssessmentSchemeScalarFieldEnum]
+
+
+export const AssessmentComponentScalarFieldEnum = {
+  id: 'id',
+  assessmentSchemeId: 'assessmentSchemeId',
+  code: 'code',
+  name: 'name',
+  type: 'type',
+  percentage: 'percentage',
+  sortOrder: 'sortOrder',
+  isRequired: 'isRequired',
+  isCompanyComponent: 'isCompanyComponent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssessmentComponentScalarFieldEnum = (typeof AssessmentComponentScalarFieldEnum)[keyof typeof AssessmentComponentScalarFieldEnum]
+
+
+export const GradeScalarFieldEnum = {
+  id: 'id',
+  enrolmentId: 'enrolmentId',
+  evaluationId: 'evaluationId',
+  assessmentSchemeId: 'assessmentSchemeId',
+  gradeStatusId: 'gradeStatusId',
+  numericGrade: 'numericGrade',
+  finalGrade: 'finalGrade',
+  isPassed: 'isPassed',
+  isLocked: 'isLocked',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type GradeScalarFieldEnum = (typeof GradeScalarFieldEnum)[keyof typeof GradeScalarFieldEnum]
+
+
+export const GradeComponentScoreScalarFieldEnum = {
+  id: 'id',
+  gradeId: 'gradeId',
+  assessmentComponentId: 'assessmentComponentId',
+  score: 'score',
+  weightedScore: 'weightedScore',
+  isMissing: 'isMissing',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GradeComponentScoreScalarFieldEnum = (typeof GradeComponentScoreScalarFieldEnum)[keyof typeof GradeComponentScoreScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -496,4 +568,34 @@ export const GradeStatusOrderByRelevanceFieldEnum = {
 } as const
 
 export type GradeStatusOrderByRelevanceFieldEnum = (typeof GradeStatusOrderByRelevanceFieldEnum)[keyof typeof GradeStatusOrderByRelevanceFieldEnum]
+
+
+export const AssessmentSchemeOrderByRelevanceFieldEnum = {
+  name: 'name',
+  remarks: 'remarks'
+} as const
+
+export type AssessmentSchemeOrderByRelevanceFieldEnum = (typeof AssessmentSchemeOrderByRelevanceFieldEnum)[keyof typeof AssessmentSchemeOrderByRelevanceFieldEnum]
+
+
+export const AssessmentComponentOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name'
+} as const
+
+export type AssessmentComponentOrderByRelevanceFieldEnum = (typeof AssessmentComponentOrderByRelevanceFieldEnum)[keyof typeof AssessmentComponentOrderByRelevanceFieldEnum]
+
+
+export const GradeOrderByRelevanceFieldEnum = {
+  remarks: 'remarks'
+} as const
+
+export type GradeOrderByRelevanceFieldEnum = (typeof GradeOrderByRelevanceFieldEnum)[keyof typeof GradeOrderByRelevanceFieldEnum]
+
+
+export const GradeComponentScoreOrderByRelevanceFieldEnum = {
+  remarks: 'remarks'
+} as const
+
+export type GradeComponentScoreOrderByRelevanceFieldEnum = (typeof GradeComponentScoreOrderByRelevanceFieldEnum)[keyof typeof GradeComponentScoreOrderByRelevanceFieldEnum]
 

@@ -292,6 +292,7 @@ export type EnrolmentWhereInput = {
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   centre?: Prisma.XOR<Prisma.CentreScalarRelationFilter, Prisma.CentreWhereInput>
   module?: Prisma.XOR<Prisma.ModuleScalarRelationFilter, Prisma.ModuleWhereInput>
+  grades?: Prisma.GradeListRelationFilter
 }
 
 export type EnrolmentOrderByWithRelationInput = {
@@ -311,6 +312,7 @@ export type EnrolmentOrderByWithRelationInput = {
   academicYear?: Prisma.AcademicYearOrderByWithRelationInput
   centre?: Prisma.CentreOrderByWithRelationInput
   module?: Prisma.ModuleOrderByWithRelationInput
+  grades?: Prisma.GradeOrderByRelationAggregateInput
   _relevance?: Prisma.EnrolmentOrderByRelevanceInput
 }
 
@@ -335,6 +337,7 @@ export type EnrolmentWhereUniqueInput = Prisma.AtLeast<{
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   centre?: Prisma.XOR<Prisma.CentreScalarRelationFilter, Prisma.CentreWhereInput>
   module?: Prisma.XOR<Prisma.ModuleScalarRelationFilter, Prisma.ModuleWhereInput>
+  grades?: Prisma.GradeListRelationFilter
 }, "id" | "studentId_academicYearId_centreId_moduleId">
 
 export type EnrolmentOrderByWithAggregationInput = {
@@ -387,6 +390,7 @@ export type EnrolmentCreateInput = {
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutEnrolmentsInput
   centre: Prisma.CentreCreateNestedOneWithoutEnrolmentsInput
   module: Prisma.ModuleCreateNestedOneWithoutEnrolmentsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentUncheckedCreateInput = {
@@ -402,6 +406,7 @@ export type EnrolmentUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentUpdateInput = {
@@ -416,6 +421,7 @@ export type EnrolmentUpdateInput = {
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEnrolmentsNestedInput
   centre?: Prisma.CentreUpdateOneRequiredWithoutEnrolmentsNestedInput
   module?: Prisma.ModuleUpdateOneRequiredWithoutEnrolmentsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateInput = {
@@ -431,6 +437,7 @@ export type EnrolmentUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentCreateManyInput = {
@@ -555,6 +562,11 @@ export type EnrolmentSumOrderByAggregateInput = {
   academicYearId?: Prisma.SortOrder
   centreId?: Prisma.SortOrder
   moduleId?: Prisma.SortOrder
+}
+
+export type EnrolmentScalarRelationFilter = {
+  is?: Prisma.EnrolmentWhereInput
+  isNot?: Prisma.EnrolmentWhereInput
 }
 
 export type EnrolmentCreateNestedManyWithoutAcademicYearInput = {
@@ -729,6 +741,20 @@ export type EnumEnrolmentStatusFieldUpdateOperationsInput = {
   set?: $Enums.EnrolmentStatus
 }
 
+export type EnrolmentCreateNestedOneWithoutGradesInput = {
+  create?: Prisma.XOR<Prisma.EnrolmentCreateWithoutGradesInput, Prisma.EnrolmentUncheckedCreateWithoutGradesInput>
+  connectOrCreate?: Prisma.EnrolmentCreateOrConnectWithoutGradesInput
+  connect?: Prisma.EnrolmentWhereUniqueInput
+}
+
+export type EnrolmentUpdateOneRequiredWithoutGradesNestedInput = {
+  create?: Prisma.XOR<Prisma.EnrolmentCreateWithoutGradesInput, Prisma.EnrolmentUncheckedCreateWithoutGradesInput>
+  connectOrCreate?: Prisma.EnrolmentCreateOrConnectWithoutGradesInput
+  upsert?: Prisma.EnrolmentUpsertWithoutGradesInput
+  connect?: Prisma.EnrolmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EnrolmentUpdateToOneWithWhereWithoutGradesInput, Prisma.EnrolmentUpdateWithoutGradesInput>, Prisma.EnrolmentUncheckedUpdateWithoutGradesInput>
+}
+
 export type EnrolmentCreateWithoutAcademicYearInput = {
   status?: $Enums.EnrolmentStatus
   enrolledAt: Date | string
@@ -740,6 +766,7 @@ export type EnrolmentCreateWithoutAcademicYearInput = {
   student: Prisma.StudentCreateNestedOneWithoutEnrolmentsInput
   centre: Prisma.CentreCreateNestedOneWithoutEnrolmentsInput
   module: Prisma.ModuleCreateNestedOneWithoutEnrolmentsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentUncheckedCreateWithoutAcademicYearInput = {
@@ -754,6 +781,7 @@ export type EnrolmentUncheckedCreateWithoutAcademicYearInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentCreateOrConnectWithoutAcademicYearInput = {
@@ -811,6 +839,7 @@ export type EnrolmentCreateWithoutCentreInput = {
   student: Prisma.StudentCreateNestedOneWithoutEnrolmentsInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutEnrolmentsInput
   module: Prisma.ModuleCreateNestedOneWithoutEnrolmentsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentUncheckedCreateWithoutCentreInput = {
@@ -825,6 +854,7 @@ export type EnrolmentUncheckedCreateWithoutCentreInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentCreateOrConnectWithoutCentreInput = {
@@ -864,6 +894,7 @@ export type EnrolmentCreateWithoutModuleInput = {
   student: Prisma.StudentCreateNestedOneWithoutEnrolmentsInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutEnrolmentsInput
   centre: Prisma.CentreCreateNestedOneWithoutEnrolmentsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentUncheckedCreateWithoutModuleInput = {
@@ -878,6 +909,7 @@ export type EnrolmentUncheckedCreateWithoutModuleInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentCreateOrConnectWithoutModuleInput = {
@@ -917,6 +949,7 @@ export type EnrolmentCreateWithoutStudentInput = {
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutEnrolmentsInput
   centre: Prisma.CentreCreateNestedOneWithoutEnrolmentsInput
   module: Prisma.ModuleCreateNestedOneWithoutEnrolmentsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentUncheckedCreateWithoutStudentInput = {
@@ -931,6 +964,7 @@ export type EnrolmentUncheckedCreateWithoutStudentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEnrolmentInput
 }
 
 export type EnrolmentCreateOrConnectWithoutStudentInput = {
@@ -959,6 +993,80 @@ export type EnrolmentUpdateManyWithWhereWithoutStudentInput = {
   data: Prisma.XOR<Prisma.EnrolmentUpdateManyMutationInput, Prisma.EnrolmentUncheckedUpdateManyWithoutStudentInput>
 }
 
+export type EnrolmentCreateWithoutGradesInput = {
+  status?: $Enums.EnrolmentStatus
+  enrolledAt: Date | string
+  cancelledAt?: Date | string | null
+  remarks?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  student: Prisma.StudentCreateNestedOneWithoutEnrolmentsInput
+  academicYear: Prisma.AcademicYearCreateNestedOneWithoutEnrolmentsInput
+  centre: Prisma.CentreCreateNestedOneWithoutEnrolmentsInput
+  module: Prisma.ModuleCreateNestedOneWithoutEnrolmentsInput
+}
+
+export type EnrolmentUncheckedCreateWithoutGradesInput = {
+  id?: number
+  studentId: number
+  academicYearId: number
+  centreId: number
+  moduleId: number
+  status?: $Enums.EnrolmentStatus
+  enrolledAt: Date | string
+  cancelledAt?: Date | string | null
+  remarks?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
+export type EnrolmentCreateOrConnectWithoutGradesInput = {
+  where: Prisma.EnrolmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EnrolmentCreateWithoutGradesInput, Prisma.EnrolmentUncheckedCreateWithoutGradesInput>
+}
+
+export type EnrolmentUpsertWithoutGradesInput = {
+  update: Prisma.XOR<Prisma.EnrolmentUpdateWithoutGradesInput, Prisma.EnrolmentUncheckedUpdateWithoutGradesInput>
+  create: Prisma.XOR<Prisma.EnrolmentCreateWithoutGradesInput, Prisma.EnrolmentUncheckedCreateWithoutGradesInput>
+  where?: Prisma.EnrolmentWhereInput
+}
+
+export type EnrolmentUpdateToOneWithWhereWithoutGradesInput = {
+  where?: Prisma.EnrolmentWhereInput
+  data: Prisma.XOR<Prisma.EnrolmentUpdateWithoutGradesInput, Prisma.EnrolmentUncheckedUpdateWithoutGradesInput>
+}
+
+export type EnrolmentUpdateWithoutGradesInput = {
+  status?: Prisma.EnumEnrolmentStatusFieldUpdateOperationsInput | $Enums.EnrolmentStatus
+  enrolledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  student?: Prisma.StudentUpdateOneRequiredWithoutEnrolmentsNestedInput
+  academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEnrolmentsNestedInput
+  centre?: Prisma.CentreUpdateOneRequiredWithoutEnrolmentsNestedInput
+  module?: Prisma.ModuleUpdateOneRequiredWithoutEnrolmentsNestedInput
+}
+
+export type EnrolmentUncheckedUpdateWithoutGradesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  studentId?: Prisma.IntFieldUpdateOperationsInput | number
+  academicYearId?: Prisma.IntFieldUpdateOperationsInput | number
+  centreId?: Prisma.IntFieldUpdateOperationsInput | number
+  moduleId?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumEnrolmentStatusFieldUpdateOperationsInput | $Enums.EnrolmentStatus
+  enrolledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
 export type EnrolmentCreateManyAcademicYearInput = {
   id?: number
   studentId: number
@@ -984,6 +1092,7 @@ export type EnrolmentUpdateWithoutAcademicYearInput = {
   student?: Prisma.StudentUpdateOneRequiredWithoutEnrolmentsNestedInput
   centre?: Prisma.CentreUpdateOneRequiredWithoutEnrolmentsNestedInput
   module?: Prisma.ModuleUpdateOneRequiredWithoutEnrolmentsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateWithoutAcademicYearInput = {
@@ -998,6 +1107,7 @@ export type EnrolmentUncheckedUpdateWithoutAcademicYearInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateManyWithoutAcademicYearInput = {
@@ -1039,6 +1149,7 @@ export type EnrolmentUpdateWithoutCentreInput = {
   student?: Prisma.StudentUpdateOneRequiredWithoutEnrolmentsNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEnrolmentsNestedInput
   module?: Prisma.ModuleUpdateOneRequiredWithoutEnrolmentsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateWithoutCentreInput = {
@@ -1053,6 +1164,7 @@ export type EnrolmentUncheckedUpdateWithoutCentreInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateManyWithoutCentreInput = {
@@ -1094,6 +1206,7 @@ export type EnrolmentUpdateWithoutModuleInput = {
   student?: Prisma.StudentUpdateOneRequiredWithoutEnrolmentsNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEnrolmentsNestedInput
   centre?: Prisma.CentreUpdateOneRequiredWithoutEnrolmentsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateWithoutModuleInput = {
@@ -1108,6 +1221,7 @@ export type EnrolmentUncheckedUpdateWithoutModuleInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateManyWithoutModuleInput = {
@@ -1149,6 +1263,7 @@ export type EnrolmentUpdateWithoutStudentInput = {
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEnrolmentsNestedInput
   centre?: Prisma.CentreUpdateOneRequiredWithoutEnrolmentsNestedInput
   module?: Prisma.ModuleUpdateOneRequiredWithoutEnrolmentsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateWithoutStudentInput = {
@@ -1163,6 +1278,7 @@ export type EnrolmentUncheckedUpdateWithoutStudentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEnrolmentNestedInput
 }
 
 export type EnrolmentUncheckedUpdateManyWithoutStudentInput = {
@@ -1179,6 +1295,35 @@ export type EnrolmentUncheckedUpdateManyWithoutStudentInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+
+/**
+ * Count Type EnrolmentCountOutputType
+ */
+
+export type EnrolmentCountOutputType = {
+  grades: number
+}
+
+export type EnrolmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  grades?: boolean | EnrolmentCountOutputTypeCountGradesArgs
+}
+
+/**
+ * EnrolmentCountOutputType without action
+ */
+export type EnrolmentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EnrolmentCountOutputType
+   */
+  select?: Prisma.EnrolmentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EnrolmentCountOutputType without action
+ */
+export type EnrolmentCountOutputTypeCountGradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GradeWhereInput
+}
 
 
 export type EnrolmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1198,6 +1343,8 @@ export type EnrolmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   centre?: boolean | Prisma.CentreDefaultArgs<ExtArgs>
   module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  grades?: boolean | Prisma.Enrolment$gradesArgs<ExtArgs>
+  _count?: boolean | Prisma.EnrolmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["enrolment"]>
 
 
@@ -1223,6 +1370,8 @@ export type EnrolmentInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   centre?: boolean | Prisma.CentreDefaultArgs<ExtArgs>
   module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  grades?: boolean | Prisma.Enrolment$gradesArgs<ExtArgs>
+  _count?: boolean | Prisma.EnrolmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $EnrolmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1232,6 +1381,7 @@ export type $EnrolmentPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     academicYear: Prisma.$AcademicYearPayload<ExtArgs>
     centre: Prisma.$CentrePayload<ExtArgs>
     module: Prisma.$ModulePayload<ExtArgs>
+    grades: Prisma.$GradePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1590,6 +1740,7 @@ export interface Prisma__EnrolmentClient<T, Null = never, ExtArgs extends runtim
   academicYear<T extends Prisma.AcademicYearDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYearDefaultArgs<ExtArgs>>): Prisma.Prisma__AcademicYearClient<runtime.Types.Result.GetResult<Prisma.$AcademicYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   centre<T extends Prisma.CentreDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CentreDefaultArgs<ExtArgs>>): Prisma.Prisma__CentreClient<runtime.Types.Result.GetResult<Prisma.$CentrePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   module<T extends Prisma.ModuleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ModuleDefaultArgs<ExtArgs>>): Prisma.Prisma__ModuleClient<runtime.Types.Result.GetResult<Prisma.$ModulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  grades<T extends Prisma.Enrolment$gradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Enrolment$gradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1976,6 +2127,30 @@ export type EnrolmentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many Enrolments to delete.
    */
   limit?: number
+}
+
+/**
+ * Enrolment.grades
+ */
+export type Enrolment$gradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Grade
+   */
+  select?: Prisma.GradeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Grade
+   */
+  omit?: Prisma.GradeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeInclude<ExtArgs> | null
+  where?: Prisma.GradeWhereInput
+  orderBy?: Prisma.GradeOrderByWithRelationInput | Prisma.GradeOrderByWithRelationInput[]
+  cursor?: Prisma.GradeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GradeScalarFieldEnum | Prisma.GradeScalarFieldEnum[]
 }
 
 /**

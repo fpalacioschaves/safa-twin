@@ -251,6 +251,7 @@ export type AcademicYearWhereInput = {
   academicOfferings?: Prisma.AcademicOfferingListRelationFilter
   enrolments?: Prisma.EnrolmentListRelationFilter
   evaluations?: Prisma.EvaluationListRelationFilter
+  assessmentSchemes?: Prisma.AssessmentSchemeListRelationFilter
 }
 
 export type AcademicYearOrderByWithRelationInput = {
@@ -266,6 +267,7 @@ export type AcademicYearOrderByWithRelationInput = {
   academicOfferings?: Prisma.AcademicOfferingOrderByRelationAggregateInput
   enrolments?: Prisma.EnrolmentOrderByRelationAggregateInput
   evaluations?: Prisma.EvaluationOrderByRelationAggregateInput
+  assessmentSchemes?: Prisma.AssessmentSchemeOrderByRelationAggregateInput
   _relevance?: Prisma.AcademicYearOrderByRelevanceInput
 }
 
@@ -285,6 +287,7 @@ export type AcademicYearWhereUniqueInput = Prisma.AtLeast<{
   academicOfferings?: Prisma.AcademicOfferingListRelationFilter
   enrolments?: Prisma.EnrolmentListRelationFilter
   evaluations?: Prisma.EvaluationListRelationFilter
+  assessmentSchemes?: Prisma.AssessmentSchemeListRelationFilter
 }, "id" | "name">
 
 export type AcademicYearOrderByWithAggregationInput = {
@@ -331,6 +334,7 @@ export type AcademicYearCreateInput = {
   academicOfferings?: Prisma.AcademicOfferingCreateNestedManyWithoutAcademicYearInput
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutAcademicYearInput
   evaluations?: Prisma.EvaluationCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateInput = {
@@ -346,6 +350,7 @@ export type AcademicYearUncheckedCreateInput = {
   academicOfferings?: Prisma.AcademicOfferingUncheckedCreateNestedManyWithoutAcademicYearInput
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutAcademicYearInput
   evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUpdateInput = {
@@ -360,6 +365,7 @@ export type AcademicYearUpdateInput = {
   academicOfferings?: Prisma.AcademicOfferingUpdateManyWithoutAcademicYearNestedInput
   enrolments?: Prisma.EnrolmentUpdateManyWithoutAcademicYearNestedInput
   evaluations?: Prisma.EvaluationUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateInput = {
@@ -375,6 +381,7 @@ export type AcademicYearUncheckedUpdateInput = {
   academicOfferings?: Prisma.AcademicOfferingUncheckedUpdateManyWithoutAcademicYearNestedInput
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutAcademicYearNestedInput
   evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearCreateManyInput = {
@@ -509,6 +516,20 @@ export type AcademicYearUpdateOneRequiredWithoutEvaluationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AcademicYearUpdateToOneWithWhereWithoutEvaluationsInput, Prisma.AcademicYearUpdateWithoutEvaluationsInput>, Prisma.AcademicYearUncheckedUpdateWithoutEvaluationsInput>
 }
 
+export type AcademicYearCreateNestedOneWithoutAssessmentSchemesInput = {
+  create?: Prisma.XOR<Prisma.AcademicYearCreateWithoutAssessmentSchemesInput, Prisma.AcademicYearUncheckedCreateWithoutAssessmentSchemesInput>
+  connectOrCreate?: Prisma.AcademicYearCreateOrConnectWithoutAssessmentSchemesInput
+  connect?: Prisma.AcademicYearWhereUniqueInput
+}
+
+export type AcademicYearUpdateOneRequiredWithoutAssessmentSchemesNestedInput = {
+  create?: Prisma.XOR<Prisma.AcademicYearCreateWithoutAssessmentSchemesInput, Prisma.AcademicYearUncheckedCreateWithoutAssessmentSchemesInput>
+  connectOrCreate?: Prisma.AcademicYearCreateOrConnectWithoutAssessmentSchemesInput
+  upsert?: Prisma.AcademicYearUpsertWithoutAssessmentSchemesInput
+  connect?: Prisma.AcademicYearWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AcademicYearUpdateToOneWithWhereWithoutAssessmentSchemesInput, Prisma.AcademicYearUpdateWithoutAssessmentSchemesInput>, Prisma.AcademicYearUncheckedUpdateWithoutAssessmentSchemesInput>
+}
+
 export type AcademicYearCreateWithoutAcademicOfferingsInput = {
   name: string
   startDate: Date | string
@@ -520,6 +541,7 @@ export type AcademicYearCreateWithoutAcademicOfferingsInput = {
   deletedAt?: Date | string | null
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutAcademicYearInput
   evaluations?: Prisma.EvaluationCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateWithoutAcademicOfferingsInput = {
@@ -534,6 +556,7 @@ export type AcademicYearUncheckedCreateWithoutAcademicOfferingsInput = {
   deletedAt?: Date | string | null
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutAcademicYearInput
   evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearCreateOrConnectWithoutAcademicOfferingsInput = {
@@ -563,6 +586,7 @@ export type AcademicYearUpdateWithoutAcademicOfferingsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   enrolments?: Prisma.EnrolmentUpdateManyWithoutAcademicYearNestedInput
   evaluations?: Prisma.EvaluationUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateWithoutAcademicOfferingsInput = {
@@ -577,6 +601,7 @@ export type AcademicYearUncheckedUpdateWithoutAcademicOfferingsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutAcademicYearNestedInput
   evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearCreateWithoutEnrolmentsInput = {
@@ -590,6 +615,7 @@ export type AcademicYearCreateWithoutEnrolmentsInput = {
   deletedAt?: Date | string | null
   academicOfferings?: Prisma.AcademicOfferingCreateNestedManyWithoutAcademicYearInput
   evaluations?: Prisma.EvaluationCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateWithoutEnrolmentsInput = {
@@ -604,6 +630,7 @@ export type AcademicYearUncheckedCreateWithoutEnrolmentsInput = {
   deletedAt?: Date | string | null
   academicOfferings?: Prisma.AcademicOfferingUncheckedCreateNestedManyWithoutAcademicYearInput
   evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearCreateOrConnectWithoutEnrolmentsInput = {
@@ -633,6 +660,7 @@ export type AcademicYearUpdateWithoutEnrolmentsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   academicOfferings?: Prisma.AcademicOfferingUpdateManyWithoutAcademicYearNestedInput
   evaluations?: Prisma.EvaluationUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateWithoutEnrolmentsInput = {
@@ -647,6 +675,7 @@ export type AcademicYearUncheckedUpdateWithoutEnrolmentsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   academicOfferings?: Prisma.AcademicOfferingUncheckedUpdateManyWithoutAcademicYearNestedInput
   evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearCreateWithoutEvaluationsInput = {
@@ -660,6 +689,7 @@ export type AcademicYearCreateWithoutEvaluationsInput = {
   deletedAt?: Date | string | null
   academicOfferings?: Prisma.AcademicOfferingCreateNestedManyWithoutAcademicYearInput
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearUncheckedCreateWithoutEvaluationsInput = {
@@ -674,6 +704,7 @@ export type AcademicYearUncheckedCreateWithoutEvaluationsInput = {
   deletedAt?: Date | string | null
   academicOfferings?: Prisma.AcademicOfferingUncheckedCreateNestedManyWithoutAcademicYearInput
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutAcademicYearInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutAcademicYearInput
 }
 
 export type AcademicYearCreateOrConnectWithoutEvaluationsInput = {
@@ -703,6 +734,7 @@ export type AcademicYearUpdateWithoutEvaluationsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   academicOfferings?: Prisma.AcademicOfferingUpdateManyWithoutAcademicYearNestedInput
   enrolments?: Prisma.EnrolmentUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutAcademicYearNestedInput
 }
 
 export type AcademicYearUncheckedUpdateWithoutEvaluationsInput = {
@@ -717,6 +749,81 @@ export type AcademicYearUncheckedUpdateWithoutEvaluationsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   academicOfferings?: Prisma.AcademicOfferingUncheckedUpdateManyWithoutAcademicYearNestedInput
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutAcademicYearNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutAcademicYearNestedInput
+}
+
+export type AcademicYearCreateWithoutAssessmentSchemesInput = {
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  isCurrent?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  academicOfferings?: Prisma.AcademicOfferingCreateNestedManyWithoutAcademicYearInput
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutAcademicYearInput
+  evaluations?: Prisma.EvaluationCreateNestedManyWithoutAcademicYearInput
+}
+
+export type AcademicYearUncheckedCreateWithoutAssessmentSchemesInput = {
+  id?: number
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  isCurrent?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  academicOfferings?: Prisma.AcademicOfferingUncheckedCreateNestedManyWithoutAcademicYearInput
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutAcademicYearInput
+  evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutAcademicYearInput
+}
+
+export type AcademicYearCreateOrConnectWithoutAssessmentSchemesInput = {
+  where: Prisma.AcademicYearWhereUniqueInput
+  create: Prisma.XOR<Prisma.AcademicYearCreateWithoutAssessmentSchemesInput, Prisma.AcademicYearUncheckedCreateWithoutAssessmentSchemesInput>
+}
+
+export type AcademicYearUpsertWithoutAssessmentSchemesInput = {
+  update: Prisma.XOR<Prisma.AcademicYearUpdateWithoutAssessmentSchemesInput, Prisma.AcademicYearUncheckedUpdateWithoutAssessmentSchemesInput>
+  create: Prisma.XOR<Prisma.AcademicYearCreateWithoutAssessmentSchemesInput, Prisma.AcademicYearUncheckedCreateWithoutAssessmentSchemesInput>
+  where?: Prisma.AcademicYearWhereInput
+}
+
+export type AcademicYearUpdateToOneWithWhereWithoutAssessmentSchemesInput = {
+  where?: Prisma.AcademicYearWhereInput
+  data: Prisma.XOR<Prisma.AcademicYearUpdateWithoutAssessmentSchemesInput, Prisma.AcademicYearUncheckedUpdateWithoutAssessmentSchemesInput>
+}
+
+export type AcademicYearUpdateWithoutAssessmentSchemesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  academicOfferings?: Prisma.AcademicOfferingUpdateManyWithoutAcademicYearNestedInput
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutAcademicYearNestedInput
+  evaluations?: Prisma.EvaluationUpdateManyWithoutAcademicYearNestedInput
+}
+
+export type AcademicYearUncheckedUpdateWithoutAssessmentSchemesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  academicOfferings?: Prisma.AcademicOfferingUncheckedUpdateManyWithoutAcademicYearNestedInput
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutAcademicYearNestedInput
+  evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutAcademicYearNestedInput
 }
 
 
@@ -728,12 +835,14 @@ export type AcademicYearCountOutputType = {
   academicOfferings: number
   enrolments: number
   evaluations: number
+  assessmentSchemes: number
 }
 
 export type AcademicYearCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   academicOfferings?: boolean | AcademicYearCountOutputTypeCountAcademicOfferingsArgs
   enrolments?: boolean | AcademicYearCountOutputTypeCountEnrolmentsArgs
   evaluations?: boolean | AcademicYearCountOutputTypeCountEvaluationsArgs
+  assessmentSchemes?: boolean | AcademicYearCountOutputTypeCountAssessmentSchemesArgs
 }
 
 /**
@@ -767,6 +876,13 @@ export type AcademicYearCountOutputTypeCountEvaluationsArgs<ExtArgs extends runt
   where?: Prisma.EvaluationWhereInput
 }
 
+/**
+ * AcademicYearCountOutputType without action
+ */
+export type AcademicYearCountOutputTypeCountAssessmentSchemesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssessmentSchemeWhereInput
+}
+
 
 export type AcademicYearSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -781,6 +897,7 @@ export type AcademicYearSelect<ExtArgs extends runtime.Types.Extensions.Internal
   academicOfferings?: boolean | Prisma.AcademicYear$academicOfferingsArgs<ExtArgs>
   enrolments?: boolean | Prisma.AcademicYear$enrolmentsArgs<ExtArgs>
   evaluations?: boolean | Prisma.AcademicYear$evaluationsArgs<ExtArgs>
+  assessmentSchemes?: boolean | Prisma.AcademicYear$assessmentSchemesArgs<ExtArgs>
   _count?: boolean | Prisma.AcademicYearCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["academicYear"]>
 
@@ -803,6 +920,7 @@ export type AcademicYearInclude<ExtArgs extends runtime.Types.Extensions.Interna
   academicOfferings?: boolean | Prisma.AcademicYear$academicOfferingsArgs<ExtArgs>
   enrolments?: boolean | Prisma.AcademicYear$enrolmentsArgs<ExtArgs>
   evaluations?: boolean | Prisma.AcademicYear$evaluationsArgs<ExtArgs>
+  assessmentSchemes?: boolean | Prisma.AcademicYear$assessmentSchemesArgs<ExtArgs>
   _count?: boolean | Prisma.AcademicYearCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -812,6 +930,7 @@ export type $AcademicYearPayload<ExtArgs extends runtime.Types.Extensions.Intern
     academicOfferings: Prisma.$AcademicOfferingPayload<ExtArgs>[]
     enrolments: Prisma.$EnrolmentPayload<ExtArgs>[]
     evaluations: Prisma.$EvaluationPayload<ExtArgs>[]
+    assessmentSchemes: Prisma.$AssessmentSchemePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1166,6 +1285,7 @@ export interface Prisma__AcademicYearClient<T, Null = never, ExtArgs extends run
   academicOfferings<T extends Prisma.AcademicYear$academicOfferingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$academicOfferingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AcademicOfferingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   enrolments<T extends Prisma.AcademicYear$enrolmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$enrolmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnrolmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   evaluations<T extends Prisma.AcademicYear$evaluationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$evaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assessmentSchemes<T extends Prisma.AcademicYear$assessmentSchemesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYear$assessmentSchemesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssessmentSchemePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1621,6 +1741,30 @@ export type AcademicYear$evaluationsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.EvaluationScalarFieldEnum | Prisma.EvaluationScalarFieldEnum[]
+}
+
+/**
+ * AcademicYear.assessmentSchemes
+ */
+export type AcademicYear$assessmentSchemesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssessmentScheme
+   */
+  select?: Prisma.AssessmentSchemeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssessmentScheme
+   */
+  omit?: Prisma.AssessmentSchemeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssessmentSchemeInclude<ExtArgs> | null
+  where?: Prisma.AssessmentSchemeWhereInput
+  orderBy?: Prisma.AssessmentSchemeOrderByWithRelationInput | Prisma.AssessmentSchemeOrderByWithRelationInput[]
+  cursor?: Prisma.AssessmentSchemeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssessmentSchemeScalarFieldEnum | Prisma.AssessmentSchemeScalarFieldEnum[]
 }
 
 /**

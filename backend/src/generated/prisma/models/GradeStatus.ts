@@ -276,6 +276,7 @@ export type GradeStatusWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"GradeStatus"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GradeStatus"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"GradeStatus"> | Date | string | null
+  grades?: Prisma.GradeListRelationFilter
 }
 
 export type GradeStatusOrderByWithRelationInput = {
@@ -291,6 +292,7 @@ export type GradeStatusOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  grades?: Prisma.GradeOrderByRelationAggregateInput
   _relevance?: Prisma.GradeStatusOrderByRelevanceInput
 }
 
@@ -310,6 +312,7 @@ export type GradeStatusWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"GradeStatus"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GradeStatus"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"GradeStatus"> | Date | string | null
+  grades?: Prisma.GradeListRelationFilter
 }, "id" | "code">
 
 export type GradeStatusOrderByWithAggregationInput = {
@@ -362,6 +365,7 @@ export type GradeStatusCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeCreateNestedManyWithoutGradeStatusInput
 }
 
 export type GradeStatusUncheckedCreateInput = {
@@ -377,6 +381,7 @@ export type GradeStatusUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutGradeStatusInput
 }
 
 export type GradeStatusUpdateInput = {
@@ -391,6 +396,7 @@ export type GradeStatusUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUpdateManyWithoutGradeStatusNestedInput
 }
 
 export type GradeStatusUncheckedUpdateInput = {
@@ -406,6 +412,7 @@ export type GradeStatusUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutGradeStatusNestedInput
 }
 
 export type GradeStatusCreateManyInput = {
@@ -513,6 +520,130 @@ export type GradeStatusSumOrderByAggregateInput = {
   sortOrder?: Prisma.SortOrder
 }
 
+export type GradeStatusNullableScalarRelationFilter = {
+  is?: Prisma.GradeStatusWhereInput | null
+  isNot?: Prisma.GradeStatusWhereInput | null
+}
+
+export type GradeStatusCreateNestedOneWithoutGradesInput = {
+  create?: Prisma.XOR<Prisma.GradeStatusCreateWithoutGradesInput, Prisma.GradeStatusUncheckedCreateWithoutGradesInput>
+  connectOrCreate?: Prisma.GradeStatusCreateOrConnectWithoutGradesInput
+  connect?: Prisma.GradeStatusWhereUniqueInput
+}
+
+export type GradeStatusUpdateOneWithoutGradesNestedInput = {
+  create?: Prisma.XOR<Prisma.GradeStatusCreateWithoutGradesInput, Prisma.GradeStatusUncheckedCreateWithoutGradesInput>
+  connectOrCreate?: Prisma.GradeStatusCreateOrConnectWithoutGradesInput
+  upsert?: Prisma.GradeStatusUpsertWithoutGradesInput
+  disconnect?: Prisma.GradeStatusWhereInput | boolean
+  delete?: Prisma.GradeStatusWhereInput | boolean
+  connect?: Prisma.GradeStatusWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GradeStatusUpdateToOneWithWhereWithoutGradesInput, Prisma.GradeStatusUpdateWithoutGradesInput>, Prisma.GradeStatusUncheckedUpdateWithoutGradesInput>
+}
+
+export type GradeStatusCreateWithoutGradesInput = {
+  code: string
+  name: string
+  description?: string | null
+  isEvaluable?: boolean
+  countsAsPassed?: boolean
+  countsAsNoShow?: boolean
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
+export type GradeStatusUncheckedCreateWithoutGradesInput = {
+  id?: number
+  code: string
+  name: string
+  description?: string | null
+  isEvaluable?: boolean
+  countsAsPassed?: boolean
+  countsAsNoShow?: boolean
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
+export type GradeStatusCreateOrConnectWithoutGradesInput = {
+  where: Prisma.GradeStatusWhereUniqueInput
+  create: Prisma.XOR<Prisma.GradeStatusCreateWithoutGradesInput, Prisma.GradeStatusUncheckedCreateWithoutGradesInput>
+}
+
+export type GradeStatusUpsertWithoutGradesInput = {
+  update: Prisma.XOR<Prisma.GradeStatusUpdateWithoutGradesInput, Prisma.GradeStatusUncheckedUpdateWithoutGradesInput>
+  create: Prisma.XOR<Prisma.GradeStatusCreateWithoutGradesInput, Prisma.GradeStatusUncheckedCreateWithoutGradesInput>
+  where?: Prisma.GradeStatusWhereInput
+}
+
+export type GradeStatusUpdateToOneWithWhereWithoutGradesInput = {
+  where?: Prisma.GradeStatusWhereInput
+  data: Prisma.XOR<Prisma.GradeStatusUpdateWithoutGradesInput, Prisma.GradeStatusUncheckedUpdateWithoutGradesInput>
+}
+
+export type GradeStatusUpdateWithoutGradesInput = {
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEvaluable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countsAsPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countsAsNoShow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type GradeStatusUncheckedUpdateWithoutGradesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isEvaluable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countsAsPassed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countsAsNoShow?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+
+/**
+ * Count Type GradeStatusCountOutputType
+ */
+
+export type GradeStatusCountOutputType = {
+  grades: number
+}
+
+export type GradeStatusCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  grades?: boolean | GradeStatusCountOutputTypeCountGradesArgs
+}
+
+/**
+ * GradeStatusCountOutputType without action
+ */
+export type GradeStatusCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GradeStatusCountOutputType
+   */
+  select?: Prisma.GradeStatusCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * GradeStatusCountOutputType without action
+ */
+export type GradeStatusCountOutputTypeCountGradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GradeWhereInput
+}
 
 
 export type GradeStatusSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -528,6 +659,8 @@ export type GradeStatusSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
+  grades?: boolean | Prisma.GradeStatus$gradesArgs<ExtArgs>
+  _count?: boolean | Prisma.GradeStatusCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["gradeStatus"]>
 
 
@@ -548,10 +681,16 @@ export type GradeStatusSelectScalar = {
 }
 
 export type GradeStatusOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "description" | "isEvaluable" | "countsAsPassed" | "countsAsNoShow" | "sortOrder" | "isActive" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["gradeStatus"]>
+export type GradeStatusInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  grades?: boolean | Prisma.GradeStatus$gradesArgs<ExtArgs>
+  _count?: boolean | Prisma.GradeStatusCountOutputTypeDefaultArgs<ExtArgs>
+}
 
 export type $GradeStatusPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "GradeStatus"
-  objects: {}
+  objects: {
+    grades: Prisma.$GradePayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     code: string
@@ -905,6 +1044,7 @@ readonly fields: GradeStatusFieldRefs;
  */
 export interface Prisma__GradeStatusClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  grades<T extends Prisma.GradeStatus$gradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GradeStatus$gradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -963,6 +1103,10 @@ export type GradeStatusFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
+  /**
    * Filter, which GradeStatus to fetch.
    */
   where: Prisma.GradeStatusWhereUniqueInput
@@ -981,6 +1125,10 @@ export type GradeStatusFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
+  /**
    * Filter, which GradeStatus to fetch.
    */
   where: Prisma.GradeStatusWhereUniqueInput
@@ -998,6 +1146,10 @@ export type GradeStatusFindFirstArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the GradeStatus
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
   /**
    * Filter, which GradeStatus to fetch.
    */
@@ -1047,6 +1199,10 @@ export type GradeStatusFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extens
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
+  /**
    * Filter, which GradeStatus to fetch.
    */
   where?: Prisma.GradeStatusWhereInput
@@ -1094,6 +1250,10 @@ export type GradeStatusFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the GradeStatus
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
   /**
    * Filter, which GradeStatuses to fetch.
    */
@@ -1143,6 +1303,10 @@ export type GradeStatusCreateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
+  /**
    * The data needed to create a GradeStatus.
    */
   data: Prisma.XOR<Prisma.GradeStatusCreateInput, Prisma.GradeStatusUncheckedCreateInput>
@@ -1171,6 +1335,10 @@ export type GradeStatusUpdateArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the GradeStatus
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
   /**
    * The data needed to update a GradeStatus.
    */
@@ -1212,6 +1380,10 @@ export type GradeStatusUpsertArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
+  /**
    * The filter to search for the GradeStatus to update in case it exists.
    */
   where: Prisma.GradeStatusWhereUniqueInput
@@ -1238,6 +1410,10 @@ export type GradeStatusDeleteArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
+  /**
    * Filter which GradeStatus to delete.
    */
   where: Prisma.GradeStatusWhereUniqueInput
@@ -1258,6 +1434,30 @@ export type GradeStatusDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
+ * GradeStatus.grades
+ */
+export type GradeStatus$gradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Grade
+   */
+  select?: Prisma.GradeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Grade
+   */
+  omit?: Prisma.GradeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeInclude<ExtArgs> | null
+  where?: Prisma.GradeWhereInput
+  orderBy?: Prisma.GradeOrderByWithRelationInput | Prisma.GradeOrderByWithRelationInput[]
+  cursor?: Prisma.GradeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GradeScalarFieldEnum | Prisma.GradeScalarFieldEnum[]
+}
+
+/**
  * GradeStatus without action
  */
 export type GradeStatusDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1269,4 +1469,8 @@ export type GradeStatusDefaultArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the GradeStatus
    */
   omit?: Prisma.GradeStatusOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeStatusInclude<ExtArgs> | null
 }

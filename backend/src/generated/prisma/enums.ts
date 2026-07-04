@@ -58,3 +58,14 @@ export const EvaluationStatus = {
 } as const
 
 export type EvaluationStatus = (typeof EvaluationStatus)[keyof typeof EvaluationStatus]
+
+
+export const AssessmentComponentType = {
+  ACTIVITIES: 'ACTIVITIES',
+  SELF_ASSESSMENTS: 'SELF_ASSESSMENTS',
+  FORUMS: 'FORUMS',
+  COMPANY: 'COMPANY',
+  OTHER: 'OTHER'
+} as const
+
+export type AssessmentComponentType = (typeof AssessmentComponentType)[keyof typeof AssessmentComponentType]

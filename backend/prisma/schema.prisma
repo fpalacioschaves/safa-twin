@@ -43,6 +43,14 @@ enum EvaluationStatus {
   LOCKED
 }
 
+enum AssessmentComponentType {
+  ACTIVITIES
+  SELF_ASSESSMENTS
+  FORUMS
+  COMPANY
+  OTHER
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   name         String    @db.VarChar(150)
@@ -141,8 +149,9 @@ model AcademicYear {
   deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
 
   academicOfferings AcademicOffering[]
-  enrolments        Enrolment[]
-  evaluations      Evaluation[]
+  enrolments         Enrolment[]
+  evaluations        Evaluation[]
+  assessmentSchemes  AssessmentScheme[]
 
   @@index([isCurrent])
   @@index([isActive])
@@ -167,9 +176,10 @@ model Centre {
   updatedAt  DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
   deletedAt  DateTime? @map("deleted_at") @db.DateTime(0)
 
-  centreProgrammes CentreProgramme[]
-  enrolments       Enrolment[]
-  evaluations     Evaluation[]
+  centreProgrammes  CentreProgramme[]
+  enrolments        Enrolment[]
+  evaluations       Evaluation[]
+  assessmentSchemes AssessmentScheme[]
 
   @@index([name])
   @@index([city])
@@ -285,6 +295,7 @@ model Module {
   vocationalProgramme VocationalProgramme @relation(fields: [vocationalProgrammeId], references: [id], onDelete: Restrict)
   academicLevel       AcademicLevel       @relation(fields: [academicLevelId], references: [id], onDelete: Restrict)
   enrolments          Enrolment[]
+  assessmentSchemes   AssessmentScheme[]
 
   @@unique([vocationalProgrammeId, code], map: "modules_programme_code_unique")
   @@index([vocationalProgrammeId])
@@ -349,6 +360,7 @@ model Enrolment {
   academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
   centre       Centre       @relation(fields: [centreId], references: [id], onDelete: Restrict)
   module       Module       @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+  grades       Grade[]
 
   @@unique([studentId, academicYearId, centreId, moduleId], map: "enrolments_student_year_centre_module_unique")
   @@index([studentId])
@@ -380,6 +392,7 @@ model Evaluation {
 
   academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
   centre       Centre       @relation(fields: [centreId], references: [id], onDelete: Restrict)
+  grades       Grade[]
 
   @@unique([academicYearId, centreId, code], map: "evaluations_scope_code_unique")
   @@index([academicYearId])
@@ -406,8 +419,117 @@ model GradeStatus {
   updatedAt       DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
   deletedAt       DateTime? @map("deleted_at") @db.DateTime(0)
 
+  grades          Grade[]
+
   @@index([sortOrder])
   @@index([isActive])
   @@index([deletedAt])
   @@map("grade_statuses")
+}
+
+model AssessmentScheme {
+  id             Int       @id @default(autoincrement())
+  academicYearId Int      @map("academic_year_id")
+  centreId       Int      @map("centre_id")
+  moduleId       Int      @map("module_id")
+  name           String   @db.VarChar(150)
+  isDual         Boolean  @default(false) @map("is_dual")
+  isActive       Boolean  @default(true) @map("is_active")
+  remarks        String?  @db.Text
+  createdAt      DateTime @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt      DateTime? @map("deleted_at") @db.DateTime(0)
+
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
+  centre       Centre       @relation(fields: [centreId], references: [id], onDelete: Restrict)
+  module       Module       @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+  components   AssessmentComponent[]
+  grades       Grade[]
+
+  @@unique([academicYearId, centreId, moduleId], map: "assessment_schemes_scope_unique")
+  @@index([academicYearId])
+  @@index([centreId])
+  @@index([moduleId])
+  @@index([isDual])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("assessment_schemes")
+}
+
+model AssessmentComponent {
+  id                 Int                     @id @default(autoincrement())
+  assessmentSchemeId Int                     @map("assessment_scheme_id")
+  code               String                  @db.VarChar(50)
+  name               String                  @db.VarChar(150)
+  type               AssessmentComponentType @default(OTHER)
+  percentage         Decimal                 @db.Decimal(5, 2)
+  sortOrder          Int                     @default(0) @map("sort_order")
+  isRequired         Boolean                 @default(true) @map("is_required")
+  isCompanyComponent Boolean                 @default(false) @map("is_company_component")
+  createdAt          DateTime                @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt          DateTime                @updatedAt @map("updated_at") @db.DateTime(0)
+
+  assessmentScheme AssessmentScheme @relation(fields: [assessmentSchemeId], references: [id], onDelete: Cascade)
+  componentScores   GradeComponentScore[]
+
+  @@unique([assessmentSchemeId, code], map: "assessment_components_scheme_code_unique")
+  @@index([assessmentSchemeId])
+  @@index([type])
+  @@index([sortOrder])
+  @@map("assessment_components")
+}
+
+
+model Grade {
+  id                 Int       @id @default(autoincrement())
+  enrolmentId        Int       @map("enrolment_id")
+  evaluationId       Int       @map("evaluation_id")
+  assessmentSchemeId Int       @map("assessment_scheme_id")
+  gradeStatusId      Int?      @map("grade_status_id")
+  numericGrade       Decimal?  @map("numeric_grade") @db.Decimal(4, 2)
+  finalGrade         Decimal?  @map("final_grade") @db.Decimal(4, 2)
+  isPassed           Boolean?  @map("is_passed")
+  isLocked           Boolean   @default(false) @map("is_locked")
+  remarks            String?   @db.Text
+  createdAt          DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt          DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt          DateTime? @map("deleted_at") @db.DateTime(0)
+
+  enrolment        Enrolment         @relation(fields: [enrolmentId], references: [id], onDelete: Restrict)
+  evaluation       Evaluation        @relation(fields: [evaluationId], references: [id], onDelete: Restrict)
+  assessmentScheme AssessmentScheme  @relation(fields: [assessmentSchemeId], references: [id], onDelete: Restrict)
+  gradeStatus      GradeStatus?      @relation(fields: [gradeStatusId], references: [id], onDelete: Restrict)
+  componentScores  GradeComponentScore[]
+
+  @@unique([enrolmentId, evaluationId], map: "grades_enrolment_evaluation_unique")
+  @@index([enrolmentId])
+  @@index([evaluationId])
+  @@index([assessmentSchemeId])
+  @@index([gradeStatusId])
+  @@index([finalGrade])
+  @@index([isPassed])
+  @@index([isLocked])
+  @@index([deletedAt])
+  @@map("grades")
+}
+
+model GradeComponentScore {
+  id                    Int       @id @default(autoincrement())
+  gradeId               Int       @map("grade_id")
+  assessmentComponentId Int       @map("assessment_component_id")
+  score                 Decimal?  @db.Decimal(4, 2)
+  weightedScore         Decimal?  @map("weighted_score") @db.Decimal(5, 2)
+  isMissing             Boolean   @default(false) @map("is_missing")
+  remarks               String?   @db.Text
+  createdAt             DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+
+  grade               Grade               @relation(fields: [gradeId], references: [id], onDelete: Cascade)
+  assessmentComponent AssessmentComponent @relation(fields: [assessmentComponentId], references: [id], onDelete: Restrict)
+
+  @@unique([gradeId, assessmentComponentId], map: "grade_component_scores_unique")
+  @@index([gradeId])
+  @@index([assessmentComponentId])
+  @@index([isMissing])
+  @@map("grade_component_scores")
 }

@@ -20,6 +20,10 @@ import {
 } from './AcademicYearsPage';
 
 import {
+  AssessmentSchemesPage,
+} from './AssessmentSchemesPage';
+
+import {
   CentresPage,
 } from './CentresPage';
 
@@ -30,6 +34,10 @@ import {
 import {
   EvaluationsPage,
 } from './EvaluationsPage';
+
+import {
+  GradesPage,
+} from './GradesPage';
 
 import {
   ModulesPage,
@@ -64,7 +72,9 @@ type ActiveSection =
   | 'modules'
   | 'students'
   | 'enrolments'
-  | 'evaluations';
+  | 'evaluations'
+  | 'assessment-schemes'
+  | 'grades';
 
 function formatRole(role: string): string {
   return role
@@ -251,6 +261,22 @@ export function DashboardPage({
       'Evaluaciones y estados';
   }
 
+  if (activeSection === 'assessment-schemes') {
+    pageEyebrow =
+      'Evaluación académica';
+
+    pageTitle =
+      'Sistemas de calificación';
+  }
+
+  if (activeSection === 'grades') {
+    pageEyebrow =
+      'Evaluación académica';
+
+    pageTitle =
+      'Calificaciones';
+  }
+
   let activeContent: ReactNode;
 
   if (activeSection === 'users') {
@@ -410,6 +436,18 @@ export function DashboardPage({
           canUseBuiltModules
         }
       />
+    );
+  } else if (
+    activeSection === 'assessment-schemes'
+  ) {
+    activeContent = (
+      <AssessmentSchemesPage />
+    );
+  } else if (
+    activeSection === 'grades'
+  ) {
+    activeContent = (
+      <GradesPage />
     );
   } else {
     activeContent = (
@@ -629,6 +667,20 @@ export function DashboardPage({
             onSelect={setActiveSection}
           />
 
+          <MainNavButton
+            activeSection={activeSection}
+            id="assessment-schemes"
+            label="Sistemas calificación"
+            onSelect={setActiveSection}
+          />
+
+          <MainNavButton
+            activeSection={activeSection}
+            id="grades"
+            label="Calificaciones"
+            onSelect={setActiveSection}
+          />
+
           <span className="nav-link nav-link-disabled">
             Gemelo digital
           </span>
@@ -730,6 +782,20 @@ export function DashboardPage({
             activeSection={activeSection}
             id="evaluations"
             label="Evaluaciones"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="assessment-schemes"
+            label="Sistemas"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="grades"
+            label="Notas"
             onSelect={setActiveSection}
           />
         </nav>

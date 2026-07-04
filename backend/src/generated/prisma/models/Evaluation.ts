@@ -302,6 +302,7 @@ export type EvaluationWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Evaluation"> | Date | string | null
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   centre?: Prisma.XOR<Prisma.CentreScalarRelationFilter, Prisma.CentreWhereInput>
+  grades?: Prisma.GradeListRelationFilter
 }
 
 export type EvaluationOrderByWithRelationInput = {
@@ -321,6 +322,7 @@ export type EvaluationOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   academicYear?: Prisma.AcademicYearOrderByWithRelationInput
   centre?: Prisma.CentreOrderByWithRelationInput
+  grades?: Prisma.GradeOrderByRelationAggregateInput
   _relevance?: Prisma.EvaluationOrderByRelevanceInput
 }
 
@@ -345,6 +347,7 @@ export type EvaluationWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Evaluation"> | Date | string | null
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   centre?: Prisma.XOR<Prisma.CentreScalarRelationFilter, Prisma.CentreWhereInput>
+  grades?: Prisma.GradeListRelationFilter
 }, "id" | "academicYearId_centreId_code">
 
 export type EvaluationOrderByWithAggregationInput = {
@@ -403,6 +406,7 @@ export type EvaluationCreateInput = {
   deletedAt?: Date | string | null
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutEvaluationsInput
   centre: Prisma.CentreCreateNestedOneWithoutEvaluationsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEvaluationInput
 }
 
 export type EvaluationUncheckedCreateInput = {
@@ -420,6 +424,7 @@ export type EvaluationUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEvaluationInput
 }
 
 export type EvaluationUpdateInput = {
@@ -436,6 +441,7 @@ export type EvaluationUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEvaluationsNestedInput
   centre?: Prisma.CentreUpdateOneRequiredWithoutEvaluationsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEvaluationNestedInput
 }
 
 export type EvaluationUncheckedUpdateInput = {
@@ -453,6 +459,7 @@ export type EvaluationUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEvaluationNestedInput
 }
 
 export type EvaluationCreateManyInput = {
@@ -590,6 +597,11 @@ export type EvaluationSumOrderByAggregateInput = {
   sequence?: Prisma.SortOrder
 }
 
+export type EvaluationScalarRelationFilter = {
+  is?: Prisma.EvaluationWhereInput
+  isNot?: Prisma.EvaluationWhereInput
+}
+
 export type EvaluationCreateNestedManyWithoutAcademicYearInput = {
   create?: Prisma.XOR<Prisma.EvaluationCreateWithoutAcademicYearInput, Prisma.EvaluationUncheckedCreateWithoutAcademicYearInput> | Prisma.EvaluationCreateWithoutAcademicYearInput[] | Prisma.EvaluationUncheckedCreateWithoutAcademicYearInput[]
   connectOrCreate?: Prisma.EvaluationCreateOrConnectWithoutAcademicYearInput | Prisma.EvaluationCreateOrConnectWithoutAcademicYearInput[]
@@ -678,6 +690,20 @@ export type EnumEvaluationStatusFieldUpdateOperationsInput = {
   set?: $Enums.EvaluationStatus
 }
 
+export type EvaluationCreateNestedOneWithoutGradesInput = {
+  create?: Prisma.XOR<Prisma.EvaluationCreateWithoutGradesInput, Prisma.EvaluationUncheckedCreateWithoutGradesInput>
+  connectOrCreate?: Prisma.EvaluationCreateOrConnectWithoutGradesInput
+  connect?: Prisma.EvaluationWhereUniqueInput
+}
+
+export type EvaluationUpdateOneRequiredWithoutGradesNestedInput = {
+  create?: Prisma.XOR<Prisma.EvaluationCreateWithoutGradesInput, Prisma.EvaluationUncheckedCreateWithoutGradesInput>
+  connectOrCreate?: Prisma.EvaluationCreateOrConnectWithoutGradesInput
+  upsert?: Prisma.EvaluationUpsertWithoutGradesInput
+  connect?: Prisma.EvaluationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EvaluationUpdateToOneWithWhereWithoutGradesInput, Prisma.EvaluationUpdateWithoutGradesInput>, Prisma.EvaluationUncheckedUpdateWithoutGradesInput>
+}
+
 export type EvaluationCreateWithoutAcademicYearInput = {
   code: string
   name: string
@@ -691,6 +717,7 @@ export type EvaluationCreateWithoutAcademicYearInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   centre: Prisma.CentreCreateNestedOneWithoutEvaluationsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEvaluationInput
 }
 
 export type EvaluationUncheckedCreateWithoutAcademicYearInput = {
@@ -707,6 +734,7 @@ export type EvaluationUncheckedCreateWithoutAcademicYearInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEvaluationInput
 }
 
 export type EvaluationCreateOrConnectWithoutAcademicYearInput = {
@@ -768,6 +796,7 @@ export type EvaluationCreateWithoutCentreInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutEvaluationsInput
+  grades?: Prisma.GradeCreateNestedManyWithoutEvaluationInput
 }
 
 export type EvaluationUncheckedCreateWithoutCentreInput = {
@@ -784,6 +813,7 @@ export type EvaluationUncheckedCreateWithoutCentreInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  grades?: Prisma.GradeUncheckedCreateNestedManyWithoutEvaluationInput
 }
 
 export type EvaluationCreateOrConnectWithoutCentreInput = {
@@ -810,6 +840,88 @@ export type EvaluationUpdateWithWhereUniqueWithoutCentreInput = {
 export type EvaluationUpdateManyWithWhereWithoutCentreInput = {
   where: Prisma.EvaluationScalarWhereInput
   data: Prisma.XOR<Prisma.EvaluationUpdateManyMutationInput, Prisma.EvaluationUncheckedUpdateManyWithoutCentreInput>
+}
+
+export type EvaluationCreateWithoutGradesInput = {
+  code: string
+  name: string
+  sequence?: number
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  status?: $Enums.EvaluationStatus
+  closedAt?: Date | string | null
+  remarks?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  academicYear: Prisma.AcademicYearCreateNestedOneWithoutEvaluationsInput
+  centre: Prisma.CentreCreateNestedOneWithoutEvaluationsInput
+}
+
+export type EvaluationUncheckedCreateWithoutGradesInput = {
+  id?: number
+  academicYearId: number
+  centreId: number
+  code: string
+  name: string
+  sequence?: number
+  startsAt?: Date | string | null
+  endsAt?: Date | string | null
+  status?: $Enums.EvaluationStatus
+  closedAt?: Date | string | null
+  remarks?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
+export type EvaluationCreateOrConnectWithoutGradesInput = {
+  where: Prisma.EvaluationWhereUniqueInput
+  create: Prisma.XOR<Prisma.EvaluationCreateWithoutGradesInput, Prisma.EvaluationUncheckedCreateWithoutGradesInput>
+}
+
+export type EvaluationUpsertWithoutGradesInput = {
+  update: Prisma.XOR<Prisma.EvaluationUpdateWithoutGradesInput, Prisma.EvaluationUncheckedUpdateWithoutGradesInput>
+  create: Prisma.XOR<Prisma.EvaluationCreateWithoutGradesInput, Prisma.EvaluationUncheckedCreateWithoutGradesInput>
+  where?: Prisma.EvaluationWhereInput
+}
+
+export type EvaluationUpdateToOneWithWhereWithoutGradesInput = {
+  where?: Prisma.EvaluationWhereInput
+  data: Prisma.XOR<Prisma.EvaluationUpdateWithoutGradesInput, Prisma.EvaluationUncheckedUpdateWithoutGradesInput>
+}
+
+export type EvaluationUpdateWithoutGradesInput = {
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumEvaluationStatusFieldUpdateOperationsInput | $Enums.EvaluationStatus
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEvaluationsNestedInput
+  centre?: Prisma.CentreUpdateOneRequiredWithoutEvaluationsNestedInput
+}
+
+export type EvaluationUncheckedUpdateWithoutGradesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  academicYearId?: Prisma.IntFieldUpdateOperationsInput | number
+  centreId?: Prisma.IntFieldUpdateOperationsInput | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  sequence?: Prisma.IntFieldUpdateOperationsInput | number
+  startsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumEvaluationStatusFieldUpdateOperationsInput | $Enums.EvaluationStatus
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type EvaluationCreateManyAcademicYearInput = {
@@ -841,6 +953,7 @@ export type EvaluationUpdateWithoutAcademicYearInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   centre?: Prisma.CentreUpdateOneRequiredWithoutEvaluationsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEvaluationNestedInput
 }
 
 export type EvaluationUncheckedUpdateWithoutAcademicYearInput = {
@@ -857,6 +970,7 @@ export type EvaluationUncheckedUpdateWithoutAcademicYearInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEvaluationNestedInput
 }
 
 export type EvaluationUncheckedUpdateManyWithoutAcademicYearInput = {
@@ -904,6 +1018,7 @@ export type EvaluationUpdateWithoutCentreInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutEvaluationsNestedInput
+  grades?: Prisma.GradeUpdateManyWithoutEvaluationNestedInput
 }
 
 export type EvaluationUncheckedUpdateWithoutCentreInput = {
@@ -920,6 +1035,7 @@ export type EvaluationUncheckedUpdateWithoutCentreInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grades?: Prisma.GradeUncheckedUpdateManyWithoutEvaluationNestedInput
 }
 
 export type EvaluationUncheckedUpdateManyWithoutCentreInput = {
@@ -939,6 +1055,35 @@ export type EvaluationUncheckedUpdateManyWithoutCentreInput = {
 }
 
 
+/**
+ * Count Type EvaluationCountOutputType
+ */
+
+export type EvaluationCountOutputType = {
+  grades: number
+}
+
+export type EvaluationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  grades?: boolean | EvaluationCountOutputTypeCountGradesArgs
+}
+
+/**
+ * EvaluationCountOutputType without action
+ */
+export type EvaluationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EvaluationCountOutputType
+   */
+  select?: Prisma.EvaluationCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EvaluationCountOutputType without action
+ */
+export type EvaluationCountOutputTypeCountGradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GradeWhereInput
+}
+
 
 export type EvaluationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -957,6 +1102,8 @@ export type EvaluationSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   deletedAt?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   centre?: boolean | Prisma.CentreDefaultArgs<ExtArgs>
+  grades?: boolean | Prisma.Evaluation$gradesArgs<ExtArgs>
+  _count?: boolean | Prisma.EvaluationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["evaluation"]>
 
 
@@ -982,6 +1129,8 @@ export type EvaluationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type EvaluationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   centre?: boolean | Prisma.CentreDefaultArgs<ExtArgs>
+  grades?: boolean | Prisma.Evaluation$gradesArgs<ExtArgs>
+  _count?: boolean | Prisma.EvaluationCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $EvaluationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -989,6 +1138,7 @@ export type $EvaluationPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     academicYear: Prisma.$AcademicYearPayload<ExtArgs>
     centre: Prisma.$CentrePayload<ExtArgs>
+    grades: Prisma.$GradePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1347,6 +1497,7 @@ export interface Prisma__EvaluationClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   academicYear<T extends Prisma.AcademicYearDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYearDefaultArgs<ExtArgs>>): Prisma.Prisma__AcademicYearClient<runtime.Types.Result.GetResult<Prisma.$AcademicYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   centre<T extends Prisma.CentreDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CentreDefaultArgs<ExtArgs>>): Prisma.Prisma__CentreClient<runtime.Types.Result.GetResult<Prisma.$CentrePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  grades<T extends Prisma.Evaluation$gradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Evaluation$gradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1735,6 +1886,30 @@ export type EvaluationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Evaluations to delete.
    */
   limit?: number
+}
+
+/**
+ * Evaluation.grades
+ */
+export type Evaluation$gradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Grade
+   */
+  select?: Prisma.GradeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Grade
+   */
+  omit?: Prisma.GradeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeInclude<ExtArgs> | null
+  where?: Prisma.GradeWhereInput
+  orderBy?: Prisma.GradeOrderByWithRelationInput | Prisma.GradeOrderByWithRelationInput[]
+  cursor?: Prisma.GradeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GradeScalarFieldEnum | Prisma.GradeScalarFieldEnum[]
 }
 
 /**
