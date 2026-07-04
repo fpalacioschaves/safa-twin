@@ -1,5 +1,6 @@
 import {
   useState,
+  type ReactNode,
 } from 'react';
 
 import {
@@ -9,6 +10,14 @@ import {
 import type {
   AuthenticatedUser,
 } from '../types/auth';
+
+import {
+  AcademicYearsPage,
+} from './AcademicYearsPage';
+
+import {
+  CentresPage,
+} from './CentresPage';
 
 import {
   UsersPage,
@@ -23,7 +32,9 @@ interface DashboardPageProps {
 
 type ActiveSection =
   | 'dashboard'
-  | 'users';
+  | 'users'
+  | 'academic-years'
+  | 'centres';
 
 function formatRole(role: string): string {
   return role
@@ -46,26 +57,98 @@ export function DashboardPage({
     useState<ActiveSection>('dashboard');
 
   const canListUsers =
-    user.permissions.includes('users.list');
+    user.permissions.includes(
+      'users.list',
+    );
 
   const canCreateUsers =
-    user.permissions.includes('users.create')
-    && user.permissions.includes('roles.list')
-    && user.permissions.includes('roles.assign');
+    user.permissions.includes(
+      'users.create',
+    )
+    && user.permissions.includes(
+      'roles.list',
+    )
+    && user.permissions.includes(
+      'roles.assign',
+    );
 
   const canEditUsers =
-    user.permissions.includes('users.view')
-    && user.permissions.includes('users.update')
-    && user.permissions.includes('roles.list')
-    && user.permissions.includes('roles.assign');
+    user.permissions.includes(
+      'users.view',
+    )
+    && user.permissions.includes(
+      'users.update',
+    )
+    && user.permissions.includes(
+      'roles.list',
+    )
+    && user.permissions.includes(
+      'roles.assign',
+    );
 
   const canChangeUserStatus =
-    user.permissions.includes('users.update');
+    user.permissions.includes(
+      'users.update',
+    );
 
   const canArchiveUsers =
-    user.permissions.includes('users.archive');
+    user.permissions.includes(
+      'users.archive',
+    );
 
-  async function handleLogout(): Promise<void> {
+  const canListAcademicYears =
+    user.permissions.includes(
+      'academic-years.list',
+    );
+
+  const canCreateAcademicYears =
+    user.permissions.includes(
+      'academic-years.create',
+    );
+
+  const canEditAcademicYears =
+    user.permissions.includes(
+      'academic-years.view',
+    )
+    && user.permissions.includes(
+      'academic-years.update',
+    );
+
+  const canSetCurrentAcademicYear =
+    user.permissions.includes(
+      'academic-years.set-current',
+    );
+
+  const canArchiveAcademicYears =
+    user.permissions.includes(
+      'academic-years.archive',
+    );
+
+  const canListCentres =
+    user.permissions.includes(
+      'centres.list',
+    );
+
+  const canCreateCentres =
+    user.permissions.includes(
+      'centres.create',
+    );
+
+  const canEditCentres =
+    user.permissions.includes(
+      'centres.view',
+    )
+    && user.permissions.includes(
+      'centres.update',
+    );
+
+  const canArchiveCentres =
+    user.permissions.includes(
+      'centres.archive',
+    );
+
+  async function handleLogout():
+  Promise<void> {
     setIsLoggingOut(true);
 
     try {
@@ -76,10 +159,182 @@ export function DashboardPage({
     }
   }
 
-  const pageTitle =
-    activeSection === 'users'
-      ? 'Gestión de usuarios'
-      : `Bienvenido, ${user.name}`;
+  let pageEyebrow = 'Panel principal';
+
+  let pageTitle =
+    `Bienvenido, ${user.name}`;
+
+  if (activeSection === 'users') {
+    pageEyebrow = 'Administración';
+    pageTitle = 'Gestión de usuarios';
+  }
+
+  if (
+    activeSection === 'academic-years'
+  ) {
+    pageEyebrow =
+      'Estructura académica';
+
+    pageTitle =
+      'Cursos académicos';
+  }
+
+  if (activeSection === 'centres') {
+    pageEyebrow =
+      'Estructura académica';
+
+    pageTitle =
+      'Centros';
+  }
+
+  let activeContent: ReactNode;
+
+  if (activeSection === 'users') {
+    activeContent = (
+      <UsersPage
+        currentUserId={user.id}
+        canCreateUsers={
+          canCreateUsers
+        }
+        canEditUsers={
+          canEditUsers
+        }
+        canChangeUserStatus={
+          canChangeUserStatus
+        }
+        canArchiveUsers={
+          canArchiveUsers
+        }
+      />
+    );
+  } else if (
+    activeSection === 'academic-years'
+  ) {
+    activeContent = (
+      <AcademicYearsPage
+        canCreateAcademicYears={
+          canCreateAcademicYears
+        }
+        canEditAcademicYears={
+          canEditAcademicYears
+        }
+        canSetCurrentAcademicYear={
+          canSetCurrentAcademicYear
+        }
+        canArchiveAcademicYears={
+          canArchiveAcademicYears
+        }
+      />
+    );
+  } else if (
+    activeSection === 'centres'
+  ) {
+    activeContent = (
+      <CentresPage
+        canCreateCentres={
+          canCreateCentres
+        }
+        canEditCentres={
+          canEditCentres
+        }
+        canArchiveCentres={
+          canArchiveCentres
+        }
+      />
+    );
+  } else {
+    activeContent = (
+      <main className="dashboard-content">
+        <section className="welcome-card">
+          <div>
+            <p className="eyebrow">
+              Sesión activa
+            </p>
+
+            <h2>
+              SAFA Twin está conectado
+            </h2>
+
+            <p>
+              El frontend React está
+              comunicándose correctamente con
+              la API y la sesión está almacenada
+              en MariaDB.
+            </p>
+          </div>
+
+          <span className="status-badge">
+            Sistema operativo
+          </span>
+        </section>
+
+        <section className="dashboard-grid">
+          <article className="info-card">
+            <h2>Usuario</h2>
+
+            <dl className="user-details">
+              <div>
+                <dt>Nombre</dt>
+                <dd>{user.name}</dd>
+              </div>
+
+              <div>
+                <dt>Correo</dt>
+                <dd>{user.email}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article className="info-card">
+            <h2>Roles asignados</h2>
+
+            <div className="role-list">
+              {user.roles.map(
+                (role) => (
+                  <span
+                    className="role-badge"
+                    key={role}
+                  >
+                    {formatRole(role)}
+                  </span>
+                ),
+              )}
+            </div>
+          </article>
+
+          <article className="info-card">
+            <h2>Estado del sistema</h2>
+
+            <ul className="status-list">
+              <li>
+                Autenticación y sesiones
+              </li>
+
+              <li>
+                Roles y permisos
+              </li>
+
+              <li>
+                Gestión de usuarios
+              </li>
+
+              <li>
+                Estructura académica del backend
+              </li>
+
+              <li>
+                Gestión de cursos académicos
+              </li>
+
+              <li>
+                Gestión de centros
+              </li>
+            </ul>
+          </article>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <div className="app-shell">
@@ -107,11 +362,17 @@ export function DashboardPage({
             }
             type="button"
             onClick={() => {
-              setActiveSection('dashboard');
+              setActiveSection(
+                'dashboard',
+              );
             }}
           >
             Panel principal
           </button>
+
+          <p className="nav-section-label">
+            Administración
+          </p>
 
           {canListUsers
             ? (
@@ -123,7 +384,9 @@ export function DashboardPage({
                 }
                 type="button"
                 onClick={() => {
-                  setActiveSection('users');
+                  setActiveSection(
+                    'users',
+                  );
                 }}
               >
                 Usuarios
@@ -135,9 +398,78 @@ export function DashboardPage({
               </span>
             )}
 
+          <p className="nav-section-label">
+            Estructura académica
+          </p>
+
+          {canListAcademicYears
+            ? (
+              <button
+                className={
+                  activeSection
+                    === 'academic-years'
+                    ? 'nav-link nav-button nav-link-active'
+                    : 'nav-link nav-button'
+                }
+                type="button"
+                onClick={() => {
+                  setActiveSection(
+                    'academic-years',
+                  );
+                }}
+              >
+                Cursos académicos
+              </button>
+            )
+            : (
+              <span className="nav-link nav-link-disabled">
+                Cursos académicos
+              </span>
+            )}
+
+          {canListCentres
+            ? (
+              <button
+                className={
+                  activeSection === 'centres'
+                    ? 'nav-link nav-button nav-link-active'
+                    : 'nav-link nav-button'
+                }
+                type="button"
+                onClick={() => {
+                  setActiveSection(
+                    'centres',
+                  );
+                }}
+              >
+                Centros
+              </button>
+            )
+            : (
+              <span className="nav-link nav-link-disabled">
+                Centros
+              </span>
+            )}
+
           <span className="nav-link nav-link-disabled">
-            Cursos y grupos
+            Ciclos formativos
           </span>
+
+          <span className="nav-link nav-link-disabled">
+            Niveles
+          </span>
+
+          <span className="nav-link nav-link-disabled">
+            Módulos
+          </span>
+
+          <span className="nav-link nav-link-disabled">
+            Ofertas académicas
+          </span>
+
+          <p className="nav-section-label">
+            Gestión académica
+          </p>
 
           <span className="nav-link nav-link-disabled">
             Alumnado
@@ -157,9 +489,7 @@ export function DashboardPage({
         <header className="topbar">
           <div>
             <p className="eyebrow">
-              {activeSection === 'users'
-                ? 'Administración'
-                : 'Panel principal'}
+              {pageEyebrow}
             </p>
 
             <h1>{pageTitle}</h1>
@@ -179,101 +509,83 @@ export function DashboardPage({
           </button>
         </header>
 
-        {activeSection === 'users'
-          ? (
-            <UsersPage
-              currentUserId={user.id}
-              canCreateUsers={canCreateUsers}
-              canEditUsers={canEditUsers}
-              canChangeUserStatus={
-                canChangeUserStatus
+        <nav
+          className="mobile-navigation"
+          aria-label="Navegación móvil"
+        >
+          <button
+            className={
+              activeSection === 'dashboard'
+                ? 'mobile-nav-button mobile-nav-button-active'
+                : 'mobile-nav-button'
+            }
+            type="button"
+            onClick={() => {
+              setActiveSection(
+                'dashboard',
+              );
+            }}
+          >
+            Panel
+          </button>
+
+          {canListUsers && (
+            <button
+              className={
+                activeSection === 'users'
+                  ? 'mobile-nav-button mobile-nav-button-active'
+                  : 'mobile-nav-button'
               }
-              canArchiveUsers={
-                canArchiveUsers
-              }
-            />
-          )
-          : (
-            <main className="dashboard-content">
-              <section className="welcome-card">
-                <div>
-                  <p className="eyebrow">
-                    Sesión activa
-                  </p>
-
-                  <h2>
-                    SAFA Twin está conectado
-                  </h2>
-
-                  <p>
-                    El frontend React está
-                    comunicándose correctamente con
-                    la API y la sesión está almacenada
-                    en MariaDB.
-                  </p>
-                </div>
-
-                <span className="status-badge">
-                  Sistema operativo
-                </span>
-              </section>
-
-              <section className="dashboard-grid">
-                <article className="info-card">
-                  <h2>Usuario</h2>
-
-                  <dl className="user-details">
-                    <div>
-                      <dt>Nombre</dt>
-                      <dd>{user.name}</dd>
-                    </div>
-
-                    <div>
-                      <dt>Correo</dt>
-                      <dd>{user.email}</dd>
-                    </div>
-                  </dl>
-                </article>
-
-                <article className="info-card">
-                  <h2>Roles asignados</h2>
-
-                  <div className="role-list">
-                    {user.roles.map((role) => (
-                      <span
-                        className="role-badge"
-                        key={role}
-                      >
-                        {formatRole(role)}
-                      </span>
-                    ))}
-                  </div>
-                </article>
-
-                <article className="info-card">
-                  <h2>Estado de la Fase 1</h2>
-
-                  <ul className="status-list">
-                    <li>
-                      Base de datos conectada
-                    </li>
-
-                    <li>
-                      Administrador creado
-                    </li>
-
-                    <li>
-                      Sesión persistente activa
-                    </li>
-
-                    <li>
-                      Gestión de usuarios completa
-                    </li>
-                  </ul>
-                </article>
-              </section>
-            </main>
+              type="button"
+              onClick={() => {
+                setActiveSection(
+                  'users',
+                );
+              }}
+            >
+              Usuarios
+            </button>
           )}
+
+          {canListAcademicYears && (
+            <button
+              className={
+                activeSection
+                  === 'academic-years'
+                  ? 'mobile-nav-button mobile-nav-button-active'
+                  : 'mobile-nav-button'
+              }
+              type="button"
+              onClick={() => {
+                setActiveSection(
+                  'academic-years',
+                );
+              }}
+            >
+              Cursos
+            </button>
+          )}
+
+          {canListCentres && (
+            <button
+              className={
+                activeSection === 'centres'
+                  ? 'mobile-nav-button mobile-nav-button-active'
+                  : 'mobile-nav-button'
+              }
+              type="button"
+              onClick={() => {
+                setActiveSection(
+                  'centres',
+                );
+              }}
+            >
+              Centros
+            </button>
+          )}
+        </nav>
+
+        {activeContent}
       </div>
     </div>
   );

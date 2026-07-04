@@ -6,8 +6,38 @@ import express, {
 } from 'express';
 
 import { prisma } from './config/database.js';
-import { authRouter } from './modules/auth/auth.routes.js';
-import { usersRouter } from './modules/users/users.routes.js';
+
+import {
+  academicLevelsRouter,
+} from './modules/academic-levels/academic-levels.routes.js';
+
+import {
+  academicOfferingsRouter,
+} from './modules/academic-offerings/academic-offerings.routes.js';
+
+import {
+  academicYearsRouter,
+} from './modules/academic-years/academic-years.routes.js';
+
+import {
+  authRouter,
+} from './modules/auth/auth.routes.js';
+
+import {
+  centresRouter,
+} from './modules/centres/centres.routes.js';
+
+import {
+  modulesRouter,
+} from './modules/modules/modules.routes.js';
+
+import {
+  usersRouter,
+} from './modules/users/users.routes.js';
+
+import {
+  vocationalProgrammesRouter,
+} from './modules/vocational-programmes/vocational-programmes.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -41,19 +71,63 @@ export function createApp(): Express {
     },
   );
 
-  app.use('/api/auth', authRouter);
-  app.use('/api/users', usersRouter);
+  app.use(
+    '/api/auth',
+    authRouter,
+  );
 
-  app.use((request: Request, response: Response) => {
-    response.status(404).json({
-      error: {
-        code: 'ROUTE_NOT_FOUND',
-        message:
-          'La ruta solicitada no existe.',
-        path: request.originalUrl,
-      },
-    });
-  });
+  app.use(
+    '/api/users',
+    usersRouter,
+  );
+
+  app.use(
+    '/api/academic-years',
+    academicYearsRouter,
+  );
+
+  app.use(
+    '/api/centres',
+    centresRouter,
+  );
+
+  app.use(
+    '/api/vocational-programmes',
+    vocationalProgrammesRouter,
+  );
+
+  app.use(
+    '/api/academic-levels',
+    academicLevelsRouter,
+  );
+
+  app.use(
+    '/api/modules',
+    modulesRouter,
+  );
+
+  app.use(
+    '/api/academic-offerings',
+    academicOfferingsRouter,
+  );
+
+  app.use(
+    (
+      request: Request,
+      response: Response,
+    ) => {
+      response.status(404).json({
+        error: {
+          code: 'ROUTE_NOT_FOUND',
+
+          message:
+            'La ruta solicitada no existe.',
+
+          path: request.originalUrl,
+        },
+      });
+    },
+  );
 
   app.use(
     (
@@ -69,7 +143,9 @@ export function createApp(): Express {
 
       response.status(500).json({
         error: {
-          code: 'INTERNAL_SERVER_ERROR',
+          code:
+            'INTERNAL_SERVER_ERROR',
+
           message:
             'Se ha producido un error interno.',
         },

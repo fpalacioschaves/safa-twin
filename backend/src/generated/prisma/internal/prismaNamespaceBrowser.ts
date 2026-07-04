@@ -56,7 +56,14 @@ export const ModelName = {
   Permission: 'Permission',
   UserRole: 'UserRole',
   RolePermission: 'RolePermission',
-  Session: 'Session'
+  Session: 'Session',
+  AcademicYear: 'AcademicYear',
+  Centre: 'Centre',
+  VocationalProgramme: 'VocationalProgramme',
+  CentreProgramme: 'CentreProgramme',
+  AcademicLevel: 'AcademicLevel',
+  AcademicOffering: 'AcademicOffering',
+  Module: 'Module'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -143,6 +150,121 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+export const AcademicYearScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isCurrent: 'isCurrent',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AcademicYearScalarFieldEnum = (typeof AcademicYearScalarFieldEnum)[keyof typeof AcademicYearScalarFieldEnum]
+
+
+export const CentreScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  shortName: 'shortName',
+  taxId: 'taxId',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CentreScalarFieldEnum = (typeof CentreScalarFieldEnum)[keyof typeof CentreScalarFieldEnum]
+
+
+export const VocationalProgrammeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym',
+  family: 'family',
+  type: 'type',
+  totalHours: 'totalHours',
+  description: 'description',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type VocationalProgrammeScalarFieldEnum = (typeof VocationalProgrammeScalarFieldEnum)[keyof typeof VocationalProgrammeScalarFieldEnum]
+
+
+export const CentreProgrammeScalarFieldEnum = {
+  centreId: 'centreId',
+  vocationalProgrammeId: 'vocationalProgrammeId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CentreProgrammeScalarFieldEnum = (typeof CentreProgrammeScalarFieldEnum)[keyof typeof CentreProgrammeScalarFieldEnum]
+
+
+export const AcademicLevelScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  name: 'name',
+  description: 'description',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AcademicLevelScalarFieldEnum = (typeof AcademicLevelScalarFieldEnum)[keyof typeof AcademicLevelScalarFieldEnum]
+
+
+export const AcademicOfferingScalarFieldEnum = {
+  id: 'id',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  vocationalProgrammeId: 'vocationalProgrammeId',
+  academicLevelId: 'academicLevelId',
+  modality: 'modality',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AcademicOfferingScalarFieldEnum = (typeof AcademicOfferingScalarFieldEnum)[keyof typeof AcademicOfferingScalarFieldEnum]
+
+
+export const ModuleScalarFieldEnum = {
+  id: 'id',
+  vocationalProgrammeId: 'vocationalProgrammeId',
+  academicLevelId: 'academicLevelId',
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym',
+  totalHours: 'totalHours',
+  weeklyHours: 'weeklyHours',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -191,4 +313,55 @@ export const SessionOrderByRelevanceFieldEnum = {
 } as const
 
 export type SessionOrderByRelevanceFieldEnum = (typeof SessionOrderByRelevanceFieldEnum)[keyof typeof SessionOrderByRelevanceFieldEnum]
+
+
+export const AcademicYearOrderByRelevanceFieldEnum = {
+  name: 'name'
+} as const
+
+export type AcademicYearOrderByRelevanceFieldEnum = (typeof AcademicYearOrderByRelevanceFieldEnum)[keyof typeof AcademicYearOrderByRelevanceFieldEnum]
+
+
+export const CentreOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  shortName: 'shortName',
+  taxId: 'taxId',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email'
+} as const
+
+export type CentreOrderByRelevanceFieldEnum = (typeof CentreOrderByRelevanceFieldEnum)[keyof typeof CentreOrderByRelevanceFieldEnum]
+
+
+export const VocationalProgrammeOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym',
+  family: 'family',
+  description: 'description'
+} as const
+
+export type VocationalProgrammeOrderByRelevanceFieldEnum = (typeof VocationalProgrammeOrderByRelevanceFieldEnum)[keyof typeof VocationalProgrammeOrderByRelevanceFieldEnum]
+
+
+export const AcademicLevelOrderByRelevanceFieldEnum = {
+  name: 'name',
+  description: 'description'
+} as const
+
+export type AcademicLevelOrderByRelevanceFieldEnum = (typeof AcademicLevelOrderByRelevanceFieldEnum)[keyof typeof AcademicLevelOrderByRelevanceFieldEnum]
+
+
+export const ModuleOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym'
+} as const
+
+export type ModuleOrderByRelevanceFieldEnum = (typeof ModuleOrderByRelevanceFieldEnum)[keyof typeof ModuleOrderByRelevanceFieldEnum]
 

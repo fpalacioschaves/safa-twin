@@ -71,3 +71,38 @@ export type RolePermission = Prisma.RolePermissionModel
  * 
  */
 export type Session = Prisma.SessionModel
+/**
+ * Model AcademicYear
+ * 
+ */
+export type AcademicYear = Prisma.AcademicYearModel
+/**
+ * Model Centre
+ * 
+ */
+export type Centre = Prisma.CentreModel
+/**
+ * Model VocationalProgramme
+ * 
+ */
+export type VocationalProgramme = Prisma.VocationalProgrammeModel
+/**
+ * Model CentreProgramme
+ * 
+ */
+export type CentreProgramme = Prisma.CentreProgrammeModel
+/**
+ * Model AcademicLevel
+ * 
+ */
+export type AcademicLevel = Prisma.AcademicLevelModel
+/**
+ * Model AcademicOffering
+ * 
+ */
+export type AcademicOffering = Prisma.AcademicOfferingModel
+/**
+ * Model Module
+ * 
+ */
+export type Module = Prisma.ModuleModel

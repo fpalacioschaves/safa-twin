@@ -389,7 +389,14 @@ export const ModelName = {
   Permission: 'Permission',
   UserRole: 'UserRole',
   RolePermission: 'RolePermission',
-  Session: 'Session'
+  Session: 'Session',
+  AcademicYear: 'AcademicYear',
+  Centre: 'Centre',
+  VocationalProgramme: 'VocationalProgramme',
+  CentreProgramme: 'CentreProgramme',
+  AcademicLevel: 'AcademicLevel',
+  AcademicOffering: 'AcademicOffering',
+  Module: 'Module'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +412,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session"
+    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session" | "academicYear" | "centre" | "vocationalProgramme" | "centreProgramme" | "academicLevel" | "academicOffering" | "module"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -805,6 +812,468 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AcademicYear: {
+      payload: Prisma.$AcademicYearPayload<ExtArgs>
+      fields: Prisma.AcademicYearFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AcademicYearFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AcademicYearFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload>
+        }
+        findFirst: {
+          args: Prisma.AcademicYearFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AcademicYearFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload>
+        }
+        findMany: {
+          args: Prisma.AcademicYearFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload>[]
+        }
+        create: {
+          args: Prisma.AcademicYearCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload>
+        }
+        createMany: {
+          args: Prisma.AcademicYearCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AcademicYearDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload>
+        }
+        update: {
+          args: Prisma.AcademicYearUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload>
+        }
+        deleteMany: {
+          args: Prisma.AcademicYearDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AcademicYearUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AcademicYearUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicYearPayload>
+        }
+        aggregate: {
+          args: Prisma.AcademicYearAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAcademicYear>
+        }
+        groupBy: {
+          args: Prisma.AcademicYearGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcademicYearGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AcademicYearCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcademicYearCountAggregateOutputType> | number
+        }
+      }
+    }
+    Centre: {
+      payload: Prisma.$CentrePayload<ExtArgs>
+      fields: Prisma.CentreFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CentreFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CentreFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload>
+        }
+        findFirst: {
+          args: Prisma.CentreFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CentreFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload>
+        }
+        findMany: {
+          args: Prisma.CentreFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload>[]
+        }
+        create: {
+          args: Prisma.CentreCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload>
+        }
+        createMany: {
+          args: Prisma.CentreCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CentreDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload>
+        }
+        update: {
+          args: Prisma.CentreUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload>
+        }
+        deleteMany: {
+          args: Prisma.CentreDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CentreUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CentreUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentrePayload>
+        }
+        aggregate: {
+          args: Prisma.CentreAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCentre>
+        }
+        groupBy: {
+          args: Prisma.CentreGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CentreGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CentreCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CentreCountAggregateOutputType> | number
+        }
+      }
+    }
+    VocationalProgramme: {
+      payload: Prisma.$VocationalProgrammePayload<ExtArgs>
+      fields: Prisma.VocationalProgrammeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VocationalProgrammeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VocationalProgrammeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload>
+        }
+        findFirst: {
+          args: Prisma.VocationalProgrammeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VocationalProgrammeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload>
+        }
+        findMany: {
+          args: Prisma.VocationalProgrammeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload>[]
+        }
+        create: {
+          args: Prisma.VocationalProgrammeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload>
+        }
+        createMany: {
+          args: Prisma.VocationalProgrammeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.VocationalProgrammeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload>
+        }
+        update: {
+          args: Prisma.VocationalProgrammeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload>
+        }
+        deleteMany: {
+          args: Prisma.VocationalProgrammeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VocationalProgrammeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.VocationalProgrammeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VocationalProgrammePayload>
+        }
+        aggregate: {
+          args: Prisma.VocationalProgrammeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVocationalProgramme>
+        }
+        groupBy: {
+          args: Prisma.VocationalProgrammeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VocationalProgrammeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VocationalProgrammeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VocationalProgrammeCountAggregateOutputType> | number
+        }
+      }
+    }
+    CentreProgramme: {
+      payload: Prisma.$CentreProgrammePayload<ExtArgs>
+      fields: Prisma.CentreProgrammeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CentreProgrammeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CentreProgrammeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload>
+        }
+        findFirst: {
+          args: Prisma.CentreProgrammeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CentreProgrammeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload>
+        }
+        findMany: {
+          args: Prisma.CentreProgrammeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload>[]
+        }
+        create: {
+          args: Prisma.CentreProgrammeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload>
+        }
+        createMany: {
+          args: Prisma.CentreProgrammeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CentreProgrammeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload>
+        }
+        update: {
+          args: Prisma.CentreProgrammeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload>
+        }
+        deleteMany: {
+          args: Prisma.CentreProgrammeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CentreProgrammeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CentreProgrammeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CentreProgrammePayload>
+        }
+        aggregate: {
+          args: Prisma.CentreProgrammeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCentreProgramme>
+        }
+        groupBy: {
+          args: Prisma.CentreProgrammeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CentreProgrammeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CentreProgrammeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CentreProgrammeCountAggregateOutputType> | number
+        }
+      }
+    }
+    AcademicLevel: {
+      payload: Prisma.$AcademicLevelPayload<ExtArgs>
+      fields: Prisma.AcademicLevelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AcademicLevelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AcademicLevelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload>
+        }
+        findFirst: {
+          args: Prisma.AcademicLevelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AcademicLevelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload>
+        }
+        findMany: {
+          args: Prisma.AcademicLevelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload>[]
+        }
+        create: {
+          args: Prisma.AcademicLevelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload>
+        }
+        createMany: {
+          args: Prisma.AcademicLevelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AcademicLevelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload>
+        }
+        update: {
+          args: Prisma.AcademicLevelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload>
+        }
+        deleteMany: {
+          args: Prisma.AcademicLevelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AcademicLevelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AcademicLevelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicLevelPayload>
+        }
+        aggregate: {
+          args: Prisma.AcademicLevelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAcademicLevel>
+        }
+        groupBy: {
+          args: Prisma.AcademicLevelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcademicLevelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AcademicLevelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcademicLevelCountAggregateOutputType> | number
+        }
+      }
+    }
+    AcademicOffering: {
+      payload: Prisma.$AcademicOfferingPayload<ExtArgs>
+      fields: Prisma.AcademicOfferingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AcademicOfferingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AcademicOfferingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload>
+        }
+        findFirst: {
+          args: Prisma.AcademicOfferingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AcademicOfferingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload>
+        }
+        findMany: {
+          args: Prisma.AcademicOfferingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload>[]
+        }
+        create: {
+          args: Prisma.AcademicOfferingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload>
+        }
+        createMany: {
+          args: Prisma.AcademicOfferingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.AcademicOfferingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload>
+        }
+        update: {
+          args: Prisma.AcademicOfferingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload>
+        }
+        deleteMany: {
+          args: Prisma.AcademicOfferingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AcademicOfferingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.AcademicOfferingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AcademicOfferingPayload>
+        }
+        aggregate: {
+          args: Prisma.AcademicOfferingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAcademicOffering>
+        }
+        groupBy: {
+          args: Prisma.AcademicOfferingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcademicOfferingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AcademicOfferingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AcademicOfferingCountAggregateOutputType> | number
+        }
+      }
+    }
+    Module: {
+      payload: Prisma.$ModulePayload<ExtArgs>
+      fields: Prisma.ModuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ModuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ModuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload>
+        }
+        findFirst: {
+          args: Prisma.ModuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ModuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload>
+        }
+        findMany: {
+          args: Prisma.ModuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload>[]
+        }
+        create: {
+          args: Prisma.ModuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload>
+        }
+        createMany: {
+          args: Prisma.ModuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.ModuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload>
+        }
+        update: {
+          args: Prisma.ModuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload>
+        }
+        deleteMany: {
+          args: Prisma.ModuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ModuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.ModuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModulePayload>
+        }
+        aggregate: {
+          args: Prisma.ModuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateModule>
+        }
+        groupBy: {
+          args: Prisma.ModuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ModuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ModuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ModuleCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -912,6 +1381,121 @@ export const SessionScalarFieldEnum = {
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+export const AcademicYearScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isCurrent: 'isCurrent',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AcademicYearScalarFieldEnum = (typeof AcademicYearScalarFieldEnum)[keyof typeof AcademicYearScalarFieldEnum]
+
+
+export const CentreScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  shortName: 'shortName',
+  taxId: 'taxId',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CentreScalarFieldEnum = (typeof CentreScalarFieldEnum)[keyof typeof CentreScalarFieldEnum]
+
+
+export const VocationalProgrammeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym',
+  family: 'family',
+  type: 'type',
+  totalHours: 'totalHours',
+  description: 'description',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type VocationalProgrammeScalarFieldEnum = (typeof VocationalProgrammeScalarFieldEnum)[keyof typeof VocationalProgrammeScalarFieldEnum]
+
+
+export const CentreProgrammeScalarFieldEnum = {
+  centreId: 'centreId',
+  vocationalProgrammeId: 'vocationalProgrammeId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CentreProgrammeScalarFieldEnum = (typeof CentreProgrammeScalarFieldEnum)[keyof typeof CentreProgrammeScalarFieldEnum]
+
+
+export const AcademicLevelScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  name: 'name',
+  description: 'description',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AcademicLevelScalarFieldEnum = (typeof AcademicLevelScalarFieldEnum)[keyof typeof AcademicLevelScalarFieldEnum]
+
+
+export const AcademicOfferingScalarFieldEnum = {
+  id: 'id',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  vocationalProgrammeId: 'vocationalProgrammeId',
+  academicLevelId: 'academicLevelId',
+  modality: 'modality',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AcademicOfferingScalarFieldEnum = (typeof AcademicOfferingScalarFieldEnum)[keyof typeof AcademicOfferingScalarFieldEnum]
+
+
+export const ModuleScalarFieldEnum = {
+  id: 'id',
+  vocationalProgrammeId: 'vocationalProgrammeId',
+  academicLevelId: 'academicLevelId',
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym',
+  totalHours: 'totalHours',
+  weeklyHours: 'weeklyHours',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -962,6 +1546,57 @@ export const SessionOrderByRelevanceFieldEnum = {
 export type SessionOrderByRelevanceFieldEnum = (typeof SessionOrderByRelevanceFieldEnum)[keyof typeof SessionOrderByRelevanceFieldEnum]
 
 
+export const AcademicYearOrderByRelevanceFieldEnum = {
+  name: 'name'
+} as const
+
+export type AcademicYearOrderByRelevanceFieldEnum = (typeof AcademicYearOrderByRelevanceFieldEnum)[keyof typeof AcademicYearOrderByRelevanceFieldEnum]
+
+
+export const CentreOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  shortName: 'shortName',
+  taxId: 'taxId',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email'
+} as const
+
+export type CentreOrderByRelevanceFieldEnum = (typeof CentreOrderByRelevanceFieldEnum)[keyof typeof CentreOrderByRelevanceFieldEnum]
+
+
+export const VocationalProgrammeOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym',
+  family: 'family',
+  description: 'description'
+} as const
+
+export type VocationalProgrammeOrderByRelevanceFieldEnum = (typeof VocationalProgrammeOrderByRelevanceFieldEnum)[keyof typeof VocationalProgrammeOrderByRelevanceFieldEnum]
+
+
+export const AcademicLevelOrderByRelevanceFieldEnum = {
+  name: 'name',
+  description: 'description'
+} as const
+
+export type AcademicLevelOrderByRelevanceFieldEnum = (typeof AcademicLevelOrderByRelevanceFieldEnum)[keyof typeof AcademicLevelOrderByRelevanceFieldEnum]
+
+
+export const ModuleOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  acronym: 'acronym'
+} as const
+
+export type ModuleOrderByRelevanceFieldEnum = (typeof ModuleOrderByRelevanceFieldEnum)[keyof typeof ModuleOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -993,6 +1628,27 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+/**
+ * Reference to a field of type 'ProgrammeType'
+ */
+export type EnumProgrammeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProgrammeType'>
+    
+
+
+/**
+ * Reference to a field of type 'StudyModality'
+ */
+export type EnumStudyModalityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StudyModality'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
     
 
 
@@ -1118,6 +1774,13 @@ export type GlobalOmitConfig = {
   userRole?: Prisma.UserRoleOmit
   rolePermission?: Prisma.RolePermissionOmit
   session?: Prisma.SessionOmit
+  academicYear?: Prisma.AcademicYearOmit
+  centre?: Prisma.CentreOmit
+  vocationalProgramme?: Prisma.VocationalProgrammeOmit
+  centreProgramme?: Prisma.CentreProgrammeOmit
+  academicLevel?: Prisma.AcademicLevelOmit
+  academicOffering?: Prisma.AcademicOfferingOmit
+  module?: Prisma.ModuleOmit
 }
 
 /* Types for Logging */

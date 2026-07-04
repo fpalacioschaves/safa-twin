@@ -7,6 +7,19 @@ datasource db {
   provider = "mysql"
 }
 
+enum ProgrammeType {
+  BASIC
+  INTERMEDIATE
+  HIGHER
+  SPECIALIZATION
+}
+
+enum StudyModality {
+  PRESENTIAL
+  ONLINE
+  BLENDED
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   name         String    @db.VarChar(150)
@@ -91,4 +104,166 @@ model Session {
   @@index([userId])
   @@index([expiresAt])
   @@map("sessions")
+}
+
+model AcademicYear {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique @db.VarChar(20)
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime  @map("end_date") @db.Date
+  isCurrent Boolean   @default(false) @map("is_current")
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
+
+  academicOfferings AcademicOffering[]
+
+  @@index([isCurrent])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("academic_years")
+}
+
+model Centre {
+  id         Int       @id @default(autoincrement())
+  code       String    @unique @db.VarChar(50)
+  name       String    @db.VarChar(191)
+  shortName  String?   @map("short_name") @db.VarChar(100)
+  taxId      String?   @map("tax_id") @db.VarChar(20)
+  address    String?   @db.VarChar(255)
+  postalCode String?   @map("postal_code") @db.VarChar(10)
+  city       String?   @db.VarChar(100)
+  province   String?   @db.VarChar(100)
+  phone      String?   @db.VarChar(30)
+  email      String?   @db.VarChar(191)
+  isActive   Boolean   @default(true) @map("is_active")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt  DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt  DateTime? @map("deleted_at") @db.DateTime(0)
+
+  centreProgrammes CentreProgramme[]
+
+  @@index([name])
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("centres")
+}
+
+model VocationalProgramme {
+  id          Int           @id @default(autoincrement())
+  code        String        @unique @db.VarChar(50)
+  name        String        @db.VarChar(191)
+  acronym     String        @unique @db.VarChar(20)
+  family      String?       @db.VarChar(150)
+  type        ProgrammeType @default(HIGHER)
+  totalHours  Int?          @map("total_hours")
+  description String?       @db.Text
+  isActive    Boolean       @default(true) @map("is_active")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt   DateTime?     @map("deleted_at") @db.DateTime(0)
+
+  centreProgrammes CentreProgramme[]
+  modules          Module[]
+
+  @@index([name])
+  @@index([family])
+  @@index([type])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("vocational_programmes")
+}
+
+model CentreProgramme {
+  centreId              Int       @map("centre_id")
+  vocationalProgrammeId Int       @map("vocational_programme_id")
+  isActive              Boolean   @default(true) @map("is_active")
+  createdAt             DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt             DateTime? @map("deleted_at") @db.DateTime(0)
+
+  centre              Centre              @relation(fields: [centreId], references: [id], onDelete: Restrict)
+  vocationalProgramme VocationalProgramme @relation(fields: [vocationalProgrammeId], references: [id], onDelete: Restrict)
+  academicOfferings   AcademicOffering[]
+
+  @@id([centreId, vocationalProgrammeId])
+  @@index([vocationalProgrammeId])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("centre_programmes")
+}
+
+model AcademicLevel {
+  id          Int       @id @default(autoincrement())
+  number      Int       @unique
+  name        String    @unique @db.VarChar(50)
+  description String?   @db.VarChar(255)
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt   DateTime? @map("deleted_at") @db.DateTime(0)
+
+  academicOfferings AcademicOffering[]
+  modules           Module[]
+
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("academic_levels")
+}
+
+model AcademicOffering {
+  id                    Int           @id @default(autoincrement())
+  academicYearId        Int           @map("academic_year_id")
+  centreId              Int           @map("centre_id")
+  vocationalProgrammeId Int           @map("vocational_programme_id")
+  academicLevelId       Int           @map("academic_level_id")
+  modality              StudyModality
+  isActive              Boolean       @default(true) @map("is_active")
+  createdAt             DateTime      @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt             DateTime      @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt             DateTime?     @map("deleted_at") @db.DateTime(0)
+
+  academicYear    AcademicYear    @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
+  centreProgramme CentreProgramme @relation(fields: [centreId, vocationalProgrammeId], references: [centreId, vocationalProgrammeId], onDelete: Restrict)
+  academicLevel   AcademicLevel   @relation(fields: [academicLevelId], references: [id], onDelete: Restrict)
+
+  @@unique([academicYearId, centreId, vocationalProgrammeId, academicLevelId, modality], map: "academic_offerings_scope_unique")
+  @@index([academicYearId])
+  @@index([centreId, vocationalProgrammeId])
+  @@index([academicLevelId])
+  @@index([modality])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("academic_offerings")
+}
+
+model Module {
+  id                    Int       @id @default(autoincrement())
+  vocationalProgrammeId Int       @map("vocational_programme_id")
+  academicLevelId       Int       @map("academic_level_id")
+  code                  String    @db.VarChar(50)
+  name                  String    @db.VarChar(191)
+  acronym               String?   @db.VarChar(30)
+  totalHours            Int?      @map("total_hours")
+  weeklyHours           Decimal?  @map("weekly_hours") @db.Decimal(4, 2)
+  sortOrder             Int       @default(0) @map("sort_order")
+  isActive              Boolean   @default(true) @map("is_active")
+  createdAt             DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt             DateTime? @map("deleted_at") @db.DateTime(0)
+
+  vocationalProgramme VocationalProgramme @relation(fields: [vocationalProgrammeId], references: [id], onDelete: Restrict)
+  academicLevel       AcademicLevel       @relation(fields: [academicLevelId], references: [id], onDelete: Restrict)
+
+  @@unique([vocationalProgrammeId, code], map: "modules_programme_code_unique")
+  @@index([vocationalProgrammeId])
+  @@index([academicLevelId])
+  @@index([name])
+  @@index([sortOrder])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("modules")
 }
