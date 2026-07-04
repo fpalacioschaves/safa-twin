@@ -263,6 +263,40 @@ export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
 }
 
+export type EnumStudentDocumentTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudentDocumentType | Prisma.EnumStudentDocumentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.StudentDocumentType[] | null
+  notIn?: $Enums.StudentDocumentType[] | null
+  not?: Prisma.NestedEnumStudentDocumentTypeNullableFilter<$PrismaModel> | $Enums.StudentDocumentType | null
+}
+
+export type EnumStudentDocumentTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudentDocumentType | Prisma.EnumStudentDocumentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.StudentDocumentType[] | null
+  notIn?: $Enums.StudentDocumentType[] | null
+  not?: Prisma.NestedEnumStudentDocumentTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.StudentDocumentType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStudentDocumentTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStudentDocumentTypeNullableFilter<$PrismaModel>
+}
+
+export type EnumEnrolmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EnrolmentStatus | Prisma.EnumEnrolmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EnrolmentStatus[]
+  notIn?: $Enums.EnrolmentStatus[]
+  not?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel> | $Enums.EnrolmentStatus
+}
+
+export type EnumEnrolmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EnrolmentStatus | Prisma.EnumEnrolmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EnrolmentStatus[]
+  notIn?: $Enums.EnrolmentStatus[]
+  not?: Prisma.NestedEnumEnrolmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.EnrolmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel>
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[]
@@ -527,6 +561,40 @@ export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumStudentDocumentTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudentDocumentType | Prisma.EnumStudentDocumentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.StudentDocumentType[] | null
+  notIn?: $Enums.StudentDocumentType[] | null
+  not?: Prisma.NestedEnumStudentDocumentTypeNullableFilter<$PrismaModel> | $Enums.StudentDocumentType | null
+}
+
+export type NestedEnumStudentDocumentTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StudentDocumentType | Prisma.EnumStudentDocumentTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.StudentDocumentType[] | null
+  notIn?: $Enums.StudentDocumentType[] | null
+  not?: Prisma.NestedEnumStudentDocumentTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.StudentDocumentType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStudentDocumentTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStudentDocumentTypeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumEnrolmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EnrolmentStatus | Prisma.EnumEnrolmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EnrolmentStatus[]
+  notIn?: $Enums.EnrolmentStatus[]
+  not?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel> | $Enums.EnrolmentStatus
+}
+
+export type NestedEnumEnrolmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EnrolmentStatus | Prisma.EnumEnrolmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EnrolmentStatus[]
+  notIn?: $Enums.EnrolmentStatus[]
+  not?: Prisma.NestedEnumEnrolmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.EnrolmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel>
 }
 
 

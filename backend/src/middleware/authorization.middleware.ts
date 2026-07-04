@@ -9,6 +9,8 @@ import {
   SESSION_COOKIE_NAME,
 } from '../modules/auth/auth.service.js';
 
+const ADMINISTRATOR_ROLE = 'administrador';
+
 export function requirePermission(
   permissionSlug: string,
 ): RequestHandler {
@@ -52,8 +54,15 @@ export function requirePermission(
 
       response.locals.authenticatedUser = user;
 
+      const userIsAdministrator =
+        user.roles.includes(ADMINISTRATOR_ROLE);
+
+      const userHasPermission =
+        user.permissions.includes(permissionSlug);
+
       if (
-        !user.permissions.includes(permissionSlug)
+        !userIsAdministrator
+        && !userHasPermission
       ) {
         response.status(403).json({
           error: {

@@ -63,7 +63,9 @@ export const ModelName = {
   CentreProgramme: 'CentreProgramme',
   AcademicLevel: 'AcademicLevel',
   AcademicOffering: 'AcademicOffering',
-  Module: 'Module'
+  Module: 'Module',
+  Student: 'Student',
+  Enrolment: 'Enrolment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -265,6 +267,51 @@ export const ModuleScalarFieldEnum = {
 export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
 
 
+export const StudentScalarFieldEnum = {
+  id: 'id',
+  studentCode: 'studentCode',
+  firstName: 'firstName',
+  lastName1: 'lastName1',
+  lastName2: 'lastName2',
+  documentType: 'documentType',
+  documentNumber: 'documentNumber',
+  email: 'email',
+  phone: 'phone',
+  birthDate: 'birthDate',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type StudentScalarFieldEnum = (typeof StudentScalarFieldEnum)[keyof typeof StudentScalarFieldEnum]
+
+
+export const EnrolmentScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  moduleId: 'moduleId',
+  status: 'status',
+  enrolledAt: 'enrolledAt',
+  cancelledAt: 'cancelledAt',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type EnrolmentScalarFieldEnum = (typeof EnrolmentScalarFieldEnum)[keyof typeof EnrolmentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -364,4 +411,31 @@ export const ModuleOrderByRelevanceFieldEnum = {
 } as const
 
 export type ModuleOrderByRelevanceFieldEnum = (typeof ModuleOrderByRelevanceFieldEnum)[keyof typeof ModuleOrderByRelevanceFieldEnum]
+
+
+export const StudentOrderByRelevanceFieldEnum = {
+  studentCode: 'studentCode',
+  firstName: 'firstName',
+  lastName1: 'lastName1',
+  lastName2: 'lastName2',
+  documentNumber: 'documentNumber',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  notes: 'notes'
+} as const
+
+export type StudentOrderByRelevanceFieldEnum = (typeof StudentOrderByRelevanceFieldEnum)[keyof typeof StudentOrderByRelevanceFieldEnum]
+
+
+export const EnrolmentOrderByRelevanceFieldEnum = {
+  remarks: 'remarks'
+} as const
+
+export type EnrolmentOrderByRelevanceFieldEnum = (typeof EnrolmentOrderByRelevanceFieldEnum)[keyof typeof EnrolmentOrderByRelevanceFieldEnum]
 

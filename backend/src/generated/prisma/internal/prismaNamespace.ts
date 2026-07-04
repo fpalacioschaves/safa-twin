@@ -396,7 +396,9 @@ export const ModelName = {
   CentreProgramme: 'CentreProgramme',
   AcademicLevel: 'AcademicLevel',
   AcademicOffering: 'AcademicOffering',
-  Module: 'Module'
+  Module: 'Module',
+  Student: 'Student',
+  Enrolment: 'Enrolment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session" | "academicYear" | "centre" | "vocationalProgramme" | "centreProgramme" | "academicLevel" | "academicOffering" | "module"
+    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session" | "academicYear" | "centre" | "vocationalProgramme" | "centreProgramme" | "academicLevel" | "academicOffering" | "module" | "student" | "enrolment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1274,6 +1276,138 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Student: {
+      payload: Prisma.$StudentPayload<ExtArgs>
+      fields: Prisma.StudentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StudentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StudentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload>
+        }
+        findFirst: {
+          args: Prisma.StudentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StudentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload>
+        }
+        findMany: {
+          args: Prisma.StudentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload>[]
+        }
+        create: {
+          args: Prisma.StudentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload>
+        }
+        createMany: {
+          args: Prisma.StudentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.StudentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload>
+        }
+        update: {
+          args: Prisma.StudentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload>
+        }
+        deleteMany: {
+          args: Prisma.StudentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StudentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.StudentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentPayload>
+        }
+        aggregate: {
+          args: Prisma.StudentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStudent>
+        }
+        groupBy: {
+          args: Prisma.StudentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StudentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentCountAggregateOutputType> | number
+        }
+      }
+    }
+    Enrolment: {
+      payload: Prisma.$EnrolmentPayload<ExtArgs>
+      fields: Prisma.EnrolmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EnrolmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EnrolmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload>
+        }
+        findFirst: {
+          args: Prisma.EnrolmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EnrolmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload>
+        }
+        findMany: {
+          args: Prisma.EnrolmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload>[]
+        }
+        create: {
+          args: Prisma.EnrolmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload>
+        }
+        createMany: {
+          args: Prisma.EnrolmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.EnrolmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload>
+        }
+        update: {
+          args: Prisma.EnrolmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.EnrolmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EnrolmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.EnrolmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EnrolmentPayload>
+        }
+        aggregate: {
+          args: Prisma.EnrolmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEnrolment>
+        }
+        groupBy: {
+          args: Prisma.EnrolmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EnrolmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EnrolmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EnrolmentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1496,6 +1630,51 @@ export const ModuleScalarFieldEnum = {
 export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
 
 
+export const StudentScalarFieldEnum = {
+  id: 'id',
+  studentCode: 'studentCode',
+  firstName: 'firstName',
+  lastName1: 'lastName1',
+  lastName2: 'lastName2',
+  documentType: 'documentType',
+  documentNumber: 'documentNumber',
+  email: 'email',
+  phone: 'phone',
+  birthDate: 'birthDate',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type StudentScalarFieldEnum = (typeof StudentScalarFieldEnum)[keyof typeof StudentScalarFieldEnum]
+
+
+export const EnrolmentScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  moduleId: 'moduleId',
+  status: 'status',
+  enrolledAt: 'enrolledAt',
+  cancelledAt: 'cancelledAt',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type EnrolmentScalarFieldEnum = (typeof EnrolmentScalarFieldEnum)[keyof typeof EnrolmentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1597,6 +1776,33 @@ export const ModuleOrderByRelevanceFieldEnum = {
 export type ModuleOrderByRelevanceFieldEnum = (typeof ModuleOrderByRelevanceFieldEnum)[keyof typeof ModuleOrderByRelevanceFieldEnum]
 
 
+export const StudentOrderByRelevanceFieldEnum = {
+  studentCode: 'studentCode',
+  firstName: 'firstName',
+  lastName1: 'lastName1',
+  lastName2: 'lastName2',
+  documentNumber: 'documentNumber',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  notes: 'notes'
+} as const
+
+export type StudentOrderByRelevanceFieldEnum = (typeof StudentOrderByRelevanceFieldEnum)[keyof typeof StudentOrderByRelevanceFieldEnum]
+
+
+export const EnrolmentOrderByRelevanceFieldEnum = {
+  remarks: 'remarks'
+} as const
+
+export type EnrolmentOrderByRelevanceFieldEnum = (typeof EnrolmentOrderByRelevanceFieldEnum)[keyof typeof EnrolmentOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -1649,6 +1855,20 @@ export type EnumStudyModalityFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'StudentDocumentType'
+ */
+export type EnumStudentDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StudentDocumentType'>
+    
+
+
+/**
+ * Reference to a field of type 'EnrolmentStatus'
+ */
+export type EnumEnrolmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnrolmentStatus'>
     
 
 
@@ -1781,6 +2001,8 @@ export type GlobalOmitConfig = {
   academicLevel?: Prisma.AcademicLevelOmit
   academicOffering?: Prisma.AcademicOfferingOmit
   module?: Prisma.ModuleOmit
+  student?: Prisma.StudentOmit
+  enrolment?: Prisma.EnrolmentOmit
 }
 
 /* Types for Logging */

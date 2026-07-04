@@ -9,7 +9,7 @@ type PermissionSeed = {
   description: string;
 };
 
-type AcademicResourceDefinition = {
+type ResourceDefinition = {
   slug: string;
   singular: string;
   plural: string;
@@ -104,7 +104,7 @@ const userAndRolePermissions: PermissionSeed[] = [
   },
 ];
 
-const academicResources: AcademicResourceDefinition[] = [
+const academicResources: ResourceDefinition[] = [
   {
     slug: 'academic-years',
     singular: 'curso académico',
@@ -135,10 +135,15 @@ const academicResources: AcademicResourceDefinition[] = [
     singular: 'módulo',
     plural: 'módulos',
   },
+  {
+    slug: 'students',
+    singular: 'alumno',
+    plural: 'alumnos',
+  },
 ];
 
-function createAcademicCrudPermissions(
-  resource: AcademicResourceDefinition,
+function createCrudPermissions(
+  resource: ResourceDefinition,
 ): PermissionSeed[] {
   return [
     {
@@ -176,7 +181,7 @@ function createAcademicCrudPermissions(
 
 const academicPermissions: PermissionSeed[] = [
   ...academicResources.flatMap(
-    createAcademicCrudPermissions,
+    createCrudPermissions,
   ),
   {
     name: 'Establecer curso académico actual',

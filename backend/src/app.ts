@@ -28,8 +28,16 @@ import {
 } from './modules/centres/centres.routes.js';
 
 import {
+  enrolmentsRouter,
+} from './modules/enrolments/enrolments.routes.js';
+
+import {
   modulesRouter,
 } from './modules/modules/modules.routes.js';
+
+import {
+  studentsRouter,
+} from './modules/students/students.routes.js';
 
 import {
   usersRouter,
@@ -109,6 +117,16 @@ export function createApp(): Express {
   app.use(
     '/api/academic-offerings',
     academicOfferingsRouter,
+  );
+
+  app.use(
+    '/api/students',
+    studentsRouter,
+  );
+
+  app.use(
+    '/api/enrolments',
+    enrolmentsRouter,
   );
 
   app.use(

@@ -26,3 +26,25 @@ export const StudyModality = {
 } as const
 
 export type StudyModality = (typeof StudyModality)[keyof typeof StudyModality]
+
+
+export const StudentDocumentType = {
+  DNI: 'DNI',
+  NIE: 'NIE',
+  PASSPORT: 'PASSPORT',
+  OTHER: 'OTHER'
+} as const
+
+export type StudentDocumentType = (typeof StudentDocumentType)[keyof typeof StudentDocumentType]
+
+
+export const EnrolmentStatus = {
+  ENROLLED: 'ENROLLED',
+  WITHDRAWN: 'WITHDRAWN',
+  CONVALIDATED: 'CONVALIDATED',
+  EXEMPT: 'EXEMPT',
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type EnrolmentStatus = (typeof EnrolmentStatus)[keyof typeof EnrolmentStatus]

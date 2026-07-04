@@ -297,6 +297,7 @@ export type CentreWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Centre"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Centre"> | Date | string | null
   centreProgrammes?: Prisma.CentreProgrammeListRelationFilter
+  enrolments?: Prisma.EnrolmentListRelationFilter
 }
 
 export type CentreOrderByWithRelationInput = {
@@ -316,6 +317,7 @@ export type CentreOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   centreProgrammes?: Prisma.CentreProgrammeOrderByRelationAggregateInput
+  enrolments?: Prisma.EnrolmentOrderByRelationAggregateInput
   _relevance?: Prisma.CentreOrderByRelevanceInput
 }
 
@@ -339,6 +341,7 @@ export type CentreWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Centre"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Centre"> | Date | string | null
   centreProgrammes?: Prisma.CentreProgrammeListRelationFilter
+  enrolments?: Prisma.EnrolmentListRelationFilter
 }, "id" | "code">
 
 export type CentreOrderByWithAggregationInput = {
@@ -401,6 +404,7 @@ export type CentreCreateInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   centreProgrammes?: Prisma.CentreProgrammeCreateNestedManyWithoutCentreInput
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUncheckedCreateInput = {
@@ -420,6 +424,7 @@ export type CentreUncheckedCreateInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   centreProgrammes?: Prisma.CentreProgrammeUncheckedCreateNestedManyWithoutCentreInput
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUpdateInput = {
@@ -438,6 +443,7 @@ export type CentreUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   centreProgrammes?: Prisma.CentreProgrammeUpdateManyWithoutCentreNestedInput
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreUncheckedUpdateInput = {
@@ -457,6 +463,7 @@ export type CentreUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   centreProgrammes?: Prisma.CentreProgrammeUncheckedUpdateManyWithoutCentreNestedInput
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreCreateManyInput = {
@@ -599,6 +606,20 @@ export type CentreUpdateOneRequiredWithoutCentreProgrammesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CentreUpdateToOneWithWhereWithoutCentreProgrammesInput, Prisma.CentreUpdateWithoutCentreProgrammesInput>, Prisma.CentreUncheckedUpdateWithoutCentreProgrammesInput>
 }
 
+export type CentreCreateNestedOneWithoutEnrolmentsInput = {
+  create?: Prisma.XOR<Prisma.CentreCreateWithoutEnrolmentsInput, Prisma.CentreUncheckedCreateWithoutEnrolmentsInput>
+  connectOrCreate?: Prisma.CentreCreateOrConnectWithoutEnrolmentsInput
+  connect?: Prisma.CentreWhereUniqueInput
+}
+
+export type CentreUpdateOneRequiredWithoutEnrolmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.CentreCreateWithoutEnrolmentsInput, Prisma.CentreUncheckedCreateWithoutEnrolmentsInput>
+  connectOrCreate?: Prisma.CentreCreateOrConnectWithoutEnrolmentsInput
+  upsert?: Prisma.CentreUpsertWithoutEnrolmentsInput
+  connect?: Prisma.CentreWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CentreUpdateToOneWithWhereWithoutEnrolmentsInput, Prisma.CentreUpdateWithoutEnrolmentsInput>, Prisma.CentreUncheckedUpdateWithoutEnrolmentsInput>
+}
+
 export type CentreCreateWithoutCentreProgrammesInput = {
   code: string
   name: string
@@ -614,6 +635,7 @@ export type CentreCreateWithoutCentreProgrammesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUncheckedCreateWithoutCentreProgrammesInput = {
@@ -632,6 +654,7 @@ export type CentreUncheckedCreateWithoutCentreProgrammesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutCentreInput
 }
 
 export type CentreCreateOrConnectWithoutCentreProgrammesInput = {
@@ -665,6 +688,7 @@ export type CentreUpdateWithoutCentreProgrammesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreUncheckedUpdateWithoutCentreProgrammesInput = {
@@ -683,6 +707,97 @@ export type CentreUncheckedUpdateWithoutCentreProgrammesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutCentreNestedInput
+}
+
+export type CentreCreateWithoutEnrolmentsInput = {
+  code: string
+  name: string
+  shortName?: string | null
+  taxId?: string | null
+  address?: string | null
+  postalCode?: string | null
+  city?: string | null
+  province?: string | null
+  phone?: string | null
+  email?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeCreateNestedManyWithoutCentreInput
+}
+
+export type CentreUncheckedCreateWithoutEnrolmentsInput = {
+  id?: number
+  code: string
+  name: string
+  shortName?: string | null
+  taxId?: string | null
+  address?: string | null
+  postalCode?: string | null
+  city?: string | null
+  province?: string | null
+  phone?: string | null
+  email?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeUncheckedCreateNestedManyWithoutCentreInput
+}
+
+export type CentreCreateOrConnectWithoutEnrolmentsInput = {
+  where: Prisma.CentreWhereUniqueInput
+  create: Prisma.XOR<Prisma.CentreCreateWithoutEnrolmentsInput, Prisma.CentreUncheckedCreateWithoutEnrolmentsInput>
+}
+
+export type CentreUpsertWithoutEnrolmentsInput = {
+  update: Prisma.XOR<Prisma.CentreUpdateWithoutEnrolmentsInput, Prisma.CentreUncheckedUpdateWithoutEnrolmentsInput>
+  create: Prisma.XOR<Prisma.CentreCreateWithoutEnrolmentsInput, Prisma.CentreUncheckedCreateWithoutEnrolmentsInput>
+  where?: Prisma.CentreWhereInput
+}
+
+export type CentreUpdateToOneWithWhereWithoutEnrolmentsInput = {
+  where?: Prisma.CentreWhereInput
+  data: Prisma.XOR<Prisma.CentreUpdateWithoutEnrolmentsInput, Prisma.CentreUncheckedUpdateWithoutEnrolmentsInput>
+}
+
+export type CentreUpdateWithoutEnrolmentsInput = {
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeUpdateManyWithoutCentreNestedInput
+}
+
+export type CentreUncheckedUpdateWithoutEnrolmentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeUncheckedUpdateManyWithoutCentreNestedInput
 }
 
 
@@ -692,10 +807,12 @@ export type CentreUncheckedUpdateWithoutCentreProgrammesInput = {
 
 export type CentreCountOutputType = {
   centreProgrammes: number
+  enrolments: number
 }
 
 export type CentreCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   centreProgrammes?: boolean | CentreCountOutputTypeCountCentreProgrammesArgs
+  enrolments?: boolean | CentreCountOutputTypeCountEnrolmentsArgs
 }
 
 /**
@@ -713,6 +830,13 @@ export type CentreCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
  */
 export type CentreCountOutputTypeCountCentreProgrammesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CentreProgrammeWhereInput
+}
+
+/**
+ * CentreCountOutputType without action
+ */
+export type CentreCountOutputTypeCountEnrolmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EnrolmentWhereInput
 }
 
 
@@ -733,6 +857,7 @@ export type CentreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   deletedAt?: boolean
   centreProgrammes?: boolean | Prisma.Centre$centreProgrammesArgs<ExtArgs>
+  enrolments?: boolean | Prisma.Centre$enrolmentsArgs<ExtArgs>
   _count?: boolean | Prisma.CentreCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["centre"]>
 
@@ -759,6 +884,7 @@ export type CentreSelectScalar = {
 export type CentreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "shortName" | "taxId" | "address" | "postalCode" | "city" | "province" | "phone" | "email" | "isActive" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["centre"]>
 export type CentreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   centreProgrammes?: boolean | Prisma.Centre$centreProgrammesArgs<ExtArgs>
+  enrolments?: boolean | Prisma.Centre$enrolmentsArgs<ExtArgs>
   _count?: boolean | Prisma.CentreCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -766,6 +892,7 @@ export type $CentrePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Centre"
   objects: {
     centreProgrammes: Prisma.$CentreProgrammePayload<ExtArgs>[]
+    enrolments: Prisma.$EnrolmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1124,6 +1251,7 @@ readonly fields: CentreFieldRefs;
 export interface Prisma__CentreClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   centreProgrammes<T extends Prisma.Centre$centreProgrammesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Centre$centreProgrammesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CentreProgrammePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  enrolments<T extends Prisma.Centre$enrolmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Centre$enrolmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnrolmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1537,6 +1665,30 @@ export type Centre$centreProgrammesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.CentreProgrammeScalarFieldEnum | Prisma.CentreProgrammeScalarFieldEnum[]
+}
+
+/**
+ * Centre.enrolments
+ */
+export type Centre$enrolmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Enrolment
+   */
+  select?: Prisma.EnrolmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Enrolment
+   */
+  omit?: Prisma.EnrolmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EnrolmentInclude<ExtArgs> | null
+  where?: Prisma.EnrolmentWhereInput
+  orderBy?: Prisma.EnrolmentOrderByWithRelationInput | Prisma.EnrolmentOrderByWithRelationInput[]
+  cursor?: Prisma.EnrolmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EnrolmentScalarFieldEnum | Prisma.EnrolmentScalarFieldEnum[]
 }
 
 /**

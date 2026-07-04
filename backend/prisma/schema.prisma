@@ -20,6 +20,22 @@ enum StudyModality {
   BLENDED
 }
 
+enum StudentDocumentType {
+  DNI
+  NIE
+  PASSPORT
+  OTHER
+}
+
+enum EnrolmentStatus {
+  ENROLLED
+  WITHDRAWN
+  CONVALIDATED
+  EXEMPT
+  PENDING
+  COMPLETED
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   name         String    @db.VarChar(150)
@@ -118,6 +134,7 @@ model AcademicYear {
   deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
 
   academicOfferings AcademicOffering[]
+  enrolments        Enrolment[]
 
   @@index([isCurrent])
   @@index([isActive])
@@ -143,6 +160,7 @@ model Centre {
   deletedAt  DateTime? @map("deleted_at") @db.DateTime(0)
 
   centreProgrammes CentreProgramme[]
+  enrolments       Enrolment[]
 
   @@index([name])
   @@index([city])
@@ -257,6 +275,7 @@ model Module {
 
   vocationalProgramme VocationalProgramme @relation(fields: [vocationalProgrammeId], references: [id], onDelete: Restrict)
   academicLevel       AcademicLevel       @relation(fields: [academicLevelId], references: [id], onDelete: Restrict)
+  enrolments          Enrolment[]
 
   @@unique([vocationalProgrammeId, code], map: "modules_programme_code_unique")
   @@index([vocationalProgrammeId])
@@ -266,4 +285,69 @@ model Module {
   @@index([isActive])
   @@index([deletedAt])
   @@map("modules")
+}
+
+model Student {
+  id                    Int                  @id @default(autoincrement())
+  studentCode           String?              @unique @map("student_code") @db.VarChar(50)
+  firstName             String               @map("first_name") @db.VarChar(100)
+  lastName1             String               @map("last_name_1") @db.VarChar(100)
+  lastName2             String?              @map("last_name_2") @db.VarChar(100)
+  documentType          StudentDocumentType? @map("document_type")
+  documentNumber        String?              @unique @map("document_number") @db.VarChar(30)
+  email                 String?              @db.VarChar(191)
+  phone                 String?              @db.VarChar(30)
+  birthDate             DateTime?            @map("birth_date") @db.Date
+  address               String?              @db.VarChar(255)
+  postalCode            String?              @map("postal_code") @db.VarChar(10)
+  city                  String?              @db.VarChar(100)
+  province              String?              @db.VarChar(100)
+  emergencyContactName  String?              @map("emergency_contact_name") @db.VarChar(150)
+  emergencyContactPhone String?              @map("emergency_contact_phone") @db.VarChar(30)
+  notes                 String?              @db.Text
+  isActive              Boolean              @default(true) @map("is_active")
+  createdAt             DateTime             @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt             DateTime             @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt             DateTime?            @map("deleted_at") @db.DateTime(0)
+
+  enrolments            Enrolment[]
+
+  @@index([firstName])
+  @@index([lastName1, lastName2])
+  @@index([email])
+  @@index([city])
+  @@index([province])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("students")
+}
+
+model Enrolment {
+  id             Int             @id @default(autoincrement())
+  studentId      Int             @map("student_id")
+  academicYearId Int             @map("academic_year_id")
+  centreId       Int             @map("centre_id")
+  moduleId       Int             @map("module_id")
+  status         EnrolmentStatus @default(ENROLLED)
+  enrolledAt     DateTime        @map("enrolled_at") @db.Date
+  cancelledAt    DateTime?       @map("cancelled_at") @db.Date
+  remarks        String?         @db.Text
+  createdAt      DateTime        @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt      DateTime        @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt      DateTime?       @map("deleted_at") @db.DateTime(0)
+
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
+  centre       Centre       @relation(fields: [centreId], references: [id], onDelete: Restrict)
+  module       Module       @relation(fields: [moduleId], references: [id], onDelete: Restrict)
+
+  @@unique([studentId, academicYearId, centreId, moduleId], map: "enrolments_student_year_centre_module_unique")
+  @@index([studentId])
+  @@index([academicYearId])
+  @@index([centreId])
+  @@index([moduleId])
+  @@index([status])
+  @@index([enrolledAt])
+  @@index([deletedAt])
+  @@map("enrolments")
 }

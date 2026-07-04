@@ -82,3 +82,13 @@ export type AcademicOffering = Prisma.AcademicOfferingModel
  * 
  */
 export type Module = Prisma.ModuleModel
+/**
+ * Model Student
+ * 
+ */
+export type Student = Prisma.StudentModel
+/**
+ * Model Enrolment
+ * 
+ */
+export type Enrolment = Prisma.EnrolmentModel

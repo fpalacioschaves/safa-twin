@@ -302,6 +302,7 @@ export type ModuleWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Module"> | Date | string | null
   vocationalProgramme?: Prisma.XOR<Prisma.VocationalProgrammeScalarRelationFilter, Prisma.VocationalProgrammeWhereInput>
   academicLevel?: Prisma.XOR<Prisma.AcademicLevelScalarRelationFilter, Prisma.AcademicLevelWhereInput>
+  enrolments?: Prisma.EnrolmentListRelationFilter
 }
 
 export type ModuleOrderByWithRelationInput = {
@@ -320,6 +321,7 @@ export type ModuleOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   vocationalProgramme?: Prisma.VocationalProgrammeOrderByWithRelationInput
   academicLevel?: Prisma.AcademicLevelOrderByWithRelationInput
+  enrolments?: Prisma.EnrolmentOrderByRelationAggregateInput
   _relevance?: Prisma.ModuleOrderByRelevanceInput
 }
 
@@ -343,6 +345,7 @@ export type ModuleWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Module"> | Date | string | null
   vocationalProgramme?: Prisma.XOR<Prisma.VocationalProgrammeScalarRelationFilter, Prisma.VocationalProgrammeWhereInput>
   academicLevel?: Prisma.XOR<Prisma.AcademicLevelScalarRelationFilter, Prisma.AcademicLevelWhereInput>
+  enrolments?: Prisma.EnrolmentListRelationFilter
 }, "id" | "vocationalProgrammeId_code">
 
 export type ModuleOrderByWithAggregationInput = {
@@ -398,6 +401,7 @@ export type ModuleCreateInput = {
   deletedAt?: Date | string | null
   vocationalProgramme: Prisma.VocationalProgrammeCreateNestedOneWithoutModulesInput
   academicLevel: Prisma.AcademicLevelCreateNestedOneWithoutModulesInput
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutModuleInput
 }
 
 export type ModuleUncheckedCreateInput = {
@@ -414,6 +418,7 @@ export type ModuleUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutModuleInput
 }
 
 export type ModuleUpdateInput = {
@@ -429,6 +434,7 @@ export type ModuleUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vocationalProgramme?: Prisma.VocationalProgrammeUpdateOneRequiredWithoutModulesNestedInput
   academicLevel?: Prisma.AcademicLevelUpdateOneRequiredWithoutModulesNestedInput
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutModuleNestedInput
 }
 
 export type ModuleUncheckedUpdateInput = {
@@ -445,6 +451,7 @@ export type ModuleUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutModuleNestedInput
 }
 
 export type ModuleCreateManyInput = {
@@ -579,6 +586,11 @@ export type ModuleSumOrderByAggregateInput = {
   sortOrder?: Prisma.SortOrder
 }
 
+export type ModuleScalarRelationFilter = {
+  is?: Prisma.ModuleWhereInput
+  isNot?: Prisma.ModuleWhereInput
+}
+
 export type ModuleCreateNestedManyWithoutVocationalProgrammeInput = {
   create?: Prisma.XOR<Prisma.ModuleCreateWithoutVocationalProgrammeInput, Prisma.ModuleUncheckedCreateWithoutVocationalProgrammeInput> | Prisma.ModuleCreateWithoutVocationalProgrammeInput[] | Prisma.ModuleUncheckedCreateWithoutVocationalProgrammeInput[]
   connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutVocationalProgrammeInput | Prisma.ModuleCreateOrConnectWithoutVocationalProgrammeInput[]
@@ -671,6 +683,20 @@ export type NullableDecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
+export type ModuleCreateNestedOneWithoutEnrolmentsInput = {
+  create?: Prisma.XOR<Prisma.ModuleCreateWithoutEnrolmentsInput, Prisma.ModuleUncheckedCreateWithoutEnrolmentsInput>
+  connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutEnrolmentsInput
+  connect?: Prisma.ModuleWhereUniqueInput
+}
+
+export type ModuleUpdateOneRequiredWithoutEnrolmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ModuleCreateWithoutEnrolmentsInput, Prisma.ModuleUncheckedCreateWithoutEnrolmentsInput>
+  connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutEnrolmentsInput
+  upsert?: Prisma.ModuleUpsertWithoutEnrolmentsInput
+  connect?: Prisma.ModuleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ModuleUpdateToOneWithWhereWithoutEnrolmentsInput, Prisma.ModuleUpdateWithoutEnrolmentsInput>, Prisma.ModuleUncheckedUpdateWithoutEnrolmentsInput>
+}
+
 export type ModuleCreateWithoutVocationalProgrammeInput = {
   code: string
   name: string
@@ -683,6 +709,7 @@ export type ModuleCreateWithoutVocationalProgrammeInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   academicLevel: Prisma.AcademicLevelCreateNestedOneWithoutModulesInput
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutModuleInput
 }
 
 export type ModuleUncheckedCreateWithoutVocationalProgrammeInput = {
@@ -698,6 +725,7 @@ export type ModuleUncheckedCreateWithoutVocationalProgrammeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutModuleInput
 }
 
 export type ModuleCreateOrConnectWithoutVocationalProgrammeInput = {
@@ -757,6 +785,7 @@ export type ModuleCreateWithoutAcademicLevelInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   vocationalProgramme: Prisma.VocationalProgrammeCreateNestedOneWithoutModulesInput
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutModuleInput
 }
 
 export type ModuleUncheckedCreateWithoutAcademicLevelInput = {
@@ -772,6 +801,7 @@ export type ModuleUncheckedCreateWithoutAcademicLevelInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutModuleInput
 }
 
 export type ModuleCreateOrConnectWithoutAcademicLevelInput = {
@@ -798,6 +828,84 @@ export type ModuleUpdateWithWhereUniqueWithoutAcademicLevelInput = {
 export type ModuleUpdateManyWithWhereWithoutAcademicLevelInput = {
   where: Prisma.ModuleScalarWhereInput
   data: Prisma.XOR<Prisma.ModuleUpdateManyMutationInput, Prisma.ModuleUncheckedUpdateManyWithoutAcademicLevelInput>
+}
+
+export type ModuleCreateWithoutEnrolmentsInput = {
+  code: string
+  name: string
+  acronym?: string | null
+  totalHours?: number | null
+  weeklyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  vocationalProgramme: Prisma.VocationalProgrammeCreateNestedOneWithoutModulesInput
+  academicLevel: Prisma.AcademicLevelCreateNestedOneWithoutModulesInput
+}
+
+export type ModuleUncheckedCreateWithoutEnrolmentsInput = {
+  id?: number
+  vocationalProgrammeId: number
+  academicLevelId: number
+  code: string
+  name: string
+  acronym?: string | null
+  totalHours?: number | null
+  weeklyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sortOrder?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
+export type ModuleCreateOrConnectWithoutEnrolmentsInput = {
+  where: Prisma.ModuleWhereUniqueInput
+  create: Prisma.XOR<Prisma.ModuleCreateWithoutEnrolmentsInput, Prisma.ModuleUncheckedCreateWithoutEnrolmentsInput>
+}
+
+export type ModuleUpsertWithoutEnrolmentsInput = {
+  update: Prisma.XOR<Prisma.ModuleUpdateWithoutEnrolmentsInput, Prisma.ModuleUncheckedUpdateWithoutEnrolmentsInput>
+  create: Prisma.XOR<Prisma.ModuleCreateWithoutEnrolmentsInput, Prisma.ModuleUncheckedCreateWithoutEnrolmentsInput>
+  where?: Prisma.ModuleWhereInput
+}
+
+export type ModuleUpdateToOneWithWhereWithoutEnrolmentsInput = {
+  where?: Prisma.ModuleWhereInput
+  data: Prisma.XOR<Prisma.ModuleUpdateWithoutEnrolmentsInput, Prisma.ModuleUncheckedUpdateWithoutEnrolmentsInput>
+}
+
+export type ModuleUpdateWithoutEnrolmentsInput = {
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vocationalProgramme?: Prisma.VocationalProgrammeUpdateOneRequiredWithoutModulesNestedInput
+  academicLevel?: Prisma.AcademicLevelUpdateOneRequiredWithoutModulesNestedInput
+}
+
+export type ModuleUncheckedUpdateWithoutEnrolmentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  vocationalProgrammeId?: Prisma.IntFieldUpdateOperationsInput | number
+  academicLevelId?: Prisma.IntFieldUpdateOperationsInput | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weeklyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ModuleCreateManyVocationalProgrammeInput = {
@@ -827,6 +935,7 @@ export type ModuleUpdateWithoutVocationalProgrammeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   academicLevel?: Prisma.AcademicLevelUpdateOneRequiredWithoutModulesNestedInput
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutModuleNestedInput
 }
 
 export type ModuleUncheckedUpdateWithoutVocationalProgrammeInput = {
@@ -842,6 +951,7 @@ export type ModuleUncheckedUpdateWithoutVocationalProgrammeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutModuleNestedInput
 }
 
 export type ModuleUncheckedUpdateManyWithoutVocationalProgrammeInput = {
@@ -886,6 +996,7 @@ export type ModuleUpdateWithoutAcademicLevelInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vocationalProgramme?: Prisma.VocationalProgrammeUpdateOneRequiredWithoutModulesNestedInput
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutModuleNestedInput
 }
 
 export type ModuleUncheckedUpdateWithoutAcademicLevelInput = {
@@ -901,6 +1012,7 @@ export type ModuleUncheckedUpdateWithoutAcademicLevelInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutModuleNestedInput
 }
 
 export type ModuleUncheckedUpdateManyWithoutAcademicLevelInput = {
@@ -919,6 +1031,35 @@ export type ModuleUncheckedUpdateManyWithoutAcademicLevelInput = {
 }
 
 
+/**
+ * Count Type ModuleCountOutputType
+ */
+
+export type ModuleCountOutputType = {
+  enrolments: number
+}
+
+export type ModuleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  enrolments?: boolean | ModuleCountOutputTypeCountEnrolmentsArgs
+}
+
+/**
+ * ModuleCountOutputType without action
+ */
+export type ModuleCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ModuleCountOutputType
+   */
+  select?: Prisma.ModuleCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ModuleCountOutputType without action
+ */
+export type ModuleCountOutputTypeCountEnrolmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EnrolmentWhereInput
+}
+
 
 export type ModuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -936,6 +1077,8 @@ export type ModuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   deletedAt?: boolean
   vocationalProgramme?: boolean | Prisma.VocationalProgrammeDefaultArgs<ExtArgs>
   academicLevel?: boolean | Prisma.AcademicLevelDefaultArgs<ExtArgs>
+  enrolments?: boolean | Prisma.Module$enrolmentsArgs<ExtArgs>
+  _count?: boolean | Prisma.ModuleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["module"]>
 
 
@@ -960,6 +1103,8 @@ export type ModuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type ModuleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vocationalProgramme?: boolean | Prisma.VocationalProgrammeDefaultArgs<ExtArgs>
   academicLevel?: boolean | Prisma.AcademicLevelDefaultArgs<ExtArgs>
+  enrolments?: boolean | Prisma.Module$enrolmentsArgs<ExtArgs>
+  _count?: boolean | Prisma.ModuleCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $ModulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -967,6 +1112,7 @@ export type $ModulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     vocationalProgramme: Prisma.$VocationalProgrammePayload<ExtArgs>
     academicLevel: Prisma.$AcademicLevelPayload<ExtArgs>
+    enrolments: Prisma.$EnrolmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1324,6 +1470,7 @@ export interface Prisma__ModuleClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vocationalProgramme<T extends Prisma.VocationalProgrammeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VocationalProgrammeDefaultArgs<ExtArgs>>): Prisma.Prisma__VocationalProgrammeClient<runtime.Types.Result.GetResult<Prisma.$VocationalProgrammePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   academicLevel<T extends Prisma.AcademicLevelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicLevelDefaultArgs<ExtArgs>>): Prisma.Prisma__AcademicLevelClient<runtime.Types.Result.GetResult<Prisma.$AcademicLevelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  enrolments<T extends Prisma.Module$enrolmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Module$enrolmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnrolmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1711,6 +1858,30 @@ export type ModuleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Modules to delete.
    */
   limit?: number
+}
+
+/**
+ * Module.enrolments
+ */
+export type Module$enrolmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Enrolment
+   */
+  select?: Prisma.EnrolmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Enrolment
+   */
+  omit?: Prisma.EnrolmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EnrolmentInclude<ExtArgs> | null
+  where?: Prisma.EnrolmentWhereInput
+  orderBy?: Prisma.EnrolmentOrderByWithRelationInput | Prisma.EnrolmentOrderByWithRelationInput[]
+  cursor?: Prisma.EnrolmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EnrolmentScalarFieldEnum | Prisma.EnrolmentScalarFieldEnum[]
 }
 
 /**

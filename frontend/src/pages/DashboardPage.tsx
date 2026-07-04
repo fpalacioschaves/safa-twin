@@ -23,6 +23,10 @@ import {
   UsersPage,
 } from './UsersPage';
 
+import {
+  VocationalProgrammesPage,
+} from './VocationalProgrammesPage';
+
 import './DashboardPage.css';
 
 interface DashboardPageProps {
@@ -34,7 +38,8 @@ type ActiveSection =
   | 'dashboard'
   | 'users'
   | 'academic-years'
-  | 'centres';
+  | 'centres'
+  | 'vocational-programmes';
 
 function formatRole(role: string): string {
   return role
@@ -147,6 +152,29 @@ export function DashboardPage({
       'centres.archive',
     );
 
+  const canListVocationalProgrammes =
+    user.permissions.includes(
+      'vocational-programmes.list',
+    );
+
+  const canCreateVocationalProgrammes =
+    user.permissions.includes(
+      'vocational-programmes.create',
+    );
+
+  const canEditVocationalProgrammes =
+    user.permissions.includes(
+      'vocational-programmes.view',
+    )
+    && user.permissions.includes(
+      'vocational-programmes.update',
+    );
+
+  const canArchiveVocationalProgrammes =
+    user.permissions.includes(
+      'vocational-programmes.archive',
+    );
+
   async function handleLogout():
   Promise<void> {
     setIsLoggingOut(true);
@@ -185,6 +213,17 @@ export function DashboardPage({
 
     pageTitle =
       'Centros';
+  }
+
+  if (
+    activeSection
+    === 'vocational-programmes'
+  ) {
+    pageEyebrow =
+      'Estructura académica';
+
+    pageTitle =
+      'Ciclos formativos';
   }
 
   let activeContent: ReactNode;
@@ -239,6 +278,23 @@ export function DashboardPage({
         }
         canArchiveCentres={
           canArchiveCentres
+        }
+      />
+    );
+  } else if (
+    activeSection
+    === 'vocational-programmes'
+  ) {
+    activeContent = (
+      <VocationalProgrammesPage
+        canCreateVocationalProgrammes={
+          canCreateVocationalProgrammes
+        }
+        canEditVocationalProgrammes={
+          canEditVocationalProgrammes
+        }
+        canArchiveVocationalProgrammes={
+          canArchiveVocationalProgrammes
         }
       />
     );
@@ -328,6 +384,10 @@ export function DashboardPage({
 
               <li>
                 Gestión de centros
+              </li>
+
+              <li>
+                Gestión de ciclos formativos
               </li>
             </ul>
           </article>
@@ -451,9 +511,30 @@ export function DashboardPage({
               </span>
             )}
 
-          <span className="nav-link nav-link-disabled">
-            Ciclos formativos
-          </span>
+          {canListVocationalProgrammes
+            ? (
+              <button
+                className={
+                  activeSection
+                    === 'vocational-programmes'
+                    ? 'nav-link nav-button nav-link-active'
+                    : 'nav-link nav-button'
+                }
+                type="button"
+                onClick={() => {
+                  setActiveSection(
+                    'vocational-programmes',
+                  );
+                }}
+              >
+                Ciclos formativos
+              </button>
+            )
+            : (
+              <span className="nav-link nav-link-disabled">
+                Ciclos formativos
+              </span>
+            )}
 
           <span className="nav-link nav-link-disabled">
             Niveles
@@ -581,6 +662,25 @@ export function DashboardPage({
               }}
             >
               Centros
+            </button>
+          )}
+
+          {canListVocationalProgrammes && (
+            <button
+              className={
+                activeSection
+                  === 'vocational-programmes'
+                  ? 'mobile-nav-button mobile-nav-button-active'
+                  : 'mobile-nav-button'
+              }
+              type="button"
+              onClick={() => {
+                setActiveSection(
+                  'vocational-programmes',
+                );
+              }}
+            >
+              Ciclos
             </button>
           )}
         </nav>
