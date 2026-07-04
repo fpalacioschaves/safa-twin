@@ -116,3 +116,13 @@ export type Student = Prisma.StudentModel
  * 
  */
 export type Enrolment = Prisma.EnrolmentModel
+/**
+ * Model Evaluation
+ * 
+ */
+export type Evaluation = Prisma.EvaluationModel
+/**
+ * Model GradeStatus
+ * 
+ */
+export type GradeStatus = Prisma.GradeStatusModel

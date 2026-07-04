@@ -48,3 +48,13 @@ export const EnrolmentStatus = {
 } as const
 
 export type EnrolmentStatus = (typeof EnrolmentStatus)[keyof typeof EnrolmentStatus]
+
+
+export const EvaluationStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  LOCKED: 'LOCKED'
+} as const
+
+export type EvaluationStatus = (typeof EvaluationStatus)[keyof typeof EvaluationStatus]

@@ -65,7 +65,9 @@ export const ModelName = {
   AcademicOffering: 'AcademicOffering',
   Module: 'Module',
   Student: 'Student',
-  Enrolment: 'Enrolment'
+  Enrolment: 'Enrolment',
+  Evaluation: 'Evaluation',
+  GradeStatus: 'GradeStatus'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -312,6 +314,44 @@ export const EnrolmentScalarFieldEnum = {
 export type EnrolmentScalarFieldEnum = (typeof EnrolmentScalarFieldEnum)[keyof typeof EnrolmentScalarFieldEnum]
 
 
+export const EvaluationScalarFieldEnum = {
+  id: 'id',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  code: 'code',
+  name: 'name',
+  sequence: 'sequence',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  status: 'status',
+  closedAt: 'closedAt',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type EvaluationScalarFieldEnum = (typeof EvaluationScalarFieldEnum)[keyof typeof EvaluationScalarFieldEnum]
+
+
+export const GradeStatusScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  isEvaluable: 'isEvaluable',
+  countsAsPassed: 'countsAsPassed',
+  countsAsNoShow: 'countsAsNoShow',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type GradeStatusScalarFieldEnum = (typeof GradeStatusScalarFieldEnum)[keyof typeof GradeStatusScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -438,4 +478,22 @@ export const EnrolmentOrderByRelevanceFieldEnum = {
 } as const
 
 export type EnrolmentOrderByRelevanceFieldEnum = (typeof EnrolmentOrderByRelevanceFieldEnum)[keyof typeof EnrolmentOrderByRelevanceFieldEnum]
+
+
+export const EvaluationOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  remarks: 'remarks'
+} as const
+
+export type EvaluationOrderByRelevanceFieldEnum = (typeof EvaluationOrderByRelevanceFieldEnum)[keyof typeof EvaluationOrderByRelevanceFieldEnum]
+
+
+export const GradeStatusOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  description: 'description'
+} as const
+
+export type GradeStatusOrderByRelevanceFieldEnum = (typeof GradeStatusOrderByRelevanceFieldEnum)[keyof typeof GradeStatusOrderByRelevanceFieldEnum]
 

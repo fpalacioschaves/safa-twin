@@ -32,6 +32,14 @@ import {
 } from './modules/enrolments/enrolments.routes.js';
 
 import {
+  evaluationsRouter,
+} from './modules/evaluations/evaluations.routes.js';
+
+import {
+  gradeStatusesRouter,
+} from './modules/grade-statuses/grade-statuses.routes.js';
+
+import {
   modulesRouter,
 } from './modules/modules/modules.routes.js';
 
@@ -127,6 +135,16 @@ export function createApp(): Express {
   app.use(
     '/api/enrolments',
     enrolmentsRouter,
+  );
+
+  app.use(
+    '/api/evaluations',
+    evaluationsRouter,
+  );
+
+  app.use(
+    '/api/grade-statuses',
+    gradeStatusesRouter,
   );
 
   app.use(

@@ -297,6 +297,23 @@ export type EnumEnrolmentStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel>
 }
 
+export type EnumEvaluationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvaluationStatus | Prisma.EnumEvaluationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EvaluationStatus[]
+  notIn?: $Enums.EvaluationStatus[]
+  not?: Prisma.NestedEnumEvaluationStatusFilter<$PrismaModel> | $Enums.EvaluationStatus
+}
+
+export type EnumEvaluationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvaluationStatus | Prisma.EnumEvaluationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EvaluationStatus[]
+  notIn?: $Enums.EvaluationStatus[]
+  not?: Prisma.NestedEnumEvaluationStatusWithAggregatesFilter<$PrismaModel> | $Enums.EvaluationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEvaluationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEvaluationStatusFilter<$PrismaModel>
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[]
@@ -595,6 +612,23 @@ export type NestedEnumEnrolmentStatusWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEnrolmentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumEvaluationStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvaluationStatus | Prisma.EnumEvaluationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EvaluationStatus[]
+  notIn?: $Enums.EvaluationStatus[]
+  not?: Prisma.NestedEnumEvaluationStatusFilter<$PrismaModel> | $Enums.EvaluationStatus
+}
+
+export type NestedEnumEvaluationStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvaluationStatus | Prisma.EnumEvaluationStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.EvaluationStatus[]
+  notIn?: $Enums.EvaluationStatus[]
+  not?: Prisma.NestedEnumEvaluationStatusWithAggregatesFilter<$PrismaModel> | $Enums.EvaluationStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEvaluationStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEvaluationStatusFilter<$PrismaModel>
 }
 
 

@@ -8,7 +8,8 @@
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "sync:permissions": "tsx prisma/sync-permissions.ts"
   },
   "engines": {
     "node": ">=22.0.0 <23.0.0"

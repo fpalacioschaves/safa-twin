@@ -12,12 +12,32 @@ import type {
 } from '../types/auth';
 
 import {
+  AcademicLevelsPage,
+} from './AcademicLevelsPage';
+
+import {
   AcademicYearsPage,
 } from './AcademicYearsPage';
 
 import {
   CentresPage,
 } from './CentresPage';
+
+import {
+  EnrolmentsPage,
+} from './EnrolmentsPage';
+
+import {
+  EvaluationsPage,
+} from './EvaluationsPage';
+
+import {
+  ModulesPage,
+} from './ModulesPage';
+
+import {
+  StudentsPage,
+} from './StudentsPage';
 
 import {
   UsersPage,
@@ -39,7 +59,12 @@ type ActiveSection =
   | 'users'
   | 'academic-years'
   | 'centres'
-  | 'vocational-programmes';
+  | 'vocational-programmes'
+  | 'academic-levels'
+  | 'modules'
+  | 'students'
+  | 'enrolments'
+  | 'evaluations';
 
 function formatRole(role: string): string {
   return role
@@ -49,6 +74,62 @@ function formatRole(role: string): string {
       + part.slice(1)
     ))
     .join(' ');
+}
+
+function MainNavButton({
+  activeSection,
+  id,
+  label,
+  onSelect,
+}: {
+  activeSection: ActiveSection;
+  id: ActiveSection;
+  label: string;
+  onSelect: (section: ActiveSection) => void;
+}) {
+  return (
+    <button
+      className={
+        activeSection === id
+          ? 'nav-link nav-button nav-link-active'
+          : 'nav-link nav-button'
+      }
+      type="button"
+      onClick={() => {
+        onSelect(id);
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function MobileNavButton({
+  activeSection,
+  id,
+  label,
+  onSelect,
+}: {
+  activeSection: ActiveSection;
+  id: ActiveSection;
+  label: string;
+  onSelect: (section: ActiveSection) => void;
+}) {
+  return (
+    <button
+      className={
+        activeSection === id
+          ? 'mobile-nav-button mobile-nav-button-active'
+          : 'mobile-nav-button'
+      }
+      type="button"
+      onClick={() => {
+        onSelect(id);
+      }}
+    >
+      {label}
+    </button>
+  );
 }
 
 export function DashboardPage({
@@ -61,119 +142,18 @@ export function DashboardPage({
   const [activeSection, setActiveSection] =
     useState<ActiveSection>('dashboard');
 
-  const canListUsers =
-    user.permissions.includes(
-      'users.list',
-    );
-
-  const canCreateUsers =
-    user.permissions.includes(
-      'users.create',
-    )
-    && user.permissions.includes(
-      'roles.list',
-    )
-    && user.permissions.includes(
-      'roles.assign',
-    );
-
-  const canEditUsers =
-    user.permissions.includes(
-      'users.view',
-    )
-    && user.permissions.includes(
-      'users.update',
-    )
-    && user.permissions.includes(
-      'roles.list',
-    )
-    && user.permissions.includes(
-      'roles.assign',
-    );
-
-  const canChangeUserStatus =
-    user.permissions.includes(
-      'users.update',
-    );
-
-  const canArchiveUsers =
-    user.permissions.includes(
-      'users.archive',
-    );
-
-  const canListAcademicYears =
-    user.permissions.includes(
-      'academic-years.list',
-    );
-
-  const canCreateAcademicYears =
-    user.permissions.includes(
-      'academic-years.create',
-    );
-
-  const canEditAcademicYears =
-    user.permissions.includes(
-      'academic-years.view',
-    )
-    && user.permissions.includes(
-      'academic-years.update',
-    );
-
-  const canSetCurrentAcademicYear =
-    user.permissions.includes(
-      'academic-years.set-current',
-    );
-
-  const canArchiveAcademicYears =
-    user.permissions.includes(
-      'academic-years.archive',
-    );
-
-  const canListCentres =
-    user.permissions.includes(
-      'centres.list',
-    );
-
-  const canCreateCentres =
-    user.permissions.includes(
-      'centres.create',
-    );
-
-  const canEditCentres =
-    user.permissions.includes(
-      'centres.view',
-    )
-    && user.permissions.includes(
-      'centres.update',
-    );
-
-  const canArchiveCentres =
-    user.permissions.includes(
-      'centres.archive',
-    );
-
-  const canListVocationalProgrammes =
-    user.permissions.includes(
-      'vocational-programmes.list',
-    );
-
-  const canCreateVocationalProgrammes =
-    user.permissions.includes(
-      'vocational-programmes.create',
-    );
-
-  const canEditVocationalProgrammes =
-    user.permissions.includes(
-      'vocational-programmes.view',
-    )
-    && user.permissions.includes(
-      'vocational-programmes.update',
-    );
-
-  const canArchiveVocationalProgrammes =
-    user.permissions.includes(
-      'vocational-programmes.archive',
-    );
+  /*
+   * MVP:
+   *
+   * El menú muestra siempre los módulos ya construidos.
+   * La seguridad real queda en el backend, mediante
+   * requirePermission en cada endpoint.
+   *
+   * No se usan permisos para pintar el menú porque eso
+   * bloqueaba la navegación durante el desarrollo de
+   * nuevos módulos.
+   */
+  const canUseBuiltModules = true;
 
   async function handleLogout():
   Promise<void> {
@@ -187,14 +167,18 @@ export function DashboardPage({
     }
   }
 
-  let pageEyebrow = 'Panel principal';
+  let pageEyebrow =
+    'Panel principal';
 
   let pageTitle =
     `Bienvenido, ${user.name}`;
 
   if (activeSection === 'users') {
-    pageEyebrow = 'Administración';
-    pageTitle = 'Gestión de usuarios';
+    pageEyebrow =
+      'Administración';
+
+    pageTitle =
+      'Gestión de usuarios';
   }
 
   if (
@@ -216,14 +200,55 @@ export function DashboardPage({
   }
 
   if (
-    activeSection
-    === 'vocational-programmes'
+    activeSection === 'vocational-programmes'
   ) {
     pageEyebrow =
       'Estructura académica';
 
     pageTitle =
       'Ciclos formativos';
+  }
+
+  if (
+    activeSection === 'academic-levels'
+  ) {
+    pageEyebrow =
+      'Estructura académica';
+
+    pageTitle =
+      'Niveles académicos';
+  }
+
+  if (activeSection === 'modules') {
+    pageEyebrow =
+      'Estructura académica';
+
+    pageTitle =
+      'Módulos profesionales';
+  }
+
+  if (activeSection === 'students') {
+    pageEyebrow =
+      'Gestión académica';
+
+    pageTitle =
+      'Alumnado';
+  }
+
+  if (activeSection === 'enrolments') {
+    pageEyebrow =
+      'Gestión académica';
+
+    pageTitle =
+      'Matrículas modulares';
+  }
+
+  if (activeSection === 'evaluations') {
+    pageEyebrow =
+      'Evaluación académica';
+
+    pageTitle =
+      'Evaluaciones y estados';
   }
 
   let activeContent: ReactNode;
@@ -233,16 +258,16 @@ export function DashboardPage({
       <UsersPage
         currentUserId={user.id}
         canCreateUsers={
-          canCreateUsers
+          canUseBuiltModules
         }
         canEditUsers={
-          canEditUsers
+          canUseBuiltModules
         }
         canChangeUserStatus={
-          canChangeUserStatus
+          canUseBuiltModules
         }
         canArchiveUsers={
-          canArchiveUsers
+          canUseBuiltModules
         }
       />
     );
@@ -252,16 +277,16 @@ export function DashboardPage({
     activeContent = (
       <AcademicYearsPage
         canCreateAcademicYears={
-          canCreateAcademicYears
+          canUseBuiltModules
         }
         canEditAcademicYears={
-          canEditAcademicYears
+          canUseBuiltModules
         }
         canSetCurrentAcademicYear={
-          canSetCurrentAcademicYear
+          canUseBuiltModules
         }
         canArchiveAcademicYears={
-          canArchiveAcademicYears
+          canUseBuiltModules
         }
       />
     );
@@ -271,30 +296,118 @@ export function DashboardPage({
     activeContent = (
       <CentresPage
         canCreateCentres={
-          canCreateCentres
+          canUseBuiltModules
         }
         canEditCentres={
-          canEditCentres
+          canUseBuiltModules
         }
         canArchiveCentres={
-          canArchiveCentres
+          canUseBuiltModules
         }
       />
     );
   } else if (
-    activeSection
-    === 'vocational-programmes'
+    activeSection === 'vocational-programmes'
   ) {
     activeContent = (
       <VocationalProgrammesPage
         canCreateVocationalProgrammes={
-          canCreateVocationalProgrammes
+          canUseBuiltModules
         }
         canEditVocationalProgrammes={
-          canEditVocationalProgrammes
+          canUseBuiltModules
         }
         canArchiveVocationalProgrammes={
-          canArchiveVocationalProgrammes
+          canUseBuiltModules
+        }
+      />
+    );
+  } else if (
+    activeSection === 'academic-levels'
+  ) {
+    activeContent = (
+      <AcademicLevelsPage
+        canCreateAcademicLevels={
+          canUseBuiltModules
+        }
+        canEditAcademicLevels={
+          canUseBuiltModules
+        }
+        canArchiveAcademicLevels={
+          canUseBuiltModules
+        }
+      />
+    );
+  } else if (
+    activeSection === 'modules'
+  ) {
+    activeContent = (
+      <ModulesPage
+        canCreateModules={
+          canUseBuiltModules
+        }
+        canEditModules={
+          canUseBuiltModules
+        }
+        canArchiveModules={
+          canUseBuiltModules
+        }
+      />
+    );
+  } else if (
+    activeSection === 'students'
+  ) {
+    activeContent = (
+      <StudentsPage
+        canCreateStudents={
+          canUseBuiltModules
+        }
+        canEditStudents={
+          canUseBuiltModules
+        }
+        canArchiveStudents={
+          canUseBuiltModules
+        }
+      />
+    );
+  } else if (
+    activeSection === 'enrolments'
+  ) {
+    activeContent = (
+      <EnrolmentsPage
+        canCreateEnrolments={
+          canUseBuiltModules
+        }
+        canEditEnrolments={
+          canUseBuiltModules
+        }
+        canArchiveEnrolments={
+          canUseBuiltModules
+        }
+      />
+    );
+  } else if (
+    activeSection === 'evaluations'
+  ) {
+    activeContent = (
+      <EvaluationsPage
+        canCreateEvaluations={
+          canUseBuiltModules
+        }
+        canEditEvaluations={
+          canUseBuiltModules
+        }
+        canArchiveEvaluations={
+          canUseBuiltModules
+        }
+        canCreateGradeStatuses={
+          canUseBuiltModules
+        }
+        canEditGradeStatuses={
+          canUseBuiltModules
+        }
+        canArchiveGradeStatuses={
+          canUseBuiltModules
         }
       />
     );
@@ -367,15 +480,11 @@ export function DashboardPage({
               </li>
 
               <li>
-                Roles y permisos
+                Roles y permisos en backend
               </li>
 
               <li>
                 Gestión de usuarios
-              </li>
-
-              <li>
-                Estructura académica del backend
               </li>
 
               <li>
@@ -388,6 +497,26 @@ export function DashboardPage({
 
               <li>
                 Gestión de ciclos formativos
+              </li>
+
+              <li>
+                Gestión de niveles académicos
+              </li>
+
+              <li>
+                Gestión de módulos profesionales
+              </li>
+
+              <li>
+                Gestión de alumnado
+              </li>
+
+              <li>
+                Matrícula modular por asignaturas
+              </li>
+
+              <li>
+                Gestión de evaluaciones y estados
               </li>
             </ul>
           </article>
@@ -414,135 +543,62 @@ export function DashboardPage({
           className="sidebar-nav"
           aria-label="Navegación principal"
         >
-          <button
-            className={
-              activeSection === 'dashboard'
-                ? 'nav-link nav-button nav-link-active'
-                : 'nav-link nav-button'
-            }
-            type="button"
-            onClick={() => {
-              setActiveSection(
-                'dashboard',
-              );
-            }}
-          >
-            Panel principal
-          </button>
+          <MainNavButton
+            activeSection={activeSection}
+            id="dashboard"
+            label="Panel principal"
+            onSelect={setActiveSection}
+          />
 
           <p className="nav-section-label">
             Administración
           </p>
 
-          {canListUsers
-            ? (
-              <button
-                className={
-                  activeSection === 'users'
-                    ? 'nav-link nav-button nav-link-active'
-                    : 'nav-link nav-button'
-                }
-                type="button"
-                onClick={() => {
-                  setActiveSection(
-                    'users',
-                  );
-                }}
-              >
-                Usuarios
-              </button>
-            )
-            : (
-              <span className="nav-link nav-link-disabled">
-                Usuarios
-              </span>
-            )}
+          <MainNavButton
+            activeSection={activeSection}
+            id="users"
+            label="Usuarios"
+            onSelect={setActiveSection}
+          />
 
           <p className="nav-section-label">
             Estructura académica
           </p>
 
-          {canListAcademicYears
-            ? (
-              <button
-                className={
-                  activeSection
-                    === 'academic-years'
-                    ? 'nav-link nav-button nav-link-active'
-                    : 'nav-link nav-button'
-                }
-                type="button"
-                onClick={() => {
-                  setActiveSection(
-                    'academic-years',
-                  );
-                }}
-              >
-                Cursos académicos
-              </button>
-            )
-            : (
-              <span className="nav-link nav-link-disabled">
-                Cursos académicos
-              </span>
-            )}
+          <MainNavButton
+            activeSection={activeSection}
+            id="academic-years"
+            label="Cursos académicos"
+            onSelect={setActiveSection}
+          />
 
-          {canListCentres
-            ? (
-              <button
-                className={
-                  activeSection === 'centres'
-                    ? 'nav-link nav-button nav-link-active'
-                    : 'nav-link nav-button'
-                }
-                type="button"
-                onClick={() => {
-                  setActiveSection(
-                    'centres',
-                  );
-                }}
-              >
-                Centros
-              </button>
-            )
-            : (
-              <span className="nav-link nav-link-disabled">
-                Centros
-              </span>
-            )}
+          <MainNavButton
+            activeSection={activeSection}
+            id="centres"
+            label="Centros"
+            onSelect={setActiveSection}
+          />
 
-          {canListVocationalProgrammes
-            ? (
-              <button
-                className={
-                  activeSection
-                    === 'vocational-programmes'
-                    ? 'nav-link nav-button nav-link-active'
-                    : 'nav-link nav-button'
-                }
-                type="button"
-                onClick={() => {
-                  setActiveSection(
-                    'vocational-programmes',
-                  );
-                }}
-              >
-                Ciclos formativos
-              </button>
-            )
-            : (
-              <span className="nav-link nav-link-disabled">
-                Ciclos formativos
-              </span>
-            )}
+          <MainNavButton
+            activeSection={activeSection}
+            id="vocational-programmes"
+            label="Ciclos formativos"
+            onSelect={setActiveSection}
+          />
 
-          <span className="nav-link nav-link-disabled">
-            Niveles
-          </span>
+          <MainNavButton
+            activeSection={activeSection}
+            id="academic-levels"
+            label="Niveles"
+            onSelect={setActiveSection}
+          />
 
-          <span className="nav-link nav-link-disabled">
-            Módulos
-          </span>
+          <MainNavButton
+            activeSection={activeSection}
+            id="modules"
+            label="Módulos"
+            onSelect={setActiveSection}
+          />
 
           <span className="nav-link nav-link-disabled">
             Ofertas académicas
@@ -552,13 +608,26 @@ export function DashboardPage({
             Gestión académica
           </p>
 
-          <span className="nav-link nav-link-disabled">
-            Alumnado
-          </span>
+          <MainNavButton
+            activeSection={activeSection}
+            id="students"
+            label="Alumnado"
+            onSelect={setActiveSection}
+          />
 
-          <span className="nav-link nav-link-disabled">
-            Evaluaciones
-          </span>
+          <MainNavButton
+            activeSection={activeSection}
+            id="enrolments"
+            label="Matrículas"
+            onSelect={setActiveSection}
+          />
+
+          <MainNavButton
+            activeSection={activeSection}
+            id="evaluations"
+            label="Evaluaciones"
+            onSelect={setActiveSection}
+          />
 
           <span className="nav-link nav-link-disabled">
             Gemelo digital
@@ -594,95 +663,75 @@ export function DashboardPage({
           className="mobile-navigation"
           aria-label="Navegación móvil"
         >
-          <button
-            className={
-              activeSection === 'dashboard'
-                ? 'mobile-nav-button mobile-nav-button-active'
-                : 'mobile-nav-button'
-            }
-            type="button"
-            onClick={() => {
-              setActiveSection(
-                'dashboard',
-              );
-            }}
-          >
-            Panel
-          </button>
+          <MobileNavButton
+            activeSection={activeSection}
+            id="dashboard"
+            label="Panel"
+            onSelect={setActiveSection}
+          />
 
-          {canListUsers && (
-            <button
-              className={
-                activeSection === 'users'
-                  ? 'mobile-nav-button mobile-nav-button-active'
-                  : 'mobile-nav-button'
-              }
-              type="button"
-              onClick={() => {
-                setActiveSection(
-                  'users',
-                );
-              }}
-            >
-              Usuarios
-            </button>
-          )}
+          <MobileNavButton
+            activeSection={activeSection}
+            id="users"
+            label="Usuarios"
+            onSelect={setActiveSection}
+          />
 
-          {canListAcademicYears && (
-            <button
-              className={
-                activeSection
-                  === 'academic-years'
-                  ? 'mobile-nav-button mobile-nav-button-active'
-                  : 'mobile-nav-button'
-              }
-              type="button"
-              onClick={() => {
-                setActiveSection(
-                  'academic-years',
-                );
-              }}
-            >
-              Cursos
-            </button>
-          )}
+          <MobileNavButton
+            activeSection={activeSection}
+            id="academic-years"
+            label="Cursos"
+            onSelect={setActiveSection}
+          />
 
-          {canListCentres && (
-            <button
-              className={
-                activeSection === 'centres'
-                  ? 'mobile-nav-button mobile-nav-button-active'
-                  : 'mobile-nav-button'
-              }
-              type="button"
-              onClick={() => {
-                setActiveSection(
-                  'centres',
-                );
-              }}
-            >
-              Centros
-            </button>
-          )}
+          <MobileNavButton
+            activeSection={activeSection}
+            id="centres"
+            label="Centros"
+            onSelect={setActiveSection}
+          />
 
-          {canListVocationalProgrammes && (
-            <button
-              className={
-                activeSection
-                  === 'vocational-programmes'
-                  ? 'mobile-nav-button mobile-nav-button-active'
-                  : 'mobile-nav-button'
-              }
-              type="button"
-              onClick={() => {
-                setActiveSection(
-                  'vocational-programmes',
-                );
-              }}
-            >
-              Ciclos
-            </button>
-          )}
+          <MobileNavButton
+            activeSection={activeSection}
+            id="vocational-programmes"
+            label="Ciclos"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="academic-levels"
+            label="Niveles"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="modules"
+            label="Módulos"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="students"
+            label="Alumnado"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="enrolments"
+            label="Matrículas"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="evaluations"
+            label="Evaluaciones"
+            onSelect={setActiveSection}
+          />
         </nav>
 
         {activeContent}

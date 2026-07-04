@@ -398,7 +398,9 @@ export const ModelName = {
   AcademicOffering: 'AcademicOffering',
   Module: 'Module',
   Student: 'Student',
-  Enrolment: 'Enrolment'
+  Enrolment: 'Enrolment',
+  Evaluation: 'Evaluation',
+  GradeStatus: 'GradeStatus'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session" | "academicYear" | "centre" | "vocationalProgramme" | "centreProgramme" | "academicLevel" | "academicOffering" | "module" | "student" | "enrolment"
+    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session" | "academicYear" | "centre" | "vocationalProgramme" | "centreProgramme" | "academicLevel" | "academicOffering" | "module" | "student" | "enrolment" | "evaluation" | "gradeStatus"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1408,6 +1410,138 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Evaluation: {
+      payload: Prisma.$EvaluationPayload<ExtArgs>
+      fields: Prisma.EvaluationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EvaluationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EvaluationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload>
+        }
+        findFirst: {
+          args: Prisma.EvaluationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EvaluationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload>
+        }
+        findMany: {
+          args: Prisma.EvaluationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload>[]
+        }
+        create: {
+          args: Prisma.EvaluationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload>
+        }
+        createMany: {
+          args: Prisma.EvaluationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.EvaluationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload>
+        }
+        update: {
+          args: Prisma.EvaluationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload>
+        }
+        deleteMany: {
+          args: Prisma.EvaluationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EvaluationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.EvaluationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EvaluationPayload>
+        }
+        aggregate: {
+          args: Prisma.EvaluationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEvaluation>
+        }
+        groupBy: {
+          args: Prisma.EvaluationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EvaluationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EvaluationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EvaluationCountAggregateOutputType> | number
+        }
+      }
+    }
+    GradeStatus: {
+      payload: Prisma.$GradeStatusPayload<ExtArgs>
+      fields: Prisma.GradeStatusFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GradeStatusFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GradeStatusFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload>
+        }
+        findFirst: {
+          args: Prisma.GradeStatusFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GradeStatusFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload>
+        }
+        findMany: {
+          args: Prisma.GradeStatusFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload>[]
+        }
+        create: {
+          args: Prisma.GradeStatusCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload>
+        }
+        createMany: {
+          args: Prisma.GradeStatusCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.GradeStatusDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload>
+        }
+        update: {
+          args: Prisma.GradeStatusUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload>
+        }
+        deleteMany: {
+          args: Prisma.GradeStatusDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GradeStatusUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.GradeStatusUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GradeStatusPayload>
+        }
+        aggregate: {
+          args: Prisma.GradeStatusAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGradeStatus>
+        }
+        groupBy: {
+          args: Prisma.GradeStatusGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GradeStatusGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GradeStatusCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GradeStatusCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1675,6 +1809,44 @@ export const EnrolmentScalarFieldEnum = {
 export type EnrolmentScalarFieldEnum = (typeof EnrolmentScalarFieldEnum)[keyof typeof EnrolmentScalarFieldEnum]
 
 
+export const EvaluationScalarFieldEnum = {
+  id: 'id',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  code: 'code',
+  name: 'name',
+  sequence: 'sequence',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  status: 'status',
+  closedAt: 'closedAt',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type EvaluationScalarFieldEnum = (typeof EvaluationScalarFieldEnum)[keyof typeof EvaluationScalarFieldEnum]
+
+
+export const GradeStatusScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  isEvaluable: 'isEvaluable',
+  countsAsPassed: 'countsAsPassed',
+  countsAsNoShow: 'countsAsNoShow',
+  sortOrder: 'sortOrder',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type GradeStatusScalarFieldEnum = (typeof GradeStatusScalarFieldEnum)[keyof typeof GradeStatusScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1803,6 +1975,24 @@ export const EnrolmentOrderByRelevanceFieldEnum = {
 export type EnrolmentOrderByRelevanceFieldEnum = (typeof EnrolmentOrderByRelevanceFieldEnum)[keyof typeof EnrolmentOrderByRelevanceFieldEnum]
 
 
+export const EvaluationOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  remarks: 'remarks'
+} as const
+
+export type EvaluationOrderByRelevanceFieldEnum = (typeof EvaluationOrderByRelevanceFieldEnum)[keyof typeof EvaluationOrderByRelevanceFieldEnum]
+
+
+export const GradeStatusOrderByRelevanceFieldEnum = {
+  code: 'code',
+  name: 'name',
+  description: 'description'
+} as const
+
+export type GradeStatusOrderByRelevanceFieldEnum = (typeof GradeStatusOrderByRelevanceFieldEnum)[keyof typeof GradeStatusOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -1869,6 +2059,13 @@ export type EnumStudentDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputTy
  * Reference to a field of type 'EnrolmentStatus'
  */
 export type EnumEnrolmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnrolmentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'EvaluationStatus'
+ */
+export type EnumEvaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EvaluationStatus'>
     
 
 
@@ -2003,6 +2200,8 @@ export type GlobalOmitConfig = {
   module?: Prisma.ModuleOmit
   student?: Prisma.StudentOmit
   enrolment?: Prisma.EnrolmentOmit
+  evaluation?: Prisma.EvaluationOmit
+  gradeStatus?: Prisma.GradeStatusOmit
 }
 
 /* Types for Logging */
