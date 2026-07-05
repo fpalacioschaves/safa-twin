@@ -19,6 +19,10 @@ import {
 } from './document-template.schemas.js';
 
 import {
+  getDocumentTemplateContextOptions,
+} from './document-template-context-options.service.js';
+
+import {
   generateDocumentFromTemplate,
 } from './document-template-generator.service.js';
 
@@ -208,6 +212,47 @@ documentTemplateRouter.get(
         templateCode: validation.data.code,
         requiredInputs,
       });
+    } catch (error: unknown) {
+      next(error);
+    }
+  },
+);
+
+documentTemplateRouter.get(
+  '/:code/context-options',
+  requirePermission(DOCUMENT_TEMPLATE_VIEW_PERMISSION),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      documentTemplateParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const result =
+        await getDocumentTemplateContextOptions(
+          validation.data.code,
+        );
+
+      if (!result) {
+        sendTemplateNotFound(response);
+
+        return;
+      }
+
+      response.status(200).json(result);
     } catch (error: unknown) {
       next(error);
     }
