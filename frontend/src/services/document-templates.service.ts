@@ -4,6 +4,8 @@ import {
 
 import type {
   DocumentTemplateDefinition,
+  DocumentTemplateGenerationRequest,
+  DocumentTemplateGenerationResult,
   DocumentTemplateListQuery,
   DocumentTemplateRequiredInputsResponse,
   DocumentTemplateValidationRequest,
@@ -85,6 +87,19 @@ export async function validateDocumentTemplateContext(
 ): Promise<DocumentTemplateValidationResult> {
   return apiRequest<DocumentTemplateValidationResult>(
     `${BASE_URL}/${encodeURIComponent(code)}/validate`,
+    {
+      method: 'POST',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function generateDocumentFromTemplate(
+  code: string,
+  request: DocumentTemplateGenerationRequest,
+): Promise<DocumentTemplateGenerationResult> {
+  return apiRequest<DocumentTemplateGenerationResult>(
+    `${BASE_URL}/${encodeURIComponent(code)}/generate`,
     {
       method: 'POST',
       body: JSON.stringify(request),
