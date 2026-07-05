@@ -129,3 +129,21 @@ export interface DocumentTemplateValidationResult {
   unsupportedFormat: boolean;
   issues: DocumentTemplateValidationIssue[];
 }
+
+export interface DocumentTemplateGenerationRequest {
+  outputFormat: DocumentOutputFormat;
+  context?: Record<string, unknown>;
+}
+
+export interface DocumentTemplateGenerationResult {
+  documentId: number;
+  templateCode: string;
+  templateName: string;
+  outputFormat: DocumentOutputFormat;
+  fileName: string;
+  filePath: string;
+  mimeType: string;
+  fileSizeBytes: number;
+  downloadUrl: string;
+  generatedAt: string;
+}
