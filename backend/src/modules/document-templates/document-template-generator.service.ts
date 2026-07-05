@@ -99,6 +99,23 @@ function getExtension(format: DocumentOutputFormat): string {
   return format;
 }
 
+function getContextDisplayValue(
+  context: Record<string, unknown>,
+  key: string,
+): unknown {
+  const labelKey = `${key}Label`;
+  const labelValue = context[labelKey];
+
+  if (
+    typeof labelValue === 'string'
+    && labelValue.trim().length > 0
+  ) {
+    return labelValue.trim();
+  }
+
+  return context[key];
+}
+
 function buildFileName(
   template: DocumentTemplateDefinition,
   format: DocumentOutputFormat,
@@ -482,7 +499,10 @@ export async function generateDocumentFromTemplate(
     context,
     resolvedInputs: template.requiredInputs.map((input) => ({
       input,
-      value: context[input.key],
+      value: getContextDisplayValue(
+        context,
+        input.key,
+      ),
     })),
   };
 
