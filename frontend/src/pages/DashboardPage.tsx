@@ -30,6 +30,9 @@ import {
   CompanyTrainingReportsPage,
 } from './CompanyTrainingReportsPage';
 import {
+  DocumentTemplatesPage,
+} from './DocumentTemplatesPage';
+import {
   EnrolmentsPage,
 } from './EnrolmentsPage';
 import {
@@ -80,6 +83,7 @@ type ActiveSection =
   | 'statistics'
   | 'company-training'
   | 'company-training-reports'
+  | 'document-templates'
   | 'generated-documents';
 
 interface NavigationButtonProps {
@@ -215,6 +219,10 @@ function getPageHeader(
       eyebrow: 'Formación en empresa',
       title: 'Informes y documentación',
     },
+    'document-templates': {
+      eyebrow: 'Plantillas documentales',
+      title: 'Catálogo de plantillas',
+    },
     'generated-documents': {
       eyebrow: 'Documentos generados',
       title: 'Historial documental',
@@ -286,6 +294,7 @@ function DashboardHome({
             <li>Estadísticas académicas</li>
             <li>Formación en empresa</li>
             <li>Informes de formación en empresa</li>
+            <li>Plantillas documentales</li>
             <li>Historial documental</li>
           </ul>
         </article>
@@ -416,6 +425,8 @@ export function DashboardPage({
     );
   } else if (activeSection === 'company-training-reports') {
     activeContent = <CompanyTrainingReportsPage />;
+  } else if (activeSection === 'document-templates') {
+    activeContent = <DocumentTemplatesPage />;
   } else if (activeSection === 'generated-documents') {
     activeContent = <GeneratedDocumentsPage />;
   } else {
@@ -441,6 +452,7 @@ export function DashboardPage({
     { id: 'statistics', label: 'Estadísticas' },
     { id: 'company-training', label: 'Empresa' },
     { id: 'company-training-reports', label: 'Inf. empresa' },
+    { id: 'document-templates', label: 'Plantillas' },
     { id: 'generated-documents', label: 'Documentos' },
   ];
 
@@ -560,6 +572,12 @@ export function DashboardPage({
             activeSection={activeSection}
             id="company-training-reports"
             label="Informes de empresa"
+            onSelect={setActiveSection}
+          />
+          <NavigationButton
+            activeSection={activeSection}
+            id="document-templates"
+            label="Plantillas documentales"
             onSelect={setActiveSection}
           />
           <NavigationButton
