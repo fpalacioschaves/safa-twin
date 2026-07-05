@@ -63,6 +63,10 @@
   align-items: end;
 }
 
+.statistics-filters-advanced {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .statistics-filters label {
   display: flex;
   flex-direction: column;
@@ -79,6 +83,14 @@
   padding: 0.75rem 0.85rem;
   background: #ffffff;
   font: inherit;
+}
+
+.statistics-filter-actions {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: flex-end;
+  grid-column: 1 / -1;
 }
 
 .statistics-warnings {
@@ -213,7 +225,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .statistics-filters {
+  .statistics-filters,
+  .statistics-filters-advanced {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -240,7 +253,13 @@
   }
 
   .statistics-grid,
-  .statistics-filters {
+  .statistics-filters,
+  .statistics-filters-advanced {
     grid-template-columns: 1fr;
+  }
+
+  .statistics-filter-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
