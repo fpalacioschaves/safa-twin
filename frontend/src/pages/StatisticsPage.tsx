@@ -49,6 +49,13 @@ import {
   getVocationalProgrammes,
 } from '../services/vocational-programmes.service';
 
+import {
+  buildStatisticsCsv,
+  buildStatisticsFileBaseName,
+  buildStatisticsJson,
+  type StatisticsExportMetadata,
+} from '../utils/statistics-export';
+
 import './StatisticsPage.css';
 
 interface OptionItem {
@@ -103,6 +110,27 @@ function getOptionalNumber(value: string): number | undefined {
   return Number.isFinite(numberValue)
     ? numberValue
     : undefined;
+}
+
+function getSelectedOptionLabel(
+  options: OptionItem[],
+  value: string,
+): string {
+  const selectedId = getOptionalNumber(value);
+
+  if (!selectedId) {
+    return 'Todos';
+  }
+
+  return options.find((option) => option.id === selectedId)?.label
+    ?? 'Todos';
+}
+
+function buildTextHref(
+  content: string,
+  mimeType: string,
+): string {
+  return `data:${mimeType};charset=utf-8,${encodeURIComponent(content)}`;
 }
 
 function formatInteger(value: number): string {
@@ -469,6 +497,92 @@ export function StatisticsPage() {
       filters.vocationalProgrammeId,
       modules,
     ],
+  );
+
+  const selectedModuleLabel = useMemo(
+    () => {
+      const selectedModuleId = getOptionalNumber(
+        filters.moduleId,
+      );
+
+      if (!selectedModuleId) {
+        return 'Todos';
+      }
+
+      const selectedModule = filteredModules.find(
+        (module) => module.id === selectedModuleId,
+      );
+
+      return selectedModule
+        ? `${selectedModule.code} · ${selectedModule.name}`
+        : 'Todos';
+    },
+    [filteredModules, filters.moduleId],
+  );
+
+  const exportMetadata = useMemo<StatisticsExportMetadata>(
+    () => ({
+      generatedAt: new Date().toISOString(),
+      academicYear: getSelectedOptionLabel(
+        academicYears,
+        filters.academicYearId,
+      ),
+      centre: getSelectedOptionLabel(
+        centres,
+        filters.centreId,
+      ),
+      evaluation: getSelectedOptionLabel(
+        evaluations,
+        filters.evaluationId,
+      ),
+      vocationalProgramme: getSelectedOptionLabel(
+        vocationalProgrammes,
+        filters.vocationalProgrammeId,
+      ),
+      academicLevel: getSelectedOptionLabel(
+        academicLevels,
+        filters.academicLevelId,
+      ),
+      module: selectedModuleLabel,
+    }),
+    [
+      academicLevels,
+      academicYears,
+      centres,
+      evaluations,
+      filters.academicLevelId,
+      filters.academicYearId,
+      filters.centreId,
+      filters.evaluationId,
+      filters.vocationalProgrammeId,
+      selectedModuleLabel,
+      vocationalProgrammes,
+    ],
+  );
+
+  const exportFileBaseName = useMemo(
+    () => buildStatisticsFileBaseName(exportMetadata),
+    [exportMetadata],
+  );
+
+  const csvHref = useMemo(
+    () => statistics
+      ? buildTextHref(
+        `\uFEFF${buildStatisticsCsv(statistics, exportMetadata)}`,
+        'text/csv',
+      )
+      : '',
+    [exportMetadata, statistics],
+  );
+
+  const jsonHref = useMemo(
+    () => statistics
+      ? buildTextHref(
+        buildStatisticsJson(statistics, exportMetadata),
+        'application/json',
+      )
+      : '',
+    [exportMetadata, statistics],
   );
 
   async function loadStatistics(
@@ -900,6 +1014,35 @@ export function StatisticsPage() {
 
       {statistics ? (
         <>
+          <section className="statistics-card statistics-export-panel">
+            <div>
+              <p className="eyebrow">Exportación</p>
+              <h3>Descargar estadísticas</h3>
+              <p>
+                Genera una copia del ámbito actual en CSV para hoja
+                de cálculo o en JSON para trazabilidad técnica.
+              </p>
+            </div>
+
+            <div className="statistics-export-actions">
+              <a
+                className="button button-primary statistics-export-link"
+                href={csvHref}
+                download={`${exportFileBaseName}.csv`}
+              >
+                Descargar CSV
+              </a>
+
+              <a
+                className="button button-secondary statistics-export-link"
+                href={jsonHref}
+                download={`${exportFileBaseName}.json`}
+              >
+                Descargar JSON
+              </a>
+            </div>
+          </section>
+
           <section className="statistics-grid">
             <article className="statistics-metric">
               <span>Matriculados</span>
