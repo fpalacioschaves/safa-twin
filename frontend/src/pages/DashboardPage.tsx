@@ -44,6 +44,10 @@ import {
 } from './ModulesPage';
 
 import {
+  StatisticsPage,
+} from './StatisticsPage';
+
+import {
   StudentsPage,
 } from './StudentsPage';
 
@@ -74,7 +78,8 @@ type ActiveSection =
   | 'enrolments'
   | 'evaluations'
   | 'assessment-schemes'
-  | 'grades';
+  | 'grades'
+  | 'statistics';
 
 function formatRole(role: string): string {
   return role
@@ -277,6 +282,14 @@ export function DashboardPage({
       'Calificaciones';
   }
 
+  if (activeSection === 'statistics') {
+    pageEyebrow =
+      'Estadísticas académicas';
+
+    pageTitle =
+      'Panel de estadísticas';
+  }
+
   let activeContent: ReactNode;
 
   if (activeSection === 'users') {
@@ -449,6 +462,12 @@ export function DashboardPage({
     activeContent = (
       <GradesPage />
     );
+  } else if (
+    activeSection === 'statistics'
+  ) {
+    activeContent = (
+      <StatisticsPage />
+    );
   } else {
     activeContent = (
       <main className="dashboard-content">
@@ -555,6 +574,10 @@ export function DashboardPage({
 
               <li>
                 Gestión de evaluaciones y estados
+              </li>
+
+              <li>
+                Estadísticas académicas
               </li>
             </ul>
           </article>
@@ -681,6 +704,13 @@ export function DashboardPage({
             onSelect={setActiveSection}
           />
 
+          <MainNavButton
+            activeSection={activeSection}
+            id="statistics"
+            label="Estadísticas"
+            onSelect={setActiveSection}
+          />
+
           <span className="nav-link nav-link-disabled">
             Gemelo digital
           </span>
@@ -796,6 +826,13 @@ export function DashboardPage({
             activeSection={activeSection}
             id="grades"
             label="Notas"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="statistics"
+            label="Estadísticas"
             onSelect={setActiveSection}
           />
         </nav>
