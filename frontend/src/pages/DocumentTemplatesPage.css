@@ -99,6 +99,13 @@
   font: inherit;
 }
 
+.document-template-input-help {
+  color: #60708c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
 .document-templates-checkbox {
   flex-direction: row !important;
   align-items: center;
