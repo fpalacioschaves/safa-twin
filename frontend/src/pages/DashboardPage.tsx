@@ -36,6 +36,10 @@ import {
 } from './EvaluationsPage';
 
 import {
+  GeneratedDocumentsPage,
+} from './GeneratedDocumentsPage';
+
+import {
   GradesPage,
 } from './GradesPage';
 
@@ -79,7 +83,8 @@ type ActiveSection =
   | 'evaluations'
   | 'assessment-schemes'
   | 'grades'
-  | 'statistics';
+  | 'statistics'
+  | 'generated-documents';
 
 function formatRole(role: string): string {
   return role
@@ -157,17 +162,6 @@ export function DashboardPage({
   const [activeSection, setActiveSection] =
     useState<ActiveSection>('dashboard');
 
-  /*
-   * MVP:
-   *
-   * El menú muestra siempre los módulos ya construidos.
-   * La seguridad real queda en el backend, mediante
-   * requirePermission en cada endpoint.
-   *
-   * No se usan permisos para pintar el menú porque eso
-   * bloqueaba la navegación durante el desarrollo de
-   * nuevos módulos.
-   */
   const canUseBuiltModules = true;
 
   async function handleLogout():
@@ -189,105 +183,68 @@ export function DashboardPage({
     `Bienvenido, ${user.name}`;
 
   if (activeSection === 'users') {
-    pageEyebrow =
-      'Administración';
-
-    pageTitle =
-      'Gestión de usuarios';
+    pageEyebrow = 'Administración';
+    pageTitle = 'Gestión de usuarios';
   }
 
-  if (
-    activeSection === 'academic-years'
-  ) {
-    pageEyebrow =
-      'Estructura académica';
-
-    pageTitle =
-      'Cursos académicos';
+  if (activeSection === 'academic-years') {
+    pageEyebrow = 'Estructura académica';
+    pageTitle = 'Cursos académicos';
   }
 
   if (activeSection === 'centres') {
-    pageEyebrow =
-      'Estructura académica';
-
-    pageTitle =
-      'Centros';
+    pageEyebrow = 'Estructura académica';
+    pageTitle = 'Centros';
   }
 
-  if (
-    activeSection === 'vocational-programmes'
-  ) {
-    pageEyebrow =
-      'Estructura académica';
-
-    pageTitle =
-      'Ciclos formativos';
+  if (activeSection === 'vocational-programmes') {
+    pageEyebrow = 'Estructura académica';
+    pageTitle = 'Ciclos formativos';
   }
 
-  if (
-    activeSection === 'academic-levels'
-  ) {
-    pageEyebrow =
-      'Estructura académica';
-
-    pageTitle =
-      'Niveles académicos';
+  if (activeSection === 'academic-levels') {
+    pageEyebrow = 'Estructura académica';
+    pageTitle = 'Niveles académicos';
   }
 
   if (activeSection === 'modules') {
-    pageEyebrow =
-      'Estructura académica';
-
-    pageTitle =
-      'Módulos profesionales';
+    pageEyebrow = 'Estructura académica';
+    pageTitle = 'Módulos profesionales';
   }
 
   if (activeSection === 'students') {
-    pageEyebrow =
-      'Gestión académica';
-
-    pageTitle =
-      'Alumnado';
+    pageEyebrow = 'Gestión académica';
+    pageTitle = 'Alumnado';
   }
 
   if (activeSection === 'enrolments') {
-    pageEyebrow =
-      'Gestión académica';
-
-    pageTitle =
-      'Matrículas modulares';
+    pageEyebrow = 'Gestión académica';
+    pageTitle = 'Matrículas modulares';
   }
 
   if (activeSection === 'evaluations') {
-    pageEyebrow =
-      'Evaluación académica';
-
-    pageTitle =
-      'Evaluaciones y estados';
+    pageEyebrow = 'Evaluación académica';
+    pageTitle = 'Evaluaciones y estados';
   }
 
   if (activeSection === 'assessment-schemes') {
-    pageEyebrow =
-      'Evaluación académica';
-
-    pageTitle =
-      'Sistemas de calificación';
+    pageEyebrow = 'Evaluación académica';
+    pageTitle = 'Sistemas de calificación';
   }
 
   if (activeSection === 'grades') {
-    pageEyebrow =
-      'Evaluación académica';
-
-    pageTitle =
-      'Calificaciones';
+    pageEyebrow = 'Evaluación académica';
+    pageTitle = 'Calificaciones';
   }
 
   if (activeSection === 'statistics') {
-    pageEyebrow =
-      'Estadísticas académicas';
+    pageEyebrow = 'Estadísticas académicas';
+    pageTitle = 'Panel de estadísticas';
+  }
 
-    pageTitle =
-      'Panel de estadísticas';
+  if (activeSection === 'generated-documents') {
+    pageEyebrow = 'Documentos generados';
+    pageTitle = 'Historial documental';
   }
 
   let activeContent: ReactNode;
@@ -296,177 +253,95 @@ export function DashboardPage({
     activeContent = (
       <UsersPage
         currentUserId={user.id}
-        canCreateUsers={
-          canUseBuiltModules
-        }
-        canEditUsers={
-          canUseBuiltModules
-        }
-        canChangeUserStatus={
-          canUseBuiltModules
-        }
-        canArchiveUsers={
-          canUseBuiltModules
-        }
+        canCreateUsers={canUseBuiltModules}
+        canEditUsers={canUseBuiltModules}
+        canChangeUserStatus={canUseBuiltModules}
+        canArchiveUsers={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'academic-years'
-  ) {
+  } else if (activeSection === 'academic-years') {
     activeContent = (
       <AcademicYearsPage
-        canCreateAcademicYears={
-          canUseBuiltModules
-        }
-        canEditAcademicYears={
-          canUseBuiltModules
-        }
-        canSetCurrentAcademicYear={
-          canUseBuiltModules
-        }
-        canArchiveAcademicYears={
-          canUseBuiltModules
-        }
+        canCreateAcademicYears={canUseBuiltModules}
+        canEditAcademicYears={canUseBuiltModules}
+        canSetCurrentAcademicYear={canUseBuiltModules}
+        canArchiveAcademicYears={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'centres'
-  ) {
+  } else if (activeSection === 'centres') {
     activeContent = (
       <CentresPage
-        canCreateCentres={
-          canUseBuiltModules
-        }
-        canEditCentres={
-          canUseBuiltModules
-        }
-        canArchiveCentres={
-          canUseBuiltModules
-        }
+        canCreateCentres={canUseBuiltModules}
+        canEditCentres={canUseBuiltModules}
+        canArchiveCentres={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'vocational-programmes'
-  ) {
+  } else if (activeSection === 'vocational-programmes') {
     activeContent = (
       <VocationalProgrammesPage
-        canCreateVocationalProgrammes={
-          canUseBuiltModules
-        }
-        canEditVocationalProgrammes={
-          canUseBuiltModules
-        }
-        canArchiveVocationalProgrammes={
-          canUseBuiltModules
-        }
+        canCreateVocationalProgrammes={canUseBuiltModules}
+        canEditVocationalProgrammes={canUseBuiltModules}
+        canArchiveVocationalProgrammes={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'academic-levels'
-  ) {
+  } else if (activeSection === 'academic-levels') {
     activeContent = (
       <AcademicLevelsPage
-        canCreateAcademicLevels={
-          canUseBuiltModules
-        }
-        canEditAcademicLevels={
-          canUseBuiltModules
-        }
-        canArchiveAcademicLevels={
-          canUseBuiltModules
-        }
+        canCreateAcademicLevels={canUseBuiltModules}
+        canEditAcademicLevels={canUseBuiltModules}
+        canArchiveAcademicLevels={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'modules'
-  ) {
+  } else if (activeSection === 'modules') {
     activeContent = (
       <ModulesPage
-        canCreateModules={
-          canUseBuiltModules
-        }
-        canEditModules={
-          canUseBuiltModules
-        }
-        canArchiveModules={
-          canUseBuiltModules
-        }
+        canCreateModules={canUseBuiltModules}
+        canEditModules={canUseBuiltModules}
+        canArchiveModules={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'students'
-  ) {
+  } else if (activeSection === 'students') {
     activeContent = (
       <StudentsPage
-        canCreateStudents={
-          canUseBuiltModules
-        }
-        canEditStudents={
-          canUseBuiltModules
-        }
-        canArchiveStudents={
-          canUseBuiltModules
-        }
+        canCreateStudents={canUseBuiltModules}
+        canEditStudents={canUseBuiltModules}
+        canArchiveStudents={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'enrolments'
-  ) {
+  } else if (activeSection === 'enrolments') {
     activeContent = (
       <EnrolmentsPage
-        canCreateEnrolments={
-          canUseBuiltModules
-        }
-        canEditEnrolments={
-          canUseBuiltModules
-        }
-        canArchiveEnrolments={
-          canUseBuiltModules
-        }
+        canCreateEnrolments={canUseBuiltModules}
+        canEditEnrolments={canUseBuiltModules}
+        canArchiveEnrolments={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'evaluations'
-  ) {
+  } else if (activeSection === 'evaluations') {
     activeContent = (
       <EvaluationsPage
-        canCreateEvaluations={
-          canUseBuiltModules
-        }
-        canEditEvaluations={
-          canUseBuiltModules
-        }
-        canArchiveEvaluations={
-          canUseBuiltModules
-        }
-        canCreateGradeStatuses={
-          canUseBuiltModules
-        }
-        canEditGradeStatuses={
-          canUseBuiltModules
-        }
-        canArchiveGradeStatuses={
-          canUseBuiltModules
-        }
+        canCreateEvaluations={canUseBuiltModules}
+        canEditEvaluations={canUseBuiltModules}
+        canArchiveEvaluations={canUseBuiltModules}
+        canCreateGradeStatuses={canUseBuiltModules}
+        canEditGradeStatuses={canUseBuiltModules}
+        canArchiveGradeStatuses={canUseBuiltModules}
       />
     );
-  } else if (
-    activeSection === 'assessment-schemes'
-  ) {
+  } else if (activeSection === 'assessment-schemes') {
     activeContent = (
       <AssessmentSchemesPage />
     );
-  } else if (
-    activeSection === 'grades'
-  ) {
+  } else if (activeSection === 'grades') {
     activeContent = (
       <GradesPage />
     );
-  } else if (
-    activeSection === 'statistics'
-  ) {
+  } else if (activeSection === 'statistics') {
     activeContent = (
       <StatisticsPage />
+    );
+  } else if (activeSection === 'generated-documents') {
+    activeContent = (
+      <GeneratedDocumentsPage />
     );
   } else {
     activeContent = (
@@ -482,10 +357,8 @@ export function DashboardPage({
             </h2>
 
             <p>
-              El frontend React está
-              comunicándose correctamente con
-              la API y la sesión está almacenada
-              en MariaDB.
+              El frontend React está comunicándose correctamente
+              con la API y la sesión está almacenada en MariaDB.
             </p>
           </div>
 
@@ -515,16 +388,14 @@ export function DashboardPage({
             <h2>Roles asignados</h2>
 
             <div className="role-list">
-              {user.roles.map(
-                (role) => (
-                  <span
-                    className="role-badge"
-                    key={role}
-                  >
-                    {formatRole(role)}
-                  </span>
-                ),
-              )}
+              {user.roles.map((role) => (
+                <span
+                  className="role-badge"
+                  key={role}
+                >
+                  {formatRole(role)}
+                </span>
+              ))}
             </div>
           </article>
 
@@ -532,53 +403,19 @@ export function DashboardPage({
             <h2>Estado del sistema</h2>
 
             <ul className="status-list">
-              <li>
-                Autenticación y sesiones
-              </li>
-
-              <li>
-                Roles y permisos en backend
-              </li>
-
-              <li>
-                Gestión de usuarios
-              </li>
-
-              <li>
-                Gestión de cursos académicos
-              </li>
-
-              <li>
-                Gestión de centros
-              </li>
-
-              <li>
-                Gestión de ciclos formativos
-              </li>
-
-              <li>
-                Gestión de niveles académicos
-              </li>
-
-              <li>
-                Gestión de módulos profesionales
-              </li>
-
-              <li>
-                Gestión de alumnado
-              </li>
-
-              <li>
-                Matrícula modular por asignaturas
-              </li>
-
-              <li>
-                Gestión de evaluaciones y estados
-              </li>
-
-              <li>
-                Estadísticas académicas
-              </li>
+              <li>Autenticación y sesiones</li>
+              <li>Roles y permisos en backend</li>
+              <li>Gestión de usuarios</li>
+              <li>Gestión de cursos académicos</li>
+              <li>Gestión de centros</li>
+              <li>Gestión de ciclos formativos</li>
+              <li>Gestión de niveles académicos</li>
+              <li>Gestión de módulos profesionales</li>
+              <li>Gestión de alumnado</li>
+              <li>Matrícula modular por asignaturas</li>
+              <li>Gestión de evaluaciones y estados</li>
+              <li>Estadísticas académicas</li>
+              <li>Historial documental</li>
             </ul>
           </article>
         </section>
@@ -711,6 +548,17 @@ export function DashboardPage({
             onSelect={setActiveSection}
           />
 
+          <p className="nav-section-label">
+            Documentos
+          </p>
+
+          <MainNavButton
+            activeSection={activeSection}
+            id="generated-documents"
+            label="Historial documental"
+            onSelect={setActiveSection}
+          />
+
           <span className="nav-link nav-link-disabled">
             Gemelo digital
           </span>
@@ -833,6 +681,13 @@ export function DashboardPage({
             activeSection={activeSection}
             id="statistics"
             label="Estadísticas"
+            onSelect={setActiveSection}
+          />
+
+          <MobileNavButton
+            activeSection={activeSection}
+            id="generated-documents"
+            label="Documentos"
             onSelect={setActiveSection}
           />
         </nav>
