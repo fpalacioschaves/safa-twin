@@ -32,6 +32,10 @@ import {
 } from './modules/centres/centres.routes.js';
 
 import {
+  companyTrainingReportsRouter,
+} from './modules/company-training-reports/company-training-reports.routes.js';
+
+import {
   companyTrainingRouter,
 } from './modules/company-training/company-training.routes.js';
 
@@ -185,6 +189,11 @@ export function createApp(): Express {
   app.use(
     '/api/generated-documents',
     generatedDocumentsRouter,
+  );
+
+  app.use(
+    '/api/company-training/reports',
+    companyTrainingReportsRouter,
   );
 
   app.use(
