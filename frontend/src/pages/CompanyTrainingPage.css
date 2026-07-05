@@ -1,0 +1,312 @@
+.company-training-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.company-training-hero,
+.company-training-card,
+.company-training-summary-grid article,
+.company-training-status-grid article {
+  border: 1px solid #d9e2ef;
+  border-radius: 1.25rem;
+  background: #ffffff;
+}
+
+.company-training-hero {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
+.company-training-hero h2,
+.company-training-card h3,
+.company-training-card h4 {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.company-training-hero p,
+.company-training-card p,
+.company-training-empty {
+  margin: 0;
+  color: #50627f;
+  line-height: 1.55;
+}
+
+.company-training-summary-grid,
+.company-training-status-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.company-training-summary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.company-training-status-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.company-training-summary-grid article,
+.company-training-status-grid article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+}
+
+.company-training-summary-grid span,
+.company-training-status-grid span {
+  color: #10213d;
+  font-size: 1.7rem;
+  font-weight: 900;
+}
+
+.company-training-summary-grid strong,
+.company-training-status-grid strong {
+  color: #50627f;
+  font-size: 0.85rem;
+}
+
+.company-training-tabs {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.company-training-tab {
+  border: 1px solid #c8d6ea;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #35445f;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 0.65rem 1rem;
+}
+
+.company-training-tab-active {
+  border-color: #10213d;
+  background: #10213d;
+  color: #ffffff;
+}
+
+.company-training-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+  gap: 1.5rem;
+}
+
+.company-training-card {
+  padding: 1.5rem;
+}
+
+.company-training-card-wide {
+  grid-column: 1 / -1;
+}
+
+.company-training-card-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.company-training-inline-filter,
+.company-training-actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.company-training-inline-filter input,
+.company-training-inline-filter select,
+.company-training-form input,
+.company-training-form select,
+.company-training-form textarea {
+  width: 100%;
+  border: 1px solid #c8d6ea;
+  border-radius: 0.8rem;
+  background: #ffffff;
+  color: #10213d;
+  font: inherit;
+  padding: 0.7rem 0.8rem;
+}
+
+.company-training-inline-filter input,
+.company-training-inline-filter select {
+  width: auto;
+  min-width: 180px;
+}
+
+.company-training-table-wrapper {
+  overflow-x: auto;
+}
+
+.company-training-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.company-training-table th,
+.company-training-table td {
+  border-bottom: 1px solid #e5edf7;
+  padding: 0.85rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.company-training-table th {
+  color: #50627f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.company-training-table td strong,
+.company-training-table td span {
+  display: block;
+}
+
+.company-training-table td span {
+  margin-top: 0.25rem;
+  color: #60708c;
+  font-size: 0.9rem;
+}
+
+.company-training-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.company-training-form-large {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.company-training-form-compact {
+  align-content: start;
+  grid-template-columns: 1fr;
+  min-width: 280px;
+}
+
+.company-training-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: #35445f;
+  font-weight: 800;
+}
+
+.company-training-form textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.company-training-form-wide {
+  grid-column: 1 / -1;
+}
+
+.company-training-checkbox {
+  align-items: center;
+  flex-direction: row !important;
+  font-weight: 700 !important;
+}
+
+.company-training-checkbox input {
+  width: auto;
+}
+
+.company-training-tutors-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 1.25rem;
+}
+
+.company-training-status-pill,
+.company-training-warning {
+  display: inline-flex !important;
+  align-items: center;
+  border-radius: 999px;
+  font-weight: 800;
+  padding: 0.35rem 0.55rem;
+}
+
+.company-training-status-pill {
+  background: #e8eef8;
+  color: #34435c;
+}
+
+.company-training-status-pending {
+  background: #fff4cc;
+  color: #7a5200;
+}
+
+.company-training-status-assigned {
+  background: #e4edff;
+  color: #214d93;
+}
+
+.company-training-status-active {
+  background: #d8f6e2;
+  color: #164a2c;
+}
+
+.company-training-status-completed {
+  background: #e7dcff;
+  color: #4b287e;
+}
+
+.company-training-status-cancelled {
+  background: #ffe1e1;
+  color: #842029;
+}
+
+.company-training-warning {
+  margin-top: 0.35rem;
+  background: #fff4cc;
+  color: #7a5200;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 1100px) {
+  .company-training-summary-grid,
+  .company-training-status-grid,
+  .company-training-grid,
+  .company-training-tutors-layout,
+  .company-training-form-large {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .company-training-card-wide {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .company-training-hero,
+  .company-training-card-header,
+  .company-training-inline-filter,
+  .company-training-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .company-training-summary-grid,
+  .company-training-status-grid,
+  .company-training-grid,
+  .company-training-tutors-layout,
+  .company-training-form,
+  .company-training-form-large {
+    grid-template-columns: 1fr;
+  }
+
+  .company-training-inline-filter input,
+  .company-training-inline-filter select {
+    width: 100%;
+  }
+}

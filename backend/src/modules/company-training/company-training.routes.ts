@@ -11,6 +11,8 @@ import {
   companyIdParamsSchema,
   createCompanySchema,
   createCompanyTutorSchema,
+  createPlacementFollowupSchema,
+  createPlacementIncidentSchema,
   createWorkPlacementSchema,
   entityIdParamsSchema,
   listCompaniesQuerySchema,
@@ -18,26 +20,36 @@ import {
   listWorkPlacementsQuerySchema,
   updateCompanySchema,
   updateCompanyTutorSchema,
+  updatePlacementFollowupSchema,
+  updatePlacementIncidentSchema,
   updateWorkPlacementSchema,
 } from './company-training.schemas.js';
 
 import {
   archiveCompany,
   archiveCompanyTutor,
+  archivePlacementFollowup,
+  archivePlacementIncident,
   archiveWorkPlacement,
   CompanyTrainingError,
   createCompany,
   createCompanyTutor,
+  createPlacementFollowup,
+  createPlacementIncident,
   createWorkPlacement,
   getCompanyById,
   getCompanyTrainingSummary,
   getWorkPlacementById,
   listCompanies,
   listCompanyTutors,
+  listPlacementFollowups,
+  listPlacementIncidents,
   listWorkPlacements,
   restoreCompany,
   updateCompany,
   updateCompanyTutor,
+  updatePlacementFollowup,
+  updatePlacementIncident,
   updateWorkPlacement,
 } from './company-training.service.js';
 
@@ -95,6 +107,21 @@ function sendKnownCompanyTrainingError(
           : undefined,
       },
     });
+}
+
+function getAuthenticatedUserId(
+  response: Response,
+): number | null {
+  const authenticatedUser =
+    response.locals.authenticatedUser as
+      | {
+          id?: unknown;
+        }
+      | undefined;
+
+  return typeof authenticatedUser?.id === 'number'
+    ? authenticatedUser.id
+    : null;
 }
 
 companyTrainingRouter.get(
@@ -907,6 +934,472 @@ companyTrainingRouter.delete(
         message:
           'La estancia formativa se ha archivado correctamente.',
         workPlacement,
+      });
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.get(
+  '/placements/:id/followups',
+  requirePermission('company-training.view'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'El identificador de la estancia formativa no es válido.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const result =
+        await listPlacementFollowups(
+          validation.data.id,
+        );
+
+      response.status(200).json(result);
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.post(
+  '/placements/:id/followups',
+  requirePermission('company-training.followups.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const paramsValidation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!paramsValidation.success) {
+      sendValidationError(
+        response,
+        'El identificador de la estancia formativa no es válido.',
+        paramsValidation.error.issues,
+      );
+
+      return;
+    }
+
+    const bodyValidation =
+      createPlacementFollowupSchema.safeParse(
+        request.body,
+      );
+
+    if (!bodyValidation.success) {
+      sendValidationError(
+        response,
+        'Los datos del seguimiento no son válidos.',
+        bodyValidation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const placementFollowup =
+        await createPlacementFollowup(
+          paramsValidation.data.id,
+          bodyValidation.data,
+          getAuthenticatedUserId(response),
+        );
+
+      response.status(201).json({
+        message:
+          'El seguimiento se ha registrado correctamente.',
+        placementFollowup,
+      });
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.put(
+  '/placement-followups/:id',
+  requirePermission('company-training.followups.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const paramsValidation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!paramsValidation.success) {
+      sendValidationError(
+        response,
+        'El identificador del seguimiento no es válido.',
+        paramsValidation.error.issues,
+      );
+
+      return;
+    }
+
+    const bodyValidation =
+      updatePlacementFollowupSchema.safeParse(
+        request.body,
+      );
+
+    if (!bodyValidation.success) {
+      sendValidationError(
+        response,
+        'Los datos del seguimiento no son válidos.',
+        bodyValidation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const placementFollowup =
+        await updatePlacementFollowup(
+          paramsValidation.data.id,
+          bodyValidation.data,
+        );
+
+      response.status(200).json({
+        message:
+          'El seguimiento se ha actualizado correctamente.',
+        placementFollowup,
+      });
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.delete(
+  '/placement-followups/:id',
+  requirePermission('company-training.followups.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'El identificador del seguimiento no es válido.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const placementFollowup =
+        await archivePlacementFollowup(
+          validation.data.id,
+        );
+
+      response.status(200).json({
+        message:
+          'El seguimiento se ha archivado correctamente.',
+        placementFollowup,
+      });
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.get(
+  '/placements/:id/incidents',
+  requirePermission('company-training.view'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'El identificador de la estancia formativa no es válido.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const result =
+        await listPlacementIncidents(
+          validation.data.id,
+        );
+
+      response.status(200).json(result);
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.post(
+  '/placements/:id/incidents',
+  requirePermission('company-training.incidents.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const paramsValidation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!paramsValidation.success) {
+      sendValidationError(
+        response,
+        'El identificador de la estancia formativa no es válido.',
+        paramsValidation.error.issues,
+      );
+
+      return;
+    }
+
+    const bodyValidation =
+      createPlacementIncidentSchema.safeParse(
+        request.body,
+      );
+
+    if (!bodyValidation.success) {
+      sendValidationError(
+        response,
+        'Los datos de la incidencia no son válidos.',
+        bodyValidation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const placementIncident =
+        await createPlacementIncident(
+          paramsValidation.data.id,
+          bodyValidation.data,
+          getAuthenticatedUserId(response),
+        );
+
+      response.status(201).json({
+        message:
+          'La incidencia se ha registrado correctamente.',
+        placementIncident,
+      });
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.put(
+  '/placement-incidents/:id',
+  requirePermission('company-training.incidents.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const paramsValidation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!paramsValidation.success) {
+      sendValidationError(
+        response,
+        'El identificador de la incidencia no es válido.',
+        paramsValidation.error.issues,
+      );
+
+      return;
+    }
+
+    const bodyValidation =
+      updatePlacementIncidentSchema.safeParse(
+        request.body,
+      );
+
+    if (!bodyValidation.success) {
+      sendValidationError(
+        response,
+        'Los datos de la incidencia no son válidos.',
+        bodyValidation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const placementIncident =
+        await updatePlacementIncident(
+          paramsValidation.data.id,
+          bodyValidation.data,
+        );
+
+      response.status(200).json({
+        message:
+          'La incidencia se ha actualizado correctamente.',
+        placementIncident,
+      });
+    } catch (error: unknown) {
+      if (
+        error instanceof CompanyTrainingError
+      ) {
+        sendKnownCompanyTrainingError(
+          error,
+          response,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+companyTrainingRouter.delete(
+  '/placement-incidents/:id',
+  requirePermission('company-training.incidents.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      entityIdParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'El identificador de la incidencia no es válido.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const placementIncident =
+        await archivePlacementIncident(
+          validation.data.id,
+        );
+
+      response.status(200).json({
+        message:
+          'La incidencia se ha archivado correctamente.',
+        placementIncident,
       });
     } catch (error: unknown) {
       if (

@@ -7,12 +7,16 @@ import { prisma } from '../../config/database.js';
 import type {
   CreateCompanyInput,
   CreateCompanyTutorInput,
+  CreatePlacementFollowupInput,
+  CreatePlacementIncidentInput,
   CreateWorkPlacementInput,
   ListCompaniesQuery,
   ListCompanyTutorsQuery,
   ListWorkPlacementsQuery,
   UpdateCompanyInput,
   UpdateCompanyTutorInput,
+  UpdatePlacementFollowupInput,
+  UpdatePlacementIncidentInput,
   UpdateWorkPlacementInput,
 } from './company-training.schemas.js';
 
@@ -151,6 +155,88 @@ const workPlacementSelect = {
   },
 } satisfies Prisma.WorkPlacementSelect;
 
+
+const placementFollowupSelect = {
+  id: true,
+  workPlacementId: true,
+  createdByUserId: true,
+  followupType: true,
+  followupAt: true,
+  title: true,
+  description: true,
+  nextActions: true,
+  createdAt: true,
+  updatedAt: true,
+  deletedAt: true,
+  workPlacement: {
+    select: {
+      id: true,
+      status: true,
+      student: {
+        select: {
+          firstName: true,
+          lastName1: true,
+          lastName2: true,
+        },
+      },
+      company: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  },
+  createdByUser: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  },
+} satisfies Prisma.PlacementFollowupSelect;
+
+const placementIncidentSelect = {
+  id: true,
+  workPlacementId: true,
+  createdByUserId: true,
+  severity: true,
+  occurredAt: true,
+  title: true,
+  description: true,
+  resolution: true,
+  resolvedAt: true,
+  createdAt: true,
+  updatedAt: true,
+  deletedAt: true,
+  workPlacement: {
+    select: {
+      id: true,
+      status: true,
+      student: {
+        select: {
+          firstName: true,
+          lastName1: true,
+          lastName2: true,
+        },
+      },
+      company: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  },
+  createdByUser: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  },
+} satisfies Prisma.PlacementIncidentSelect;
+
 type CompanyRecord =
   Prisma.CompanyGetPayload<{
     select: typeof companySelect;
@@ -164,6 +250,16 @@ type CompanyTutorRecord =
 type WorkPlacementRecord =
   Prisma.WorkPlacementGetPayload<{
     select: typeof workPlacementSelect;
+  }>;
+
+type PlacementFollowupRecord =
+  Prisma.PlacementFollowupGetPayload<{
+    select: typeof placementFollowupSelect;
+  }>;
+
+type PlacementIncidentRecord =
+  Prisma.PlacementIncidentGetPayload<{
+    select: typeof placementIncidentSelect;
   }>;
 
 function isPrismaUniqueConstraintError(
@@ -208,6 +304,22 @@ function normalizeOptionalDate(
   return new Date(
     `${value}T00:00:00.000Z`,
   );
+}
+
+function normalizeDateTime(
+  value: string,
+): Date {
+  return new Date(value);
+}
+
+function normalizeOptionalDateTime(
+  value: string | undefined,
+): Date | null {
+  if (!value) {
+    return null;
+  }
+
+  return normalizeDateTime(value);
 }
 
 function formatDateOnly(
@@ -389,6 +501,81 @@ function mapWorkPlacement(
     createdAt: workPlacement.createdAt,
     updatedAt: workPlacement.updatedAt,
     deletedAt: workPlacement.deletedAt,
+  };
+}
+
+
+function buildPlacementLabel(
+  workPlacement: Pick<
+    PlacementFollowupRecord['workPlacement'],
+    'student' | 'company'
+  >,
+): string {
+  return [
+    buildStudentFullName(workPlacement.student),
+    workPlacement.company.name,
+  ].join(' · ');
+}
+
+function mapPlacementFollowup(
+  followup: PlacementFollowupRecord,
+) {
+  return {
+    id: followup.id,
+    workPlacementId: followup.workPlacementId,
+    workPlacementLabel:
+      buildPlacementLabel(followup.workPlacement),
+    companyId: followup.workPlacement.company.id,
+    companyName: followup.workPlacement.company.name,
+    studentFullName:
+      buildStudentFullName(
+        followup.workPlacement.student,
+      ),
+    createdByUserId: followup.createdByUserId,
+    createdByUserName:
+      followup.createdByUser?.name ?? null,
+    createdByUserEmail:
+      followup.createdByUser?.email ?? null,
+    followupType: followup.followupType,
+    followupAt: followup.followupAt.toISOString(),
+    title: followup.title,
+    description: followup.description,
+    nextActions: followup.nextActions,
+    createdAt: followup.createdAt,
+    updatedAt: followup.updatedAt,
+    deletedAt: followup.deletedAt,
+  };
+}
+
+function mapPlacementIncident(
+  incident: PlacementIncidentRecord,
+) {
+  return {
+    id: incident.id,
+    workPlacementId: incident.workPlacementId,
+    workPlacementLabel:
+      buildPlacementLabel(incident.workPlacement),
+    companyId: incident.workPlacement.company.id,
+    companyName: incident.workPlacement.company.name,
+    studentFullName:
+      buildStudentFullName(
+        incident.workPlacement.student,
+      ),
+    createdByUserId: incident.createdByUserId,
+    createdByUserName:
+      incident.createdByUser?.name ?? null,
+    createdByUserEmail:
+      incident.createdByUser?.email ?? null,
+    severity: incident.severity,
+    occurredAt: incident.occurredAt.toISOString(),
+    title: incident.title,
+    description: incident.description,
+    resolution: incident.resolution,
+    resolvedAt:
+      incident.resolvedAt?.toISOString() ?? null,
+    createdAt: incident.createdAt,
+    updatedAt: incident.updatedAt,
+    deletedAt: incident.deletedAt,
   };
 }
 
@@ -621,12 +808,46 @@ async function ensureWorkPlacementReferences(
   }
 }
 
+
+async function ensureWorkPlacementIsAvailable(
+  workPlacementId: number,
+): Promise<void> {
+  const workPlacement =
+    await prisma.workPlacement.findUnique({
+      where: {
+        id: workPlacementId,
+      },
+      select: {
+        id: true,
+        deletedAt: true,
+      },
+    });
+
+  if (!workPlacement) {
+    throw new CompanyTrainingError(
+      'WORK_PLACEMENT_NOT_FOUND',
+      'La estancia formativa solicitada no existe.',
+      404,
+    );
+  }
+
+  if (workPlacement.deletedAt !== null) {
+    throw new CompanyTrainingError(
+      'WORK_PLACEMENT_ARCHIVED',
+      'La estancia formativa está archivada y no admite nuevos registros.',
+      409,
+    );
+  }
+}
+
 export async function getCompanyTrainingSummary() {
   const [
     companiesCount,
     activeCompanyTutorsCount,
     activePlacementsCount,
     placementsWithPendingDocumentationCount,
+    openIncidentsCount,
+    followupsCount,
     statusGroups,
   ] = await prisma.$transaction([
     prisma.company.count({
@@ -650,6 +871,17 @@ export async function getCompanyTrainingSummary() {
       where: {
         deletedAt: null,
         documentationPending: true,
+      },
+    }),
+    prisma.placementIncident.count({
+      where: {
+        deletedAt: null,
+        resolvedAt: null,
+      },
+    }),
+    prisma.placementFollowup.count({
+      where: {
+        deletedAt: null,
       },
     }),
     prisma.workPlacement.groupBy({
@@ -682,6 +914,8 @@ export async function getCompanyTrainingSummary() {
     activeCompanyTutorsCount,
     activePlacementsCount,
     placementsWithPendingDocumentationCount,
+    openIncidentsCount,
+    followupsCount,
     placementsByStatus: byStatus,
   };
 }
@@ -1610,4 +1844,344 @@ export async function archiveWorkPlacement(
     });
 
   return mapWorkPlacement(workPlacement);
+}
+
+export async function listPlacementFollowups(
+  workPlacementId: number,
+) {
+  await ensureWorkPlacementIsAvailable(
+    workPlacementId,
+  );
+
+  const followups =
+    await prisma.placementFollowup.findMany({
+      where: {
+        workPlacementId,
+        deletedAt: null,
+      },
+      orderBy: [
+        {
+          followupAt: 'desc',
+        },
+        {
+          id: 'desc',
+        },
+      ],
+      select: placementFollowupSelect,
+    });
+
+  return {
+    items: followups.map(mapPlacementFollowup),
+  };
+}
+
+export async function createPlacementFollowup(
+  workPlacementId: number,
+  input: CreatePlacementFollowupInput,
+  createdByUserId: number | null,
+) {
+  await ensureWorkPlacementIsAvailable(
+    workPlacementId,
+  );
+
+  const followup =
+    await prisma.placementFollowup.create({
+      data: {
+        workPlacementId,
+        createdByUserId,
+        followupType: input.followupType,
+        followupAt: normalizeDateTime(
+          input.followupAt,
+        ),
+        title: input.title.trim(),
+        description:
+          normalizeOptionalText(
+            input.description,
+          ),
+        nextActions:
+          normalizeOptionalText(
+            input.nextActions,
+          ),
+      },
+      select: placementFollowupSelect,
+    });
+
+  return mapPlacementFollowup(followup);
+}
+
+export async function updatePlacementFollowup(
+  placementFollowupId: number,
+  input: UpdatePlacementFollowupInput,
+) {
+  const existingFollowup =
+    await prisma.placementFollowup.findUnique({
+      where: {
+        id: placementFollowupId,
+      },
+      select: {
+        id: true,
+        deletedAt: true,
+        workPlacementId: true,
+      },
+    });
+
+  if (!existingFollowup) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_FOLLOWUP_NOT_FOUND',
+      'El seguimiento solicitado no existe.',
+      404,
+    );
+  }
+
+  if (existingFollowup.deletedAt !== null) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_FOLLOWUP_ARCHIVED',
+      'El seguimiento está archivado y no puede modificarse.',
+      409,
+    );
+  }
+
+  await ensureWorkPlacementIsAvailable(
+    existingFollowup.workPlacementId,
+  );
+
+  const followup =
+    await prisma.placementFollowup.update({
+      where: {
+        id: placementFollowupId,
+      },
+      data: {
+        followupType: input.followupType,
+        followupAt: normalizeDateTime(
+          input.followupAt,
+        ),
+        title: input.title.trim(),
+        description:
+          normalizeOptionalText(
+            input.description,
+          ),
+        nextActions:
+          normalizeOptionalText(
+            input.nextActions,
+          ),
+      },
+      select: placementFollowupSelect,
+    });
+
+  return mapPlacementFollowup(followup);
+}
+
+export async function archivePlacementFollowup(
+  placementFollowupId: number,
+) {
+  const existingFollowup =
+    await prisma.placementFollowup.findUnique({
+      where: {
+        id: placementFollowupId,
+      },
+      select: {
+        id: true,
+        deletedAt: true,
+      },
+    });
+
+  if (!existingFollowup) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_FOLLOWUP_NOT_FOUND',
+      'El seguimiento solicitado no existe.',
+      404,
+    );
+  }
+
+  if (existingFollowup.deletedAt !== null) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_FOLLOWUP_ALREADY_ARCHIVED',
+      'El seguimiento ya está archivado.',
+      409,
+    );
+  }
+
+  const followup =
+    await prisma.placementFollowup.update({
+      where: {
+        id: placementFollowupId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+      select: placementFollowupSelect,
+    });
+
+  return mapPlacementFollowup(followup);
+}
+
+export async function listPlacementIncidents(
+  workPlacementId: number,
+) {
+  await ensureWorkPlacementIsAvailable(
+    workPlacementId,
+  );
+
+  const incidents =
+    await prisma.placementIncident.findMany({
+      where: {
+        workPlacementId,
+        deletedAt: null,
+      },
+      orderBy: [
+        {
+          occurredAt: 'desc',
+        },
+        {
+          id: 'desc',
+        },
+      ],
+      select: placementIncidentSelect,
+    });
+
+  return {
+    items: incidents.map(mapPlacementIncident),
+  };
+}
+
+export async function createPlacementIncident(
+  workPlacementId: number,
+  input: CreatePlacementIncidentInput,
+  createdByUserId: number | null,
+) {
+  await ensureWorkPlacementIsAvailable(
+    workPlacementId,
+  );
+
+  const incident =
+    await prisma.placementIncident.create({
+      data: {
+        workPlacementId,
+        createdByUserId,
+        severity: input.severity,
+        occurredAt: normalizeDateTime(
+          input.occurredAt,
+        ),
+        title: input.title.trim(),
+        description: input.description.trim(),
+        resolution:
+          normalizeOptionalText(
+            input.resolution,
+          ),
+        resolvedAt:
+          normalizeOptionalDateTime(
+            input.resolvedAt,
+          ),
+      },
+      select: placementIncidentSelect,
+    });
+
+  return mapPlacementIncident(incident);
+}
+
+export async function updatePlacementIncident(
+  placementIncidentId: number,
+  input: UpdatePlacementIncidentInput,
+) {
+  const existingIncident =
+    await prisma.placementIncident.findUnique({
+      where: {
+        id: placementIncidentId,
+      },
+      select: {
+        id: true,
+        deletedAt: true,
+        workPlacementId: true,
+      },
+    });
+
+  if (!existingIncident) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_INCIDENT_NOT_FOUND',
+      'La incidencia solicitada no existe.',
+      404,
+    );
+  }
+
+  if (existingIncident.deletedAt !== null) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_INCIDENT_ARCHIVED',
+      'La incidencia está archivada y no puede modificarse.',
+      409,
+    );
+  }
+
+  await ensureWorkPlacementIsAvailable(
+    existingIncident.workPlacementId,
+  );
+
+  const incident =
+    await prisma.placementIncident.update({
+      where: {
+        id: placementIncidentId,
+      },
+      data: {
+        severity: input.severity,
+        occurredAt: normalizeDateTime(
+          input.occurredAt,
+        ),
+        title: input.title.trim(),
+        description: input.description.trim(),
+        resolution:
+          normalizeOptionalText(
+            input.resolution,
+          ),
+        resolvedAt:
+          normalizeOptionalDateTime(
+            input.resolvedAt,
+          ),
+      },
+      select: placementIncidentSelect,
+    });
+
+  return mapPlacementIncident(incident);
+}
+
+export async function archivePlacementIncident(
+  placementIncidentId: number,
+) {
+  const existingIncident =
+    await prisma.placementIncident.findUnique({
+      where: {
+        id: placementIncidentId,
+      },
+      select: {
+        id: true,
+        deletedAt: true,
+      },
+    });
+
+  if (!existingIncident) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_INCIDENT_NOT_FOUND',
+      'La incidencia solicitada no existe.',
+      404,
+    );
+  }
+
+  if (existingIncident.deletedAt !== null) {
+    throw new CompanyTrainingError(
+      'PLACEMENT_INCIDENT_ALREADY_ARCHIVED',
+      'La incidencia ya está archivada.',
+      409,
+    );
+  }
+
+  const incident =
+    await prisma.placementIncident.update({
+      where: {
+        id: placementIncidentId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+      select: placementIncidentSelect,
+    });
+
+  return mapPlacementIncident(incident);
 }

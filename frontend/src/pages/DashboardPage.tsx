@@ -14,51 +14,42 @@ import type {
 import {
   AcademicLevelsPage,
 } from './AcademicLevelsPage';
-
 import {
   AcademicYearsPage,
 } from './AcademicYearsPage';
-
 import {
   AssessmentSchemesPage,
 } from './AssessmentSchemesPage';
-
 import {
   CentresPage,
 } from './CentresPage';
-
+import {
+  CompanyTrainingPage,
+} from './CompanyTrainingPage';
 import {
   EnrolmentsPage,
 } from './EnrolmentsPage';
-
 import {
   EvaluationsPage,
 } from './EvaluationsPage';
-
 import {
   GeneratedDocumentsPage,
 } from './GeneratedDocumentsPage';
-
 import {
   GradesPage,
 } from './GradesPage';
-
 import {
   ModulesPage,
 } from './ModulesPage';
-
 import {
   StatisticsPage,
 } from './StatisticsPage';
-
 import {
   StudentsPage,
 } from './StudentsPage';
-
 import {
   UsersPage,
 } from './UsersPage';
-
 import {
   VocationalProgrammesPage,
 } from './VocationalProgrammesPage';
@@ -84,7 +75,16 @@ type ActiveSection =
   | 'assessment-schemes'
   | 'grades'
   | 'statistics'
+  | 'company-training'
   | 'generated-documents';
+
+interface NavigationButtonProps {
+  activeSection: ActiveSection;
+  id: ActiveSection;
+  label: string;
+  onSelect: (section: ActiveSection) => void;
+  variant?: 'desktop' | 'mobile';
+}
 
 function formatRole(role: string): string {
   return role
@@ -96,21 +96,37 @@ function formatRole(role: string): string {
     .join(' ');
 }
 
-function MainNavButton({
+function NavigationButton({
   activeSection,
   id,
   label,
   onSelect,
-}: {
-  activeSection: ActiveSection;
-  id: ActiveSection;
-  label: string;
-  onSelect: (section: ActiveSection) => void;
-}) {
+  variant = 'desktop',
+}: NavigationButtonProps) {
+  const isActive = activeSection === id;
+
+  if (variant === 'mobile') {
+    return (
+      <button
+        className={
+          isActive
+            ? 'mobile-nav-button mobile-nav-button-active'
+            : 'mobile-nav-button'
+        }
+        type="button"
+        onClick={() => {
+          onSelect(id);
+        }}
+      >
+        {label}
+      </button>
+    );
+  }
+
   return (
     <button
       className={
-        activeSection === id
+        isActive
           ? 'nav-link nav-button nav-link-active'
           : 'nav-link nav-button'
       }
@@ -124,31 +140,148 @@ function MainNavButton({
   );
 }
 
-function MobileNavButton({
-  activeSection,
-  id,
-  label,
-  onSelect,
+function getPageHeader(
+  activeSection: ActiveSection,
+  user: AuthenticatedUser,
+): {
+  eyebrow: string;
+  title: string;
+} {
+  const headers: Record<ActiveSection, {
+    eyebrow: string;
+    title: string;
+  }> = {
+    dashboard: {
+      eyebrow: 'Panel principal',
+      title: `Bienvenido, ${user.name}`,
+    },
+    users: {
+      eyebrow: 'Administración',
+      title: 'Gestión de usuarios',
+    },
+    'academic-years': {
+      eyebrow: 'Estructura académica',
+      title: 'Cursos académicos',
+    },
+    centres: {
+      eyebrow: 'Estructura académica',
+      title: 'Centros',
+    },
+    'vocational-programmes': {
+      eyebrow: 'Estructura académica',
+      title: 'Ciclos formativos',
+    },
+    'academic-levels': {
+      eyebrow: 'Estructura académica',
+      title: 'Niveles académicos',
+    },
+    modules: {
+      eyebrow: 'Estructura académica',
+      title: 'Módulos profesionales',
+    },
+    students: {
+      eyebrow: 'Gestión académica',
+      title: 'Alumnado',
+    },
+    enrolments: {
+      eyebrow: 'Gestión académica',
+      title: 'Matrículas modulares',
+    },
+    evaluations: {
+      eyebrow: 'Evaluación académica',
+      title: 'Evaluaciones y estados',
+    },
+    'assessment-schemes': {
+      eyebrow: 'Evaluación académica',
+      title: 'Sistemas de calificación',
+    },
+    grades: {
+      eyebrow: 'Evaluación académica',
+      title: 'Calificaciones',
+    },
+    statistics: {
+      eyebrow: 'Estadísticas académicas',
+      title: 'Panel de estadísticas',
+    },
+    'company-training': {
+      eyebrow: 'Formación en empresa',
+      title: 'Empresas y estancias formativas',
+    },
+    'generated-documents': {
+      eyebrow: 'Documentos generados',
+      title: 'Historial documental',
+    },
+  };
+
+  return headers[activeSection];
+}
+
+function DashboardHome({
+  user,
 }: {
-  activeSection: ActiveSection;
-  id: ActiveSection;
-  label: string;
-  onSelect: (section: ActiveSection) => void;
+  user: AuthenticatedUser;
 }) {
   return (
-    <button
-      className={
-        activeSection === id
-          ? 'mobile-nav-button mobile-nav-button-active'
-          : 'mobile-nav-button'
-      }
-      type="button"
-      onClick={() => {
-        onSelect(id);
-      }}
-    >
-      {label}
-    </button>
+    <main className="dashboard-content">
+      <section className="welcome-card">
+        <div>
+          <p className="eyebrow">Sesión activa</p>
+          <h2>SAFA Twin está conectado</h2>
+          <p>
+            El frontend React está comunicándose correctamente con la API
+            y la sesión está almacenada en MariaDB.
+          </p>
+        </div>
+
+        <span className="status-badge">
+          Sistema operativo
+        </span>
+      </section>
+
+      <section className="dashboard-grid">
+        <article className="info-card">
+          <h2>Usuario</h2>
+          <dl className="user-details">
+            <div>
+              <dt>Nombre</dt>
+              <dd>{user.name}</dd>
+            </div>
+            <div>
+              <dt>Correo</dt>
+              <dd>{user.email}</dd>
+            </div>
+          </dl>
+        </article>
+
+        <article className="info-card">
+          <h2>Roles asignados</h2>
+          <div className="role-list">
+            {user.roles.map((role) => (
+              <span
+                className="role-badge"
+                key={role}
+              >
+                {formatRole(role)}
+              </span>
+            ))}
+          </div>
+        </article>
+
+        <article className="info-card">
+          <h2>Estado del sistema</h2>
+          <ul className="status-list">
+            <li>Autenticación y sesiones</li>
+            <li>Roles y permisos en backend</li>
+            <li>Gestión de estructura académica</li>
+            <li>Gestión de alumnado y matrículas</li>
+            <li>Evaluaciones, sistemas de calificación y notas</li>
+            <li>Estadísticas académicas</li>
+            <li>Formación en empresa</li>
+            <li>Historial documental</li>
+          </ul>
+        </article>
+      </section>
+    </main>
   );
 }
 
@@ -163,9 +296,9 @@ export function DashboardPage({
     useState<ActiveSection>('dashboard');
 
   const canUseBuiltModules = true;
+  const pageHeader = getPageHeader(activeSection, user);
 
-  async function handleLogout():
-  Promise<void> {
+  async function handleLogout(): Promise<void> {
     setIsLoggingOut(true);
 
     try {
@@ -174,77 +307,6 @@ export function DashboardPage({
       onLogout();
       setIsLoggingOut(false);
     }
-  }
-
-  let pageEyebrow =
-    'Panel principal';
-
-  let pageTitle =
-    `Bienvenido, ${user.name}`;
-
-  if (activeSection === 'users') {
-    pageEyebrow = 'Administración';
-    pageTitle = 'Gestión de usuarios';
-  }
-
-  if (activeSection === 'academic-years') {
-    pageEyebrow = 'Estructura académica';
-    pageTitle = 'Cursos académicos';
-  }
-
-  if (activeSection === 'centres') {
-    pageEyebrow = 'Estructura académica';
-    pageTitle = 'Centros';
-  }
-
-  if (activeSection === 'vocational-programmes') {
-    pageEyebrow = 'Estructura académica';
-    pageTitle = 'Ciclos formativos';
-  }
-
-  if (activeSection === 'academic-levels') {
-    pageEyebrow = 'Estructura académica';
-    pageTitle = 'Niveles académicos';
-  }
-
-  if (activeSection === 'modules') {
-    pageEyebrow = 'Estructura académica';
-    pageTitle = 'Módulos profesionales';
-  }
-
-  if (activeSection === 'students') {
-    pageEyebrow = 'Gestión académica';
-    pageTitle = 'Alumnado';
-  }
-
-  if (activeSection === 'enrolments') {
-    pageEyebrow = 'Gestión académica';
-    pageTitle = 'Matrículas modulares';
-  }
-
-  if (activeSection === 'evaluations') {
-    pageEyebrow = 'Evaluación académica';
-    pageTitle = 'Evaluaciones y estados';
-  }
-
-  if (activeSection === 'assessment-schemes') {
-    pageEyebrow = 'Evaluación académica';
-    pageTitle = 'Sistemas de calificación';
-  }
-
-  if (activeSection === 'grades') {
-    pageEyebrow = 'Evaluación académica';
-    pageTitle = 'Calificaciones';
-  }
-
-  if (activeSection === 'statistics') {
-    pageEyebrow = 'Estadísticas académicas';
-    pageTitle = 'Panel de estadísticas';
-  }
-
-  if (activeSection === 'generated-documents') {
-    pageEyebrow = 'Documentos generados';
-    pageTitle = 'Historial documental';
   }
 
   let activeContent: ReactNode;
@@ -328,100 +390,47 @@ export function DashboardPage({
       />
     );
   } else if (activeSection === 'assessment-schemes') {
-    activeContent = (
-      <AssessmentSchemesPage />
-    );
+    activeContent = <AssessmentSchemesPage />;
   } else if (activeSection === 'grades') {
-    activeContent = (
-      <GradesPage />
-    );
+    activeContent = <GradesPage />;
   } else if (activeSection === 'statistics') {
+    activeContent = <StatisticsPage />;
+  } else if (activeSection === 'company-training') {
     activeContent = (
-      <StatisticsPage />
+      <CompanyTrainingPage
+        canManageCompanies={canUseBuiltModules}
+        canManageTutors={canUseBuiltModules}
+        canManagePlacements={canUseBuiltModules}
+        canManageFollowups={canUseBuiltModules}
+        canManageIncidents={canUseBuiltModules}
+      />
     );
   } else if (activeSection === 'generated-documents') {
-    activeContent = (
-      <GeneratedDocumentsPage />
-    );
+    activeContent = <GeneratedDocumentsPage />;
   } else {
-    activeContent = (
-      <main className="dashboard-content">
-        <section className="welcome-card">
-          <div>
-            <p className="eyebrow">
-              Sesión activa
-            </p>
-
-            <h2>
-              SAFA Twin está conectado
-            </h2>
-
-            <p>
-              El frontend React está comunicándose correctamente
-              con la API y la sesión está almacenada en MariaDB.
-            </p>
-          </div>
-
-          <span className="status-badge">
-            Sistema operativo
-          </span>
-        </section>
-
-        <section className="dashboard-grid">
-          <article className="info-card">
-            <h2>Usuario</h2>
-
-            <dl className="user-details">
-              <div>
-                <dt>Nombre</dt>
-                <dd>{user.name}</dd>
-              </div>
-
-              <div>
-                <dt>Correo</dt>
-                <dd>{user.email}</dd>
-              </div>
-            </dl>
-          </article>
-
-          <article className="info-card">
-            <h2>Roles asignados</h2>
-
-            <div className="role-list">
-              {user.roles.map((role) => (
-                <span
-                  className="role-badge"
-                  key={role}
-                >
-                  {formatRole(role)}
-                </span>
-              ))}
-            </div>
-          </article>
-
-          <article className="info-card">
-            <h2>Estado del sistema</h2>
-
-            <ul className="status-list">
-              <li>Autenticación y sesiones</li>
-              <li>Roles y permisos en backend</li>
-              <li>Gestión de usuarios</li>
-              <li>Gestión de cursos académicos</li>
-              <li>Gestión de centros</li>
-              <li>Gestión de ciclos formativos</li>
-              <li>Gestión de niveles académicos</li>
-              <li>Gestión de módulos profesionales</li>
-              <li>Gestión de alumnado</li>
-              <li>Matrícula modular por asignaturas</li>
-              <li>Gestión de evaluaciones y estados</li>
-              <li>Estadísticas académicas</li>
-              <li>Historial documental</li>
-            </ul>
-          </article>
-        </section>
-      </main>
-    );
+    activeContent = <DashboardHome user={user} />;
   }
+
+  const mobileSections: {
+    id: ActiveSection;
+    label: string;
+  }[] = [
+    { id: 'dashboard', label: 'Panel' },
+    { id: 'users', label: 'Usuarios' },
+    { id: 'academic-years', label: 'Cursos' },
+    { id: 'centres', label: 'Centros' },
+    { id: 'vocational-programmes', label: 'Ciclos' },
+    { id: 'academic-levels', label: 'Niveles' },
+    { id: 'modules', label: 'Módulos' },
+    { id: 'students', label: 'Alumnado' },
+    { id: 'enrolments', label: 'Matrículas' },
+    { id: 'evaluations', label: 'Evaluaciones' },
+    { id: 'assessment-schemes', label: 'Sistemas' },
+    { id: 'grades', label: 'Notas' },
+    { id: 'statistics', label: 'Estadísticas' },
+    { id: 'company-training', label: 'Empresa' },
+    { id: 'generated-documents', label: 'Documentos' },
+  ];
 
   return (
     <div className="app-shell">
@@ -430,7 +439,6 @@ export function DashboardPage({
           <div className="brand-mark brand-mark-small">
             ST
           </div>
-
           <div>
             <strong>SAFA Twin</strong>
             <span>Gestión académica</span>
@@ -441,124 +449,107 @@ export function DashboardPage({
           className="sidebar-nav"
           aria-label="Navegación principal"
         >
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="dashboard"
             label="Panel principal"
             onSelect={setActiveSection}
           />
 
-          <p className="nav-section-label">
-            Administración
-          </p>
-
-          <MainNavButton
+          <p className="nav-section-label">Administración</p>
+          <NavigationButton
             activeSection={activeSection}
             id="users"
             label="Usuarios"
             onSelect={setActiveSection}
           />
 
-          <p className="nav-section-label">
-            Estructura académica
-          </p>
-
-          <MainNavButton
+          <p className="nav-section-label">Estructura académica</p>
+          <NavigationButton
             activeSection={activeSection}
             id="academic-years"
             label="Cursos académicos"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="centres"
             label="Centros"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="vocational-programmes"
             label="Ciclos formativos"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="academic-levels"
             label="Niveles"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="modules"
             label="Módulos"
             onSelect={setActiveSection}
           />
-
           <span className="nav-link nav-link-disabled">
             Ofertas académicas
           </span>
 
-          <p className="nav-section-label">
-            Gestión académica
-          </p>
-
-          <MainNavButton
+          <p className="nav-section-label">Gestión académica</p>
+          <NavigationButton
             activeSection={activeSection}
             id="students"
             label="Alumnado"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="enrolments"
             label="Matrículas"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="evaluations"
             label="Evaluaciones"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="assessment-schemes"
             label="Sistemas calificación"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="grades"
             label="Calificaciones"
             onSelect={setActiveSection}
           />
-
-          <MainNavButton
+          <NavigationButton
             activeSection={activeSection}
             id="statistics"
             label="Estadísticas"
             onSelect={setActiveSection}
           />
 
-          <p className="nav-section-label">
-            Documentos
-          </p>
-
-          <MainNavButton
+          <p className="nav-section-label">Formación y documentos</p>
+          <NavigationButton
+            activeSection={activeSection}
+            id="company-training"
+            label="Formación en empresa"
+            onSelect={setActiveSection}
+          />
+          <NavigationButton
             activeSection={activeSection}
             id="generated-documents"
             label="Historial documental"
             onSelect={setActiveSection}
           />
-
           <span className="nav-link nav-link-disabled">
             Gemelo digital
           </span>
@@ -569,10 +560,9 @@ export function DashboardPage({
         <header className="topbar">
           <div>
             <p className="eyebrow">
-              {pageEyebrow}
+              {pageHeader.eyebrow}
             </p>
-
-            <h1>{pageTitle}</h1>
+            <h1>{pageHeader.title}</h1>
           </div>
 
           <button
@@ -593,103 +583,16 @@ export function DashboardPage({
           className="mobile-navigation"
           aria-label="Navegación móvil"
         >
-          <MobileNavButton
-            activeSection={activeSection}
-            id="dashboard"
-            label="Panel"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="users"
-            label="Usuarios"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="academic-years"
-            label="Cursos"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="centres"
-            label="Centros"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="vocational-programmes"
-            label="Ciclos"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="academic-levels"
-            label="Niveles"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="modules"
-            label="Módulos"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="students"
-            label="Alumnado"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="enrolments"
-            label="Matrículas"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="evaluations"
-            label="Evaluaciones"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="assessment-schemes"
-            label="Sistemas"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="grades"
-            label="Notas"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="statistics"
-            label="Estadísticas"
-            onSelect={setActiveSection}
-          />
-
-          <MobileNavButton
-            activeSection={activeSection}
-            id="generated-documents"
-            label="Documentos"
-            onSelect={setActiveSection}
-          />
+          {mobileSections.map((section) => (
+            <NavigationButton
+              activeSection={activeSection}
+              id={section.id}
+              key={section.id}
+              label={section.label}
+              onSelect={setActiveSection}
+              variant="mobile"
+            />
+          ))}
         </nav>
 
         {activeContent}
