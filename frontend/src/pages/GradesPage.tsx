@@ -44,6 +44,7 @@ import {
   createGrade,
   getGrades,
   restoreGrade,
+  updateGrade,
 } from '../services/grades.service';
 
 import './GradesPage.css';
@@ -108,6 +109,16 @@ function getApiErrorMessage(
   return 'Se ha producido un error inesperado.';
 }
 
+function gradeCanBeEdited(
+  grade: Grade,
+): boolean {
+  return (
+    grade.deletedAt === null
+    && !grade.isLocked
+    && grade.evaluation.status === 'OPEN'
+  );
+}
+
 export function GradesPage() {
   const [
     evaluations,
@@ -168,6 +179,11 @@ export function GradesPage() {
     statusFilter,
     setStatusFilter,
   ] = useState<GradeStatusFilter>('active');
+
+  const [
+    editingGradeId,
+    setEditingGradeId,
+  ] = useState<number | null>(null);
 
   const [
     isLoading,
@@ -438,7 +454,104 @@ export function GradesPage() {
     selectedAssessmentScheme,
   ]);
 
-  async function handleCreateGrade():
+  function resetGradeForm(): void {
+    setEditingGradeId(null);
+    setSelectedEvaluationId('');
+    setSelectedEnrolmentId('');
+    setSelectedGradeStatusId('');
+    setRemarks('');
+    setComponentScores({});
+  }
+
+  function startEditingGrade(
+    grade: Grade,
+  ): void {
+    if (!gradeCanBeEdited(grade)) {
+      setError(
+        'Solo se pueden editar calificaciones activas de evaluaciones abiertas.',
+      );
+      return;
+    }
+
+    const nextComponentScores:
+    Record<string, ComponentScoreState> = {};
+
+    for (const componentScore of grade.componentScores) {
+      nextComponentScores[
+        String(componentScore.assessmentComponentId)
+      ] = {
+        score:
+          componentScore.score === null
+            ? ''
+            : String(componentScore.score),
+        isMissing: componentScore.isMissing,
+        remarks: componentScore.remarks ?? '',
+      };
+    }
+
+    setMessage(null);
+    setError(null);
+    setEditingGradeId(grade.id);
+    setSelectedEvaluationId(
+      String(grade.evaluationId),
+    );
+    setSelectedEnrolmentId(
+      String(grade.enrolmentId),
+    );
+    setSelectedGradeStatusId(
+      grade.gradeStatusId === null
+        ? ''
+        : String(grade.gradeStatusId),
+    );
+    setRemarks(grade.remarks ?? '');
+    setComponentScores(nextComponentScores);
+  }
+
+  function buildGradeInput() {
+    if (!selectedAssessmentScheme) {
+      return null;
+    }
+
+    const componentScoreInput =
+      selectedAssessmentScheme.components.map(
+        (component) => {
+          const state =
+            componentScores[String(component.id)]
+            ?? emptyComponentScore;
+
+          return {
+            assessmentComponentId:
+              component.id,
+            score:
+              state.score === ''
+                ? undefined
+                : Number(state.score),
+            isMissing:
+              state.isMissing,
+            remarks:
+              state.remarks || undefined,
+          };
+        },
+      );
+
+    return {
+      evaluationId:
+        Number(selectedEvaluationId),
+      enrolmentId:
+        Number(selectedEnrolmentId),
+      assessmentSchemeId:
+        selectedAssessmentScheme.id,
+      gradeStatusId:
+        selectedGradeStatusId
+          ? Number(selectedGradeStatusId)
+          : undefined,
+      remarks: remarks || undefined,
+      componentScores:
+        componentScoreInput,
+    };
+  }
+
+  async function handleSaveGrade():
   Promise<void> {
     setMessage(null);
     setError(null);
@@ -464,52 +577,28 @@ export function GradesPage() {
       return;
     }
 
+    const gradeInput = buildGradeInput();
+
+    if (!gradeInput) {
+      setError(
+        'No se ha podido preparar la calificación.',
+      );
+      return;
+    }
+
     setIsSaving(true);
 
     try {
-      const componentScoreInput =
-        selectedAssessmentScheme.components.map(
-          (component) => {
-            const state =
-              componentScores[String(component.id)]
-              ?? emptyComponentScore;
-
-            return {
-              assessmentComponentId:
-                component.id,
-              score:
-                state.score === ''
-                  ? undefined
-                  : Number(state.score),
-              isMissing:
-                state.isMissing,
-              remarks:
-                state.remarks || undefined,
-            };
-          },
-        );
-
       const response =
-        await createGrade({
-          evaluationId:
-            Number(selectedEvaluationId),
-          enrolmentId:
-            Number(selectedEnrolmentId),
-          assessmentSchemeId:
-            selectedAssessmentScheme.id,
-          gradeStatusId:
-            selectedGradeStatusId
-              ? Number(selectedGradeStatusId)
-              : undefined,
-          remarks: remarks || undefined,
-          componentScores:
-            componentScoreInput,
-        });
+        editingGradeId === null
+          ? await createGrade(gradeInput)
+          : await updateGrade(
+            editingGradeId,
+            gradeInput,
+          );
 
       setMessage(response.message);
-      setRemarks('');
-      setSelectedGradeStatusId('');
-      setComponentScores({});
+      resetGradeForm();
       await loadGrades();
     } catch (caughtError: unknown) {
       setError(
@@ -531,6 +620,11 @@ export function GradesPage() {
         await archiveGrade(gradeId);
 
       setMessage(response.message);
+
+      if (editingGradeId === gradeId) {
+        resetGradeForm();
+      }
+
       await loadGrades();
     } catch (caughtError: unknown) {
       setError(
@@ -605,12 +699,23 @@ export function GradesPage() {
       <section className="grades-layout">
         <article className="grades-card">
           <p className="eyebrow">
-            Nueva calificación
+            {editingGradeId === null
+              ? 'Nueva calificación'
+              : 'Edición de calificación'}
           </p>
 
           <h3>
-            Registro de nota
+            {editingGradeId === null
+              ? 'Registro de nota'
+              : 'Modificar nota registrada'}
           </h3>
+
+          {editingGradeId !== null && (
+            <div className="alert alert-success">
+              Estás editando una calificación existente.
+              Guarda los cambios o cancela la edición.
+            </div>
+          )}
 
           <div className="grades-form-grid">
             <label>
@@ -822,18 +927,33 @@ export function GradesPage() {
             />
           </label>
 
-          <button
-            className="button button-primary"
-            type="button"
-            disabled={isSaving}
-            onClick={() => {
-              void handleCreateGrade();
-            }}
-          >
-            {isSaving
-              ? 'Guardando...'
-              : 'Guardar calificación'}
-          </button>
+          <div className="table-actions">
+            <button
+              className="button button-primary"
+              type="button"
+              disabled={isSaving}
+              onClick={() => {
+                void handleSaveGrade();
+              }}
+            >
+              {isSaving
+                ? 'Guardando...'
+                : editingGradeId === null
+                  ? 'Guardar calificación'
+                  : 'Actualizar calificación'}
+            </button>
+
+            {editingGradeId !== null && (
+              <button
+                className="button button-secondary"
+                type="button"
+                disabled={isSaving}
+                onClick={resetGradeForm}
+              >
+                Cancelar edición
+              </button>
+            )}
+          </div>
         </article>
 
         <article className="grades-card">
@@ -950,33 +1070,55 @@ export function GradesPage() {
                       </td>
 
                       <td>
-                        {grade.deletedAt
-                          ? (
-                            <button
-                              className="button button-secondary"
-                              type="button"
-                              onClick={() => {
-                                void handleRestoreGrade(
-                                  grade.id,
-                                );
-                              }}
-                            >
-                              Restaurar
-                            </button>
-                          )
-                          : (
-                            <button
-                              className="button button-danger"
-                              type="button"
-                              onClick={() => {
-                                void handleArchiveGrade(
-                                  grade.id,
-                                );
-                              }}
-                            >
-                              Archivar
-                            </button>
-                          )}
+                        <div className="table-actions">
+                          {grade.deletedAt
+                            ? (
+                              <button
+                                className="button button-secondary"
+                                type="button"
+                                onClick={() => {
+                                  void handleRestoreGrade(
+                                    grade.id,
+                                  );
+                                }}
+                              >
+                                Restaurar
+                              </button>
+                            )
+                            : (
+                              <>
+                                <button
+                                  className="button button-small"
+                                  type="button"
+                                  disabled={
+                                    !gradeCanBeEdited(grade)
+                                  }
+                                  title={
+                                    gradeCanBeEdited(grade)
+                                      ? 'Editar calificación'
+                                      : 'Solo se pueden editar calificaciones activas de evaluaciones abiertas.'
+                                  }
+                                  onClick={() => {
+                                    startEditingGrade(grade);
+                                  }}
+                                >
+                                  Editar
+                                </button>
+
+                                <button
+                                  className="button button-danger"
+                                  type="button"
+                                  onClick={() => {
+                                    void handleArchiveGrade(
+                                      grade.id,
+                                    );
+                                  }}
+                                >
+                                  Archivar
+                                </button>
+                              </>
+                            )}
+                        </div>
                       </td>
                     </tr>
                   ))}

@@ -164,9 +164,67 @@ const academicPermissions: PermissionSeed[] = [
   },
 ];
 
+const evaluationPermissions: PermissionSeed[] = [
+  {
+    name: 'Listar evaluaciones',
+    slug: 'evaluations.list',
+    description:
+      'Consultar el listado de evaluaciones.',
+  },
+  {
+    name: 'Consultar evaluaciones',
+    slug: 'evaluations.view',
+    description:
+      'Consultar los datos de una evaluación.',
+  },
+  {
+    name: 'Crear evaluaciones',
+    slug: 'evaluations.create',
+    description:
+      'Crear nuevos periodos de evaluación.',
+  },
+  {
+    name: 'Modificar evaluaciones',
+    slug: 'evaluations.update',
+    description:
+      'Modificar los datos generales de una evaluación.',
+  },
+  {
+    name: 'Archivar evaluaciones',
+    slug: 'evaluations.archive',
+    description:
+      'Archivar evaluaciones sin eliminarlas físicamente.',
+  },
+  {
+    name: 'Cerrar evaluaciones',
+    slug: 'evaluations.close',
+    description:
+      'Cerrar una evaluación para impedir nuevas modificaciones de calificaciones.',
+  },
+  {
+    name: 'Bloquear evaluaciones',
+    slug: 'evaluations.lock',
+    description:
+      'Bloquear una evaluación con un estado más restrictivo que el cierre ordinario.',
+  },
+  {
+    name: 'Reabrir evaluaciones',
+    slug: 'evaluations.reopen',
+    description:
+      'Reabrir evaluaciones cerradas o bloqueadas.',
+  },
+  {
+    name: 'Consultar estadísticas de evaluación',
+    slug: 'evaluations.statistics.view',
+    description:
+      'Consultar estadísticas básicas de una evaluación.',
+  },
+];
+
 const permissions: PermissionSeed[] = [
   ...userAndRolePermissions,
   ...academicPermissions,
+  ...evaluationPermissions,
 ];
 
 const administratorRoleSlug = 'administrador';

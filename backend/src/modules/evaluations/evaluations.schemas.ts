@@ -173,6 +173,14 @@ export const listEvaluationsQuerySchema = z
   })
   .strict();
 
+export const evaluationStatisticsQuerySchema = z
+  .object({
+    moduleId: optionalPositiveIdSchema,
+    vocationalProgrammeId: optionalPositiveIdSchema,
+    academicLevelId: optionalPositiveIdSchema,
+  })
+  .strict();
+
 const evaluationFields = {
   academicYearId:
     requiredPositiveIdSchema,
@@ -287,3 +295,6 @@ export type UpdateEvaluationInput =
 
 export type ListEvaluationsQuery =
   z.infer<typeof listEvaluationsQuerySchema>;
+
+export type EvaluationStatisticsQuery =
+  z.infer<typeof evaluationStatisticsQuerySchema>;

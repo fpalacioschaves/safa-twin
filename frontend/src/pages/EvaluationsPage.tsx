@@ -19,10 +19,14 @@ import {
 import {
   archiveEvaluation,
   archiveGradeStatus,
+  closeEvaluation,
   createEvaluation,
   createGradeStatus,
+  getEvaluationStatistics,
   getEvaluations,
   getGradeStatuses,
+  lockEvaluation,
+  reopenEvaluation,
   restoreEvaluation,
   restoreGradeStatus,
   updateEvaluation,
@@ -39,6 +43,7 @@ import type {
 
 import type {
   Evaluation,
+  EvaluationStatisticsResponse,
   EvaluationStatus,
   EvaluationStatusFilter,
   GradeStatus,
@@ -140,6 +145,40 @@ function getErrorMessage(error: unknown): string {
   return 'Se ha producido un error inesperado.';
 }
 
+function formatEvaluationStatus(
+  status: EvaluationStatus,
+): string {
+  if (status === 'DRAFT') {
+    return 'Borrador';
+  }
+
+  if (status === 'OPEN') {
+    return 'Abierta';
+  }
+
+  if (status === 'CLOSED') {
+    return 'Cerrada';
+  }
+
+  return 'Bloqueada';
+}
+
+function formatPercentage(
+  value: number | null,
+): string {
+  if (value === null) {
+    return '—';
+  }
+
+  return `${value.toLocaleString(
+    'es-ES',
+    {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
+  )}%`;
+}
+
 export function EvaluationsPage({
   canCreateEvaluations,
   canEditEvaluations,
@@ -194,6 +233,12 @@ export function EvaluationsPage({
   const [editingGradeStatusId, setEditingGradeStatusId] =
     useState<number | null>(null);
 
+  const [evaluationStatistics, setEvaluationStatistics] =
+    useState<EvaluationStatisticsResponse | null>(null);
+
+  const [isLoadingStatistics, setIsLoadingStatistics] =
+    useState(false);
+
   const [isLoading, setIsLoading] =
     useState(true);
 
@@ -246,6 +291,19 @@ export function EvaluationsPage({
     });
 
     setGradeStatuses(response.items);
+  }
+
+  async function reloadSelectedStatistics(): Promise<void> {
+    if (!evaluationStatistics) {
+      return;
+    }
+
+    const statistics =
+      await getEvaluationStatistics(
+        evaluationStatistics.evaluation.id,
+      );
+
+    setEvaluationStatistics(statistics);
   }
 
   useEffect(() => {
@@ -379,6 +437,7 @@ export function EvaluationsPage({
 
       resetEvaluationForm();
       await loadEvaluations();
+      await reloadSelectedStatistics();
     } catch (error: unknown) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -425,6 +484,7 @@ export function EvaluationsPage({
 
       resetGradeStatusForm();
       await loadGradeStatuses();
+      await reloadSelectedStatistics();
     } catch (error: unknown) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -455,6 +515,105 @@ export function EvaluationsPage({
     }
   }
 
+  async function handleCloseEvaluation(
+    evaluation: Evaluation,
+  ): Promise<void> {
+    setErrorMessage(null);
+    setFeedback(null);
+
+    const confirmed = window.confirm(
+      `¿Cerrar la evaluación "${evaluation.name}"? Las calificaciones quedarán bloqueadas.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await closeEvaluation(evaluation.id);
+      setFeedback(
+        'Evaluación cerrada correctamente.',
+      );
+      await loadEvaluations();
+      await reloadSelectedStatistics();
+    } catch (error: unknown) {
+      setErrorMessage(getErrorMessage(error));
+    }
+  }
+
+  async function handleLockEvaluation(
+    evaluation: Evaluation,
+  ): Promise<void> {
+    setErrorMessage(null);
+    setFeedback(null);
+
+    const confirmed = window.confirm(
+      `¿Bloquear la evaluación "${evaluation.name}"? Esta acción impedirá cambios en las calificaciones.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await lockEvaluation(evaluation.id);
+      setFeedback(
+        'Evaluación bloqueada correctamente.',
+      );
+      await loadEvaluations();
+      await reloadSelectedStatistics();
+    } catch (error: unknown) {
+      setErrorMessage(getErrorMessage(error));
+    }
+  }
+
+  async function handleReopenEvaluation(
+    evaluation: Evaluation,
+  ): Promise<void> {
+    setErrorMessage(null);
+    setFeedback(null);
+
+    const confirmed = window.confirm(
+      `¿Reabrir la evaluación "${evaluation.name}"? Las calificaciones volverán a poder modificarse.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await reopenEvaluation(evaluation.id);
+      setFeedback(
+        'Evaluación reabierta correctamente.',
+      );
+      await loadEvaluations();
+      await reloadSelectedStatistics();
+    } catch (error: unknown) {
+      setErrorMessage(getErrorMessage(error));
+    }
+  }
+
+  async function handleShowStatistics(
+    evaluation: Evaluation,
+  ): Promise<void> {
+    setErrorMessage(null);
+    setFeedback(null);
+    setIsLoadingStatistics(true);
+
+    try {
+      const statistics =
+        await getEvaluationStatistics(
+          evaluation.id,
+        );
+
+      setEvaluationStatistics(statistics);
+    } catch (error: unknown) {
+      setErrorMessage(getErrorMessage(error));
+    } finally {
+      setIsLoadingStatistics(false);
+    }
+  }
+
   async function handleArchiveGradeStatus(
     gradeStatus: GradeStatus,
   ): Promise<void> {
@@ -475,6 +634,7 @@ export function EvaluationsPage({
       }
 
       await loadGradeStatuses();
+      await reloadSelectedStatistics();
     } catch (error: unknown) {
       setErrorMessage(getErrorMessage(error));
     }
@@ -760,7 +920,7 @@ export function EvaluationsPage({
                     <td>{evaluation.name}</td>
                     <td>{evaluation.academicYear.name}</td>
                     <td>{evaluation.centre.name}</td>
-                    <td>{evaluation.status}</td>
+                    <td>{formatEvaluationStatus(evaluation.status)}</td>
                     <td>
                       {toDateInputValue(evaluation.startsAt) || '-'}
                       {' / '}
@@ -768,6 +928,17 @@ export function EvaluationsPage({
                     </td>
                     <td>
                       <div className="table-actions">
+                        <button
+                          className="button button-small button-secondary"
+                          type="button"
+                          disabled={isLoadingStatistics}
+                          onClick={() => {
+                            void handleShowStatistics(evaluation);
+                          }}
+                        >
+                          Estadísticas
+                        </button>
+
                         {canEditEvaluations && !evaluation.deletedAt && (
                           <button
                             className="button button-small"
@@ -779,6 +950,51 @@ export function EvaluationsPage({
                             Editar
                           </button>
                         )}
+
+                        {canEditEvaluations
+                          && !evaluation.deletedAt
+                          && evaluation.status === 'OPEN' && (
+                            <button
+                              className="button button-small button-secondary"
+                              type="button"
+                              onClick={() => {
+                                void handleCloseEvaluation(evaluation);
+                              }}
+                            >
+                              Cerrar
+                            </button>
+                          )}
+
+                        {canEditEvaluations
+                          && !evaluation.deletedAt
+                          && evaluation.status === 'OPEN' && (
+                            <button
+                              className="button button-small button-secondary"
+                              type="button"
+                              onClick={() => {
+                                void handleLockEvaluation(evaluation);
+                              }}
+                            >
+                              Bloquear
+                            </button>
+                          )}
+
+                        {canEditEvaluations
+                          && !evaluation.deletedAt
+                          && (
+                            evaluation.status === 'CLOSED'
+                            || evaluation.status === 'LOCKED'
+                          ) && (
+                            <button
+                              className="button button-small button-secondary"
+                              type="button"
+                              onClick={() => {
+                                void handleReopenEvaluation(evaluation);
+                              }}
+                            >
+                              Reabrir
+                            </button>
+                          )}
 
                         {canArchiveEvaluations && (
                           <button
@@ -826,6 +1042,203 @@ export function EvaluationsPage({
               Siguiente
             </button>
           </div>
+
+          {evaluationStatistics && (
+            <section className="info-card">
+              <p className="eyebrow">
+                Estadísticas básicas
+              </p>
+
+              <h2>
+                {evaluationStatistics.evaluation.code}
+                {' · '}
+                {evaluationStatistics.evaluation.name}
+              </h2>
+
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Indicador</th>
+                      <th>Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Matrículas modulares incluidas</td>
+                      <td>
+                        {evaluationStatistics.summary.totals.enrolled}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Evaluadas numéricamente</td>
+                      <td>
+                        {evaluationStatistics.summary.totals.numericEvaluated}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Aprobadas</td>
+                      <td>
+                        {evaluationStatistics.summary.totals.passed}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Suspensas</td>
+                      <td>
+                        {evaluationStatistics.summary.totals.failed}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>No evaluadas numéricamente</td>
+                      <td>
+                        {evaluationStatistics.summary.totals.notNumericallyEvaluated}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Sin registro de calificación</td>
+                      <td>
+                        {evaluationStatistics.summary.totals.withoutGradeRecord}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Sin nota ni estado</td>
+                      <td>
+                        {evaluationStatistics.summary.totals.withoutNumericStatus}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tasa de éxito</td>
+                      <td>
+                        {formatPercentage(
+                          evaluationStatistics.summary.rates.successRate,
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Tasa de rendimiento</td>
+                      <td>
+                        {formatPercentage(
+                          evaluationStatistics.summary.rates.performanceRate,
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3>Estados no numéricos</h3>
+
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Estado</th>
+                      <th>Total</th>
+                      <th>Evaluable</th>
+                      <th>Aprobado</th>
+                      <th>No presentado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {evaluationStatistics.summary.nonNumericStatuses.length === 0
+                      ? (
+                        <tr>
+                          <td colSpan={6}>
+                            No hay estados no numéricos registrados.
+                          </td>
+                        </tr>
+                      )
+                      : evaluationStatistics.summary.nonNumericStatuses.map(
+                        (status) => (
+                          <tr key={status.code}>
+                            <td>{status.code}</td>
+                            <td>{status.name}</td>
+                            <td>{status.total}</td>
+                            <td>{status.isEvaluable ? 'Sí' : 'No'}</td>
+                            <td>{status.countsAsPassed ? 'Sí' : 'No'}</td>
+                            <td>{status.countsAsNoShow ? 'Sí' : 'No'}</td>
+                          </tr>
+                        ),
+                      )}
+                  </tbody>
+                </table>
+              </div>
+
+              <h3>Desglose por módulo</h3>
+
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Módulo</th>
+                      <th>Ciclo</th>
+                      <th>Nivel</th>
+                      <th>Matriculadas</th>
+                      <th>Eval. numéricas</th>
+                      <th>Aprobadas</th>
+                      <th>Suspensas</th>
+                      <th>Éxito</th>
+                      <th>Rendimiento</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {evaluationStatistics.modules.length === 0
+                      ? (
+                        <tr>
+                          <td colSpan={9}>
+                            No hay matrículas modulares para esta evaluación.
+                          </td>
+                        </tr>
+                      )
+                      : evaluationStatistics.modules.map((item) => (
+                        <tr key={item.module.id}>
+                          <td>
+                            {item.module.code}
+                            {' · '}
+                            {item.module.name}
+                          </td>
+                          <td>
+                            {item.module.vocationalProgramme.acronym}
+                          </td>
+                          <td>
+                            {item.module.academicLevel.name}
+                          </td>
+                          <td>
+                            {item.statistics.totals.enrolled}
+                          </td>
+                          <td>
+                            {item.statistics.totals.numericEvaluated}
+                          </td>
+                          <td>
+                            {item.statistics.totals.passed}
+                          </td>
+                          <td>
+                            {item.statistics.totals.failed}
+                          </td>
+                          <td>
+                            {formatPercentage(
+                              item.statistics.rates.successRate,
+                            )}
+                          </td>
+                          <td>
+                            {formatPercentage(
+                              item.statistics.rates.performanceRate,
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="alert alert-success">
+                Los estados no numéricos se muestran aparte y no se convierten
+                en nota. La tasa de éxito usa solo calificaciones numéricas; la
+                tasa de rendimiento usa las matrículas modulares incluidas.
+              </div>
+            </section>
+          )}
         </article>
 
         <article className="info-card evaluation-card">

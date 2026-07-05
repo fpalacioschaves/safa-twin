@@ -11,12 +11,14 @@ import {
 import {
   createEvaluationSchema,
   evaluationIdParamsSchema,
+  evaluationStatisticsQuerySchema,
   listEvaluationsQuerySchema,
   updateEvaluationSchema,
 } from './evaluations.schemas.js';
 
 import {
   archiveEvaluation,
+  closeEvaluation,
   createEvaluation,
   EvaluationAlreadyArchivedError,
   EvaluationAlreadyExistsError,
@@ -24,8 +26,12 @@ import {
   EvaluationNotArchivedError,
   EvaluationNotFoundError,
   EvaluationRelatedEntityUnavailableError,
+  EvaluationStatusTransitionError,
   getEvaluationById,
+  getEvaluationStatistics,
   listEvaluations,
+  lockEvaluation,
+  reopenEvaluation,
   restoreEvaluation,
   updateEvaluation,
 } from './evaluations.service.js';
@@ -141,6 +147,20 @@ function handleKnownEvaluationError(
     return true;
   }
 
+  if (
+    error
+    instanceof EvaluationStatusTransitionError
+  ) {
+    response.status(409).json({
+      error: {
+        code:
+          'EVALUATION_STATUS_TRANSITION_NOT_ALLOWED',
+        message: error.message,
+      },
+    });
+    return true;
+  }
+
   return false;
 }
 
@@ -211,6 +231,61 @@ evaluationsRouter.get(
   },
 );
 
+evaluationsRouter.get(
+  '/:id/statistics',
+  requirePermission('evaluations.statistics.view'),
+  async (request, response, next) => {
+    try {
+      const evaluationId =
+        getValidatedEvaluationId(
+          request,
+          response,
+        );
+
+      if (evaluationId === null) {
+        return;
+      }
+
+      const validation =
+        evaluationStatisticsQuerySchema.safeParse(
+          request.query,
+        );
+
+      if (!validation.success) {
+        response.status(422).json({
+          error: {
+            code: 'VALIDATION_ERROR',
+            message:
+              'Los filtros de estadísticas no son válidos.',
+            details: getValidationDetails(
+              validation.error.issues,
+            ),
+          },
+        });
+        return;
+      }
+
+      response.status(200).json(
+        await getEvaluationStatistics(
+          evaluationId,
+          validation.data,
+        ),
+      );
+    } catch (error: unknown) {
+      if (
+        handleKnownEvaluationError(
+          error,
+          response,
+        )
+      ) {
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
 evaluationsRouter.post(
   '/',
   requirePermission('evaluations.create'),
@@ -242,6 +317,120 @@ evaluationsRouter.post(
       response.status(201).json({
         message:
           'Evaluación creada correctamente.',
+        evaluation,
+      });
+    } catch (error: unknown) {
+      if (
+        handleKnownEvaluationError(
+          error,
+          response,
+        )
+      ) {
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+evaluationsRouter.post(
+  '/:id/close',
+  requirePermission('evaluations.close'),
+  async (request, response, next) => {
+    try {
+      const evaluationId =
+        getValidatedEvaluationId(
+          request,
+          response,
+        );
+
+      if (evaluationId === null) {
+        return;
+      }
+
+      const evaluation =
+        await closeEvaluation(evaluationId);
+
+      response.status(200).json({
+        message:
+          'Evaluación cerrada correctamente.',
+        evaluation,
+      });
+    } catch (error: unknown) {
+      if (
+        handleKnownEvaluationError(
+          error,
+          response,
+        )
+      ) {
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+evaluationsRouter.post(
+  '/:id/lock',
+  requirePermission('evaluations.lock'),
+  async (request, response, next) => {
+    try {
+      const evaluationId =
+        getValidatedEvaluationId(
+          request,
+          response,
+        );
+
+      if (evaluationId === null) {
+        return;
+      }
+
+      const evaluation =
+        await lockEvaluation(evaluationId);
+
+      response.status(200).json({
+        message:
+          'Evaluación bloqueada correctamente.',
+        evaluation,
+      });
+    } catch (error: unknown) {
+      if (
+        handleKnownEvaluationError(
+          error,
+          response,
+        )
+      ) {
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+evaluationsRouter.post(
+  '/:id/reopen',
+  requirePermission('evaluations.reopen'),
+  async (request, response, next) => {
+    try {
+      const evaluationId =
+        getValidatedEvaluationId(
+          request,
+          response,
+        );
+
+      if (evaluationId === null) {
+        return;
+      }
+
+      const evaluation =
+        await reopenEvaluation(evaluationId);
+
+      response.status(200).json({
+        message:
+          'Evaluación reabierta correctamente.',
         evaluation,
       });
     } catch (error: unknown) {

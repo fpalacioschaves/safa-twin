@@ -2,6 +2,8 @@ import type {
   CreateEvaluationInput,
   CreateGradeStatusInput,
   EvaluationMutationResponse,
+  EvaluationStatisticsParameters,
+  EvaluationStatisticsResponse,
   GetEvaluationResponse,
   GetGradeStatusResponse,
   GradeStatusMutationResponse,
@@ -88,6 +90,75 @@ export async function updateEvaluation(
       method: 'PUT',
       body: JSON.stringify(input),
     },
+  );
+}
+
+export async function closeEvaluation(
+  evaluationId: number,
+): Promise<EvaluationMutationResponse> {
+  return apiRequest<EvaluationMutationResponse>(
+    `${EVALUATIONS_API_URL}/${evaluationId}/close`,
+    {
+      method: 'POST',
+    },
+  );
+}
+
+export async function lockEvaluation(
+  evaluationId: number,
+): Promise<EvaluationMutationResponse> {
+  return apiRequest<EvaluationMutationResponse>(
+    `${EVALUATIONS_API_URL}/${evaluationId}/lock`,
+    {
+      method: 'POST',
+    },
+  );
+}
+
+export async function reopenEvaluation(
+  evaluationId: number,
+): Promise<EvaluationMutationResponse> {
+  return apiRequest<EvaluationMutationResponse>(
+    `${EVALUATIONS_API_URL}/${evaluationId}/reopen`,
+    {
+      method: 'POST',
+    },
+  );
+}
+
+export async function getEvaluationStatistics(
+  evaluationId: number,
+  parameters: EvaluationStatisticsParameters = {},
+): Promise<EvaluationStatisticsResponse> {
+  const query = new URLSearchParams();
+
+  if (parameters.moduleId) {
+    query.set(
+      'moduleId',
+      parameters.moduleId.toString(),
+    );
+  }
+
+  if (parameters.vocationalProgrammeId) {
+    query.set(
+      'vocationalProgrammeId',
+      parameters.vocationalProgrammeId.toString(),
+    );
+  }
+
+  if (parameters.academicLevelId) {
+    query.set(
+      'academicLevelId',
+      parameters.academicLevelId.toString(),
+    );
+  }
+
+  const queryString = query.toString();
+
+  return apiRequest<EvaluationStatisticsResponse>(
+    queryString
+      ? `${EVALUATIONS_API_URL}/${evaluationId}/statistics?${queryString}`
+      : `${EVALUATIONS_API_URL}/${evaluationId}/statistics`,
   );
 }
 

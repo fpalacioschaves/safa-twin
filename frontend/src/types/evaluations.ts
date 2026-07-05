@@ -1,10 +1,18 @@
 import type {
+  AcademicLevel,
+} from './academic-levels';
+
+import type {
   AcademicYear,
 } from './academic-years';
 
 import type {
   Centre,
 } from './centres';
+
+import type {
+  VocationalProgramme,
+} from './vocational-programmes';
 
 export type EvaluationStatus =
   | 'DRAFT'
@@ -141,4 +149,80 @@ export type UpdateGradeStatusInput =
 export interface GradeStatusMutationResponse {
   message: string;
   gradeStatus: GradeStatus;
+}
+
+export interface EvaluationStatisticsParameters {
+  moduleId?: number;
+  vocationalProgrammeId?: number;
+  academicLevelId?: number;
+}
+
+export interface EvaluationStatisticsFilters {
+  moduleId: number | null;
+  vocationalProgrammeId: number | null;
+  academicLevelId: number | null;
+}
+
+export interface EvaluationStatisticsTotals {
+  enrolled: number;
+  numericEvaluated: number;
+  passed: number;
+  failed: number;
+  notNumericallyEvaluated: number;
+  withoutGradeRecord: number;
+  withoutNumericStatus: number;
+}
+
+export interface EvaluationStatisticsRates {
+  successRate: number | null;
+  performanceRate: number | null;
+}
+
+export interface EvaluationNonNumericStatusStatistic {
+  code: string;
+  name: string;
+  isEvaluable: boolean;
+  countsAsPassed: boolean;
+  countsAsNoShow: boolean;
+  total: number;
+}
+
+export interface EvaluationStatisticsSummary {
+  totals: EvaluationStatisticsTotals;
+  rates: EvaluationStatisticsRates;
+  nonNumericStatuses: EvaluationNonNumericStatusStatistic[];
+}
+
+export interface EvaluationStatisticsModule {
+  id: number;
+  code: string;
+  name: string;
+  acronym: string | null;
+  vocationalProgrammeId: number;
+  academicLevelId: number;
+  vocationalProgramme: Pick<
+    VocationalProgramme,
+    'id' | 'code' | 'name' | 'acronym'
+  >;
+  academicLevel: Pick<
+    AcademicLevel,
+    'id' | 'number' | 'name'
+  >;
+}
+
+export interface EvaluationModuleStatistics {
+  module: EvaluationStatisticsModule;
+  statistics: EvaluationStatisticsSummary;
+}
+
+export interface EvaluationStatisticsResponse {
+  evaluation: Evaluation;
+  filters: EvaluationStatisticsFilters;
+  summary: EvaluationStatisticsSummary;
+  modules: EvaluationModuleStatistics[];
+  formulas: {
+    successRate: string;
+    performanceRate: string;
+    nonNumericStatuses: string;
+  };
 }
