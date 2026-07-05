@@ -111,6 +111,17 @@ export interface DocumentTemplateRequiredInputsResponse {
   requiredInputs: DocumentTemplateInputDefinition[];
 }
 
+export interface DocumentTemplateContextOption {
+  value: string;
+  label: string;
+  description?: string;
+}
+
+export interface DocumentTemplateContextOptionsResponse {
+  templateCode: string;
+  options: Record<string, DocumentTemplateContextOption[]>;
+}
+
 export interface DocumentTemplateValidationRequest {
   outputFormat?: DocumentOutputFormat;
   context?: Record<string, unknown>;
