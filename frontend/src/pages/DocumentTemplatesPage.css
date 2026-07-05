@@ -1,0 +1,314 @@
+.document-templates-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.document-templates-hero,
+.document-templates-card {
+  border: 1px solid #d9e2ef;
+  border-radius: 1.25rem;
+  background: #ffffff;
+}
+
+.document-templates-hero {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
+.document-templates-hero h2,
+.document-templates-card h3,
+.document-templates-card h4 {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.document-templates-hero p,
+.document-templates-card p,
+.document-templates-empty {
+  margin: 0;
+  color: #50627f;
+  line-height: 1.55;
+}
+
+.document-templates-status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  color: #164a2c;
+  background: #d8f6e2;
+  font-weight: 800;
+}
+
+.document-templates-card {
+  padding: 1.5rem;
+}
+
+.document-templates-card-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.document-templates-card-header span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 999px;
+  color: #17324d;
+  background: #eaf1fb;
+  font-weight: 800;
+}
+
+.document-templates-filters {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+}
+
+.document-templates-filters label,
+.document-template-validation label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: #253955;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.document-templates-filters input,
+.document-templates-filters select,
+.document-template-validation input,
+.document-template-validation select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #c8d5e5;
+  border-radius: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  color: #17324d;
+  background: #ffffff;
+  font: inherit;
+}
+
+.document-templates-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  min-height: 2.9rem;
+}
+
+.document-templates-checkbox input {
+  width: auto;
+}
+
+.document-templates-filter-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.document-templates-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(18rem, 0.85fr) minmax(0, 1.5fr);
+  align-items: flex-start;
+}
+
+.document-templates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.document-template-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100%;
+  border: 1px solid #d9e2ef;
+  border-radius: 1rem;
+  padding: 1rem;
+  color: #17324d;
+  background: #f8fbff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.document-template-list-item:hover,
+.document-template-list-item-active {
+  border-color: #2f74c0;
+  background: #eef6ff;
+}
+
+.document-template-list-item strong {
+  font-size: 0.98rem;
+}
+
+.document-template-list-item span,
+.document-template-list-item small {
+  color: #60708c;
+}
+
+.document-template-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.document-template-badges span,
+.document-template-sections article span {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  color: #17324d;
+  background: #eaf1fb;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.document-template-detail-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 1.5rem;
+}
+
+.document-template-detail-grid section,
+.document-template-sections,
+.document-template-variables,
+.document-template-validation {
+  border: 1px solid #e5edf7;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: #fbfdff;
+}
+
+.document-template-detail-grid ul,
+.document-template-validation-result ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.document-template-detail-grid li {
+  margin-bottom: 0.6rem;
+  color: #50627f;
+}
+
+.document-template-detail-grid li strong,
+.document-template-detail-grid li span {
+  display: block;
+}
+
+.document-template-sections,
+.document-template-variables {
+  margin-bottom: 1.5rem;
+}
+
+.document-template-section-list,
+.document-template-variable-list {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.document-template-section-list article,
+.document-template-variable-list article {
+  border: 1px solid #d9e2ef;
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+  background: #ffffff;
+}
+
+.document-template-section-list article strong,
+.document-template-variable-list article strong,
+.document-template-variable-list article span,
+.document-template-variable-list article small {
+  display: block;
+}
+
+.document-template-variable-list article strong {
+  color: #17324d;
+  font-family: Consolas, 'Liberation Mono', monospace;
+}
+
+.document-template-variable-list article span,
+.document-template-variable-list article small {
+  margin-top: 0.25rem;
+  color: #60708c;
+}
+
+.document-template-variable-list article p {
+  margin-top: 0.6rem;
+}
+
+.document-template-validation form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.document-template-validation form button {
+  align-self: end;
+  width: fit-content;
+}
+
+.document-template-validation-result {
+  margin-top: 1rem;
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.document-template-validation-result strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.document-template-validation-ok {
+  border: 1px solid #b7e7c5;
+  color: #164a2c;
+  background: #eefbf2;
+}
+
+.document-template-validation-error {
+  border: 1px solid #f2b8b8;
+  color: #7a1f1f;
+  background: #fff3f3;
+}
+
+@media (max-width: 1100px) {
+  .document-templates-filters,
+  .document-templates-layout,
+  .document-template-detail-grid,
+  .document-template-section-list,
+  .document-template-variable-list,
+  .document-template-validation form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .document-templates-hero,
+  .document-templates-card-header,
+  .document-templates-filter-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .document-templates-filter-actions,
+  .document-templates-filter-actions button,
+  .document-template-validation form button {
+    width: 100%;
+  }
+}
