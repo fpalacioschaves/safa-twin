@@ -1,0 +1,122 @@
+.generated-documents-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.generated-documents-hero,
+.generated-documents-card {
+  border: 1px solid #d9e2ef;
+  border-radius: 1.25rem;
+  background: #ffffff;
+}
+
+.generated-documents-hero {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
+.generated-documents-hero h2,
+.generated-documents-card h3 {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.generated-documents-hero p,
+.generated-documents-card p,
+.generated-documents-empty {
+  margin: 0;
+  color: #50627f;
+  line-height: 1.55;
+}
+
+.generated-documents-status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  color: #164a2c;
+  background: #d8f6e2;
+  font-weight: 800;
+}
+
+.generated-documents-card {
+  padding: 1.5rem;
+}
+
+.generated-documents-card-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.generated-documents-table-wrapper {
+  overflow-x: auto;
+}
+
+.generated-documents-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.generated-documents-table th,
+.generated-documents-table td {
+  border-bottom: 1px solid #e5edf7;
+  padding: 0.85rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.generated-documents-table th {
+  color: #50627f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.generated-documents-table td strong,
+.generated-documents-table td span {
+  display: block;
+}
+
+.generated-documents-table td span {
+  margin-top: 0.25rem;
+  color: #60708c;
+  font-size: 0.9rem;
+}
+
+.generated-documents-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.generated-documents-pagination {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+.generated-documents-pagination span {
+  color: #50627f;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .generated-documents-hero,
+  .generated-documents-card-header,
+  .generated-documents-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
