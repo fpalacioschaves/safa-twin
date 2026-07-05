@@ -5,9 +5,9 @@ import type {
 export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
   {
     code: 'evaluation_academic_offering_report',
-    name: 'Informe de evaluación de oferta académica',
+    name: 'Informe de evaluación por ciclo y nivel',
     description:
-      'Plantilla base para generar un informe de evaluación por oferta académica, módulo y periodo de evaluación, separando calificaciones numéricas de estados no evaluables.',
+      'Plantilla base para generar un informe de evaluación por ciclo, nivel, modalidad, módulo y periodo de evaluación, separando calificaciones numéricas de estados no evaluables.',
     category: 'evaluation',
     scope: ['academic_year', 'academic_offering', 'module'],
     outputFormats: ['docx', 'pdf', 'xlsx'],
@@ -27,9 +27,9 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
       },
       {
         key: 'academicOfferingId',
-        label: 'Oferta académica',
+        label: 'Ciclo / nivel / modalidad',
         required: true,
-        description: 'Selecciona la oferta académica: curso, centro, ciclo, nivel y modalidad.',
+        description: 'Selecciona el ciclo, nivel y modalidad.',
       },
       {
         key: 'moduleId',
@@ -57,10 +57,10 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
       },
       {
         key: 'academicOffering.name',
-        label: 'Oferta académica',
+        label: 'Ciclo / nivel / modalidad',
         type: 'string',
         required: true,
-        description: 'Curso, centro, ciclo, nivel y modalidad de la oferta académica.',
+        description: 'Curso, centro, ciclo, nivel y modalidad seleccionados.',
         example: '2025/2026 · DAW · 2º · PRESENTIAL',
       },
       {
@@ -119,7 +119,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         title: 'Portada',
         order: 1,
         required: true,
-        description: 'Identificación del centro, curso, oferta académica, evaluación y fecha de generación.',
+        description: 'Identificación del centro, curso, ciclo, nivel, modalidad, evaluación y fecha de generación.',
         variables: ['academicYear.name', 'evaluation.name', 'academicOffering.name'],
       },
       {
@@ -153,9 +153,9 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
   },
   {
     code: 'final_memory_academic_offering',
-    name: 'Memoria final de oferta académica',
+    name: 'Memoria final por ciclo y nivel',
     description:
-      'Plantilla base para la memoria final de una oferta académica, con resultados académicos, evolución, absentismo, incidencias y propuestas de mejora.',
+      'Plantilla base para la memoria final de un ciclo, nivel y modalidad, con resultados académicos, evolución, absentismo, incidencias y propuestas de mejora.',
     category: 'final_memory',
     scope: ['academic_year', 'programme', 'level', 'academic_offering'],
     outputFormats: ['docx', 'pdf'],
@@ -169,9 +169,9 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
       },
       {
         key: 'academicOfferingId',
-        label: 'Oferta académica',
+        label: 'Ciclo / nivel / modalidad',
         required: true,
-        description: 'Selecciona la oferta académica para la que se genera la memoria.',
+        description: 'Selecciona el ciclo, nivel y modalidad para la memoria.',
       },
     ],
     variables: [
@@ -193,10 +193,10 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
       },
       {
         key: 'academicOffering.name',
-        label: 'Oferta académica',
+        label: 'Ciclo / nivel / modalidad',
         type: 'string',
         required: true,
-        description: 'Curso, centro, ciclo, nivel y modalidad de la oferta académica.',
+        description: 'Curso, centro, ciclo, nivel y modalidad seleccionados.',
         example: '2025/2026 · DAW · 2º · PRESENTIAL',
       },
       {
@@ -234,7 +234,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         title: 'Portada',
         order: 1,
         required: true,
-        description: 'Identificación de curso, ciclo, oferta académica y centro.',
+        description: 'Identificación de curso, ciclo, nivel, modalidad y centro.',
         variables: ['academicYear.name', 'programme.name', 'academicOffering.name'],
       },
       {
@@ -270,7 +270,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     code: 'attendance_absenteeism_report',
     name: 'Informe de absentismo',
     description:
-      'Plantilla base para generar informes de absentismo por alumno, oferta académica, módulo o periodo temporal.',
+      'Plantilla base para generar informes de absentismo por alumno, ciclo, nivel, módulo o periodo temporal.',
     category: 'attendance',
     scope: ['academic_year', 'academic_offering', 'module', 'student'],
     outputFormats: ['docx', 'pdf', 'xlsx', 'csv'],
