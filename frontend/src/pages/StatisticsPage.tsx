@@ -5,8 +5,11 @@ import {
 } from 'react';
 
 import type {
+  AcademicStatisticsMetrics,
   AcademicStatisticsResponse,
+  GradeDistributionItem,
   GroupedAcademicStatisticsItem,
+  StatusDistributionItem,
 } from '../types/statistics';
 
 import {
@@ -40,6 +43,13 @@ interface FilterState {
   academicYearId: string;
   centreId: string;
   evaluationId: string;
+}
+
+interface ChartDataItem {
+  key: string;
+  label: string;
+  value: number;
+  secondaryLabel?: string;
 }
 
 const emptyFilters: FilterState = {
@@ -102,16 +112,50 @@ function formatRate(value: number | null): string {
   return `${formatDecimal(value)} %`;
 }
 
+function getMaximumValue(
+  items: ChartDataItem[],
+): number {
+  return Math.max(
+    1,
+    ...items.map((item) => item.value),
+  );
+}
+
+function getBarWidth(
+  value: number,
+  maximum: number,
+): string {
+  if (value <= 0 || maximum <= 0) {
+    return '0%';
+  }
+
+  return `${Math.max(2, value * 100 / maximum)}%`;
+}
+
+function getRateNumber(
+  value: number | null,
+): number {
+  return value ?? 0;
+}
+
 function StatisticsTable({
   title,
+  description,
   items,
 }: {
   title: string;
+  description: string;
   items: GroupedAcademicStatisticsItem[];
 }) {
   return (
     <section className="statistics-card">
-      <h3>{title}</h3>
+      <div className="statistics-section-heading">
+        <div>
+          <p className="eyebrow">Comparativa</p>
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
+      </div>
 
       {items.length === 0 ? (
         <p className="statistics-muted">
@@ -183,6 +227,233 @@ function StatisticsTable({
         </div>
       )}
     </section>
+  );
+}
+
+function HorizontalBarChart({
+  title,
+  description,
+  items,
+  valueSuffix = '',
+}: {
+  title: string;
+  description: string;
+  items: ChartDataItem[];
+  valueSuffix?: string;
+}) {
+  const visibleItems = items.filter(
+    (item) => item.value > 0,
+  );
+
+  const maximum = getMaximumValue(visibleItems);
+
+  return (
+    <article className="statistics-card">
+      <div className="statistics-section-heading">
+        <div>
+          <p className="eyebrow">Gráfica</p>
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
+      </div>
+
+      {visibleItems.length === 0 ? (
+        <p className="statistics-muted">
+          No hay datos suficientes para representar esta gráfica.
+        </p>
+      ) : (
+        <div className="statistics-chart-list">
+          {visibleItems.map((item) => (
+            <div
+              className="statistics-chart-row"
+              key={item.key}
+            >
+              <div className="statistics-chart-label">
+                <strong>{item.label}</strong>
+                {item.secondaryLabel ? (
+                  <span>{item.secondaryLabel}</span>
+                ) : null}
+              </div>
+
+              <div
+                className="statistics-chart-track"
+                aria-hidden="true"
+              >
+                <span
+                  className="statistics-chart-fill"
+                  style={{
+                    width: getBarWidth(
+                      item.value,
+                      maximum,
+                    ),
+                  }}
+                />
+              </div>
+
+              <strong className="statistics-chart-value">
+                {formatInteger(item.value)}{valueSuffix}
+              </strong>
+            </div>
+          ))}
+        </div>
+      )}
+    </article>
+  );
+}
+
+function RateBarChart({
+  title,
+  description,
+  items,
+  metric,
+}: {
+  title: string;
+  description: string;
+  items: GroupedAcademicStatisticsItem[];
+  metric: 'successRate' | 'performanceRate';
+}) {
+  const chartItems = items
+    .map((item) => ({
+      key: item.id.toString(),
+      label: item.acronym ?? item.code,
+      value: getRateNumber(
+        item.metrics[metric],
+      ),
+      secondaryLabel: item.name,
+    }))
+    .filter((item) => item.value > 0);
+
+  const maximum = 100;
+
+  return (
+    <article className="statistics-card">
+      <div className="statistics-section-heading">
+        <div>
+          <p className="eyebrow">Tasas</p>
+          <h3>{title}</h3>
+          <p>{description}</p>
+        </div>
+      </div>
+
+      {chartItems.length === 0 ? (
+        <p className="statistics-muted">
+          No hay tasas calculables para los filtros seleccionados.
+        </p>
+      ) : (
+        <div className="statistics-chart-list">
+          {chartItems.map((item) => (
+            <div
+              className="statistics-chart-row"
+              key={item.key}
+            >
+              <div className="statistics-chart-label">
+                <strong>{item.label}</strong>
+                <span>{item.secondaryLabel}</span>
+              </div>
+
+              <div
+                className="statistics-chart-track"
+                aria-hidden="true"
+              >
+                <span
+                  className="statistics-chart-fill"
+                  style={{
+                    width: getBarWidth(
+                      item.value,
+                      maximum,
+                    ),
+                  }}
+                />
+              </div>
+
+              <strong className="statistics-chart-value">
+                {formatRate(item.value)}
+              </strong>
+            </div>
+          ))}
+        </div>
+      )}
+    </article>
+  );
+}
+
+function GradeDistributionChart({
+  items,
+}: {
+  items: GradeDistributionItem[];
+}) {
+  return (
+    <HorizontalBarChart
+      title="Distribución de notas numéricas"
+      description="Solo incluye calificaciones numéricas. Los estados NE, NC, NP, PFE y equivalentes se muestran aparte."
+      items={items.map((item) => ({
+        key: item.key,
+        label: item.label,
+        value: item.count,
+        secondaryLabel: item.key,
+      }))}
+    />
+  );
+}
+
+function StatusDistributionChart({
+  items,
+}: {
+  items: StatusDistributionItem[];
+}) {
+  return (
+    <HorizontalBarChart
+      title="Estados no numéricos y administrativos"
+      description="Permite controlar situaciones como no evaluado, no presentado, pendiente de formación en empresa, convalidaciones o exenciones."
+      items={items.map((item) => ({
+        key: item.code,
+        label: item.code,
+        value: item.count,
+        secondaryLabel: item.name,
+      }))}
+    />
+  );
+}
+
+function OutcomeChart({
+  metrics,
+}: {
+  metrics: AcademicStatisticsMetrics;
+}) {
+  const items: ChartDataItem[] = [
+    {
+      key: 'passed',
+      label: 'Aprobados',
+      value: metrics.passed,
+    },
+    {
+      key: 'failed',
+      label: 'Suspensos',
+      value: metrics.failed,
+    },
+    {
+      key: 'not-evaluated',
+      label: 'No evaluados',
+      value: metrics.notEvaluated ?? 0,
+    },
+    {
+      key: 'no-show',
+      label: 'No presentados',
+      value: metrics.noShow,
+    },
+    {
+      key: 'non-evaluable',
+      label: 'No evaluables',
+      value: metrics.nonEvaluable,
+    },
+  ];
+
+  return (
+    <HorizontalBarChart
+      title="Resultado global de la evaluación"
+      description="Separa aprobados, suspensos y estados no evaluables para no convertir estados administrativos en notas."
+      items={items}
+    />
   );
 }
 
@@ -531,16 +802,56 @@ export function StatisticsPage() {
             </article>
           </section>
 
+          <section className="statistics-chart-grid">
+            <OutcomeChart metrics={statistics.summary} />
+
+            <GradeDistributionChart
+              items={
+                statistics.summary.gradeDistribution
+              }
+            />
+
+            <StatusDistributionChart
+              items={
+                statistics.summary.statusDistribution
+              }
+            />
+
+            <RateBarChart
+              title="Tasa de éxito por módulo"
+              description="Porcentaje de aprobados sobre evaluados en cada módulo."
+              items={statistics.byModule}
+              metric="successRate"
+            />
+
+            <RateBarChart
+              title="Tasa de rendimiento por módulo"
+              description="Porcentaje de aprobados sobre matriculados en cada módulo."
+              items={statistics.byModule}
+              metric="performanceRate"
+            />
+
+            <RateBarChart
+              title="Comparativa de rendimiento por ciclo"
+              description="Comparación entre ciclos como DAW, DAM u otros ciclos filtrados."
+              items={statistics.byProgramme}
+              metric="performanceRate"
+            />
+          </section>
+
           <StatisticsTable
             title="Comparativa por ciclo"
+            description="Diferencia DAW, DAM u otros ciclos sin duplicar módulos entre planes."
             items={statistics.byProgramme}
           />
           <StatisticsTable
             title="Comparativa por nivel"
+            description="Separa primero y segundo para evitar lecturas cruzadas entre cursos."
             items={statistics.byLevel}
           />
           <StatisticsTable
             title="Comparativa por módulo"
+            description="Muestra resultados módulo a módulo dentro del ámbito filtrado."
             items={statistics.byModule}
           />
         </>
