@@ -133,6 +133,22 @@ function buildTextHref(
   return `data:${mimeType};charset=utf-8,${encodeURIComponent(content)}`;
 }
 
+function buildStatisticsXlsxHref(filters: FilterState): string {
+  const query = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) {
+      query.set(key, value);
+    }
+  });
+
+  const queryString = query.toString();
+
+  return queryString
+    ? `/api/statistics/academic-summary/export/xlsx?${queryString}`
+    : '/api/statistics/academic-summary/export/xlsx';
+}
+
 function formatInteger(value: number): string {
   return value.toLocaleString('es-ES');
 }
@@ -585,6 +601,11 @@ export function StatisticsPage() {
     [exportMetadata, statistics],
   );
 
+  const xlsxHref = useMemo(
+    () => buildStatisticsXlsxHref(filters),
+    [filters],
+  );
+
   async function loadStatistics(
     nextFilters: FilterState,
   ): Promise<void> {
@@ -1019,12 +1040,19 @@ export function StatisticsPage() {
               <p className="eyebrow">Exportación</p>
               <h3>Descargar estadísticas</h3>
               <p>
-                Genera una copia del ámbito actual en CSV para hoja
-                de cálculo o en JSON para trazabilidad técnica.
+                Genera una copia del ámbito actual. El XLSX se genera
+                en backend y queda registrado en el historial documental.
               </p>
             </div>
 
             <div className="statistics-export-actions">
+              <a
+                className="button button-primary statistics-export-link"
+                href={xlsxHref}
+              >
+                Descargar XLSX
+              </a>
+
               <a
                 className="button button-primary statistics-export-link"
                 href={csvHref}
