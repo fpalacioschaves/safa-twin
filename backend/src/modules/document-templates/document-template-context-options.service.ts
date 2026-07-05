@@ -299,7 +299,7 @@ async function getOptionsForInput(
     return getEvaluationOptions();
   }
 
-  if (input.key === 'groupId') {
+  if (input.key === 'academicOfferingId') {
     return getAcademicOfferingOptions();
   }
 
