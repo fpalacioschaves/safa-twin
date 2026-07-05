@@ -221,10 +221,50 @@ const evaluationPermissions: PermissionSeed[] = [
   },
 ];
 
+const companyTrainingPermissions: PermissionSeed[] = [
+  {
+    name: 'Consultar formación en empresa',
+    slug: 'company-training.view',
+    description:
+      'Consultar empresas, tutores laborales, estancias formativas y resumen de formación en empresa.',
+  },
+  {
+    name: 'Gestionar empresas colaboradoras',
+    slug: 'company-training.companies.manage',
+    description:
+      'Crear, modificar, archivar y restaurar empresas colaboradoras.',
+  },
+  {
+    name: 'Gestionar tutores laborales',
+    slug: 'company-training.tutors.manage',
+    description:
+      'Crear, modificar y archivar tutores laborales asociados a empresas.',
+  },
+  {
+    name: 'Gestionar estancias formativas',
+    slug: 'company-training.placements.manage',
+    description:
+      'Crear, modificar y archivar asignaciones de alumnado a empresas.',
+  },
+  {
+    name: 'Gestionar seguimientos de empresa',
+    slug: 'company-training.followups.manage',
+    description:
+      'Registrar y modificar visitas, llamadas, reuniones y otros seguimientos de empresa.',
+  },
+  {
+    name: 'Gestionar incidencias de empresa',
+    slug: 'company-training.incidents.manage',
+    description:
+      'Registrar y modificar incidencias producidas durante la formación en empresa.',
+  },
+];
+
 const permissions: PermissionSeed[] = [
   ...userAndRolePermissions,
   ...academicPermissions,
   ...evaluationPermissions,
+  ...companyTrainingPermissions,
 ];
 
 const administratorRoleSlug = 'administrador';

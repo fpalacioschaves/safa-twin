@@ -371,6 +371,57 @@ export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
 }
 
+export type EnumWorkPlacementStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkPlacementStatus | Prisma.EnumWorkPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkPlacementStatus[]
+  notIn?: $Enums.WorkPlacementStatus[]
+  not?: Prisma.NestedEnumWorkPlacementStatusFilter<$PrismaModel> | $Enums.WorkPlacementStatus
+}
+
+export type EnumWorkPlacementStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkPlacementStatus | Prisma.EnumWorkPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkPlacementStatus[]
+  notIn?: $Enums.WorkPlacementStatus[]
+  not?: Prisma.NestedEnumWorkPlacementStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkPlacementStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkPlacementStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkPlacementStatusFilter<$PrismaModel>
+}
+
+export type EnumPlacementFollowupTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementFollowupType | Prisma.EnumPlacementFollowupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementFollowupType[]
+  notIn?: $Enums.PlacementFollowupType[]
+  not?: Prisma.NestedEnumPlacementFollowupTypeFilter<$PrismaModel> | $Enums.PlacementFollowupType
+}
+
+export type EnumPlacementFollowupTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementFollowupType | Prisma.EnumPlacementFollowupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementFollowupType[]
+  notIn?: $Enums.PlacementFollowupType[]
+  not?: Prisma.NestedEnumPlacementFollowupTypeWithAggregatesFilter<$PrismaModel> | $Enums.PlacementFollowupType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlacementFollowupTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlacementFollowupTypeFilter<$PrismaModel>
+}
+
+export type EnumPlacementIncidentSeverityFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementIncidentSeverity | Prisma.EnumPlacementIncidentSeverityFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementIncidentSeverity[]
+  notIn?: $Enums.PlacementIncidentSeverity[]
+  not?: Prisma.NestedEnumPlacementIncidentSeverityFilter<$PrismaModel> | $Enums.PlacementIncidentSeverity
+}
+
+export type EnumPlacementIncidentSeverityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementIncidentSeverity | Prisma.EnumPlacementIncidentSeverityFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementIncidentSeverity[]
+  notIn?: $Enums.PlacementIncidentSeverity[]
+  not?: Prisma.NestedEnumPlacementIncidentSeverityWithAggregatesFilter<$PrismaModel> | $Enums.PlacementIncidentSeverity
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlacementIncidentSeverityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlacementIncidentSeverityFilter<$PrismaModel>
+}
+
 export type NestedIntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[]
@@ -743,6 +794,57 @@ export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
   _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumWorkPlacementStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkPlacementStatus | Prisma.EnumWorkPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkPlacementStatus[]
+  notIn?: $Enums.WorkPlacementStatus[]
+  not?: Prisma.NestedEnumWorkPlacementStatusFilter<$PrismaModel> | $Enums.WorkPlacementStatus
+}
+
+export type NestedEnumWorkPlacementStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.WorkPlacementStatus | Prisma.EnumWorkPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.WorkPlacementStatus[]
+  notIn?: $Enums.WorkPlacementStatus[]
+  not?: Prisma.NestedEnumWorkPlacementStatusWithAggregatesFilter<$PrismaModel> | $Enums.WorkPlacementStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumWorkPlacementStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumWorkPlacementStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPlacementFollowupTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementFollowupType | Prisma.EnumPlacementFollowupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementFollowupType[]
+  notIn?: $Enums.PlacementFollowupType[]
+  not?: Prisma.NestedEnumPlacementFollowupTypeFilter<$PrismaModel> | $Enums.PlacementFollowupType
+}
+
+export type NestedEnumPlacementFollowupTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementFollowupType | Prisma.EnumPlacementFollowupTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementFollowupType[]
+  notIn?: $Enums.PlacementFollowupType[]
+  not?: Prisma.NestedEnumPlacementFollowupTypeWithAggregatesFilter<$PrismaModel> | $Enums.PlacementFollowupType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlacementFollowupTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlacementFollowupTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumPlacementIncidentSeverityFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementIncidentSeverity | Prisma.EnumPlacementIncidentSeverityFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementIncidentSeverity[]
+  notIn?: $Enums.PlacementIncidentSeverity[]
+  not?: Prisma.NestedEnumPlacementIncidentSeverityFilter<$PrismaModel> | $Enums.PlacementIncidentSeverity
+}
+
+export type NestedEnumPlacementIncidentSeverityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlacementIncidentSeverity | Prisma.EnumPlacementIncidentSeverityFieldRefInput<$PrismaModel>
+  in?: $Enums.PlacementIncidentSeverity[]
+  notIn?: $Enums.PlacementIncidentSeverity[]
+  not?: Prisma.NestedEnumPlacementIncidentSeverityWithAggregatesFilter<$PrismaModel> | $Enums.PlacementIncidentSeverity
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlacementIncidentSeverityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlacementIncidentSeverityFilter<$PrismaModel>
 }
 
 

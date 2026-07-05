@@ -51,6 +51,28 @@ enum AssessmentComponentType {
   OTHER
 }
 
+enum WorkPlacementStatus {
+  PENDING
+  ASSIGNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PlacementFollowupType {
+  VISIT
+  PHONE
+  EMAIL
+  MEETING
+  OTHER
+}
+
+enum PlacementIncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model User {
   id           Int       @id @default(autoincrement())
   name         String    @db.VarChar(150)
@@ -62,8 +84,11 @@ model User {
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
   deletedAt    DateTime? @map("deleted_at") @db.DateTime(0)
 
-  userRoles UserRole[]
-  sessions  Session[]
+  userRoles                 UserRole[]
+  sessions                  Session[]
+  academicTutoredPlacements WorkPlacement[]   @relation("AcademicTutorPlacements")
+  placementFollowupsCreated PlacementFollowup[] @relation("PlacementFollowupCreatedBy")
+  placementIncidentsCreated PlacementIncident[] @relation("PlacementIncidentCreatedBy")
 
   @@index([isActive])
   @@index([deletedAt])
@@ -152,6 +177,7 @@ model AcademicYear {
   enrolments         Enrolment[]
   evaluations        Evaluation[]
   assessmentSchemes  AssessmentScheme[]
+  workPlacements     WorkPlacement[]
 
   @@index([isCurrent])
   @@index([isActive])
@@ -180,6 +206,7 @@ model Centre {
   enrolments        Enrolment[]
   evaluations       Evaluation[]
   assessmentSchemes AssessmentScheme[]
+  workPlacements    WorkPlacement[]
 
   @@index([name])
   @@index([city])
@@ -330,7 +357,8 @@ model Student {
   updatedAt             DateTime             @updatedAt @map("updated_at") @db.DateTime(0)
   deletedAt             DateTime?            @map("deleted_at") @db.DateTime(0)
 
-  enrolments            Enrolment[]
+  enrolments     Enrolment[]
+  workPlacements WorkPlacement[]
 
   @@index([firstName])
   @@index([lastName1, lastName2])
@@ -372,7 +400,6 @@ model Enrolment {
   @@index([deletedAt])
   @@map("enrolments")
 }
-
 
 model Evaluation {
   id             Int              @id @default(autoincrement())
@@ -419,7 +446,7 @@ model GradeStatus {
   updatedAt       DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
   deletedAt       DateTime? @map("deleted_at") @db.DateTime(0)
 
-  grades          Grade[]
+  grades Grade[]
 
   @@index([sortOrder])
   @@index([isActive])
@@ -479,7 +506,6 @@ model AssessmentComponent {
   @@map("assessment_components")
 }
 
-
 model Grade {
   id                 Int       @id @default(autoincrement())
   enrolmentId        Int       @map("enrolment_id")
@@ -532,4 +558,156 @@ model GradeComponentScore {
   @@index([assessmentComponentId])
   @@index([isMissing])
   @@map("grade_component_scores")
+}
+
+model Company {
+  id            Int       @id @default(autoincrement())
+  name          String    @unique @db.VarChar(191)
+  taxIdentifier String?   @unique @map("tax_identifier") @db.VarChar(30)
+  sector        String?   @db.VarChar(120)
+  address       String?   @db.VarChar(255)
+  postalCode    String?   @map("postal_code") @db.VarChar(10)
+  city          String?   @db.VarChar(100)
+  province      String?   @db.VarChar(100)
+  phone         String?   @db.VarChar(30)
+  email         String?   @db.VarChar(191)
+  website       String?   @db.VarChar(191)
+  notes         String?   @db.Text
+  isActive      Boolean   @default(true) @map("is_active")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt     DateTime? @map("deleted_at") @db.DateTime(0)
+
+  companyTutors  CompanyTutor[]
+  workPlacements WorkPlacement[]
+
+  @@index([name])
+  @@index([city])
+  @@index([province])
+  @@index([sector])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("companies")
+}
+
+model CompanyTutor {
+  id        Int       @id @default(autoincrement())
+  companyId Int       @map("company_id")
+  firstName String    @map("first_name") @db.VarChar(100)
+  lastName  String?   @map("last_name") @db.VarChar(150)
+  email     String?   @db.VarChar(191)
+  phone     String?   @db.VarChar(30)
+  position  String?   @db.VarChar(150)
+  notes     String?   @db.Text
+  isActive  Boolean   @default(true) @map("is_active")
+  createdAt DateTime  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
+
+  company        Company         @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  workPlacements WorkPlacement[]
+
+  @@index([companyId])
+  @@index([firstName])
+  @@index([lastName])
+  @@index([email])
+  @@index([isActive])
+  @@index([deletedAt])
+  @@map("company_tutors")
+}
+
+model WorkPlacement {
+  id                    Int                 @id @default(autoincrement())
+  studentId             Int                 @map("student_id")
+  academicYearId        Int                 @map("academic_year_id")
+  centreId              Int                 @map("centre_id")
+  companyId             Int                 @map("company_id")
+  companyTutorId        Int?                @map("company_tutor_id")
+  academicTutorUserId   Int?                @map("academic_tutor_user_id")
+  status                WorkPlacementStatus @default(PENDING)
+  startsAt              DateTime?           @map("starts_at") @db.Date
+  endsAt                DateTime?           @map("ends_at") @db.Date
+  schedule              String?             @db.VarChar(255)
+  totalHours            Int?                @map("total_hours")
+  completedHours        Int?                @map("completed_hours")
+  activities            String?             @db.Text
+  learningOutcomes      String?             @map("learning_outcomes") @db.Text
+  finalEvaluation       String?             @map("final_evaluation") @db.Text
+  documentationPending  Boolean             @default(false) @map("documentation_pending")
+  remarks               String?             @db.Text
+  createdAt             DateTime            @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt             DateTime            @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt             DateTime?           @map("deleted_at") @db.DateTime(0)
+
+  student           Student        @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  academicYear      AcademicYear   @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
+  centre            Centre         @relation(fields: [centreId], references: [id], onDelete: Restrict)
+  company           Company        @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  companyTutor      CompanyTutor?  @relation(fields: [companyTutorId], references: [id], onDelete: SetNull)
+  academicTutorUser User?          @relation("AcademicTutorPlacements", fields: [academicTutorUserId], references: [id], onDelete: SetNull)
+  followups         PlacementFollowup[]
+  incidents         PlacementIncident[]
+
+  @@index([studentId])
+  @@index([academicYearId])
+  @@index([centreId])
+  @@index([companyId])
+  @@index([companyTutorId])
+  @@index([academicTutorUserId])
+  @@index([status])
+  @@index([startsAt])
+  @@index([endsAt])
+  @@index([documentationPending])
+  @@index([deletedAt])
+  @@map("work_placements")
+}
+
+model PlacementFollowup {
+  id                  Int                   @id @default(autoincrement())
+  workPlacementId     Int                   @map("work_placement_id")
+  createdByUserId     Int?                  @map("created_by_user_id")
+  followupType        PlacementFollowupType @default(OTHER) @map("followup_type")
+  followupAt          DateTime              @map("followup_at") @db.DateTime(0)
+  title               String                @db.VarChar(191)
+  description         String?               @db.Text
+  nextActions         String?               @map("next_actions") @db.Text
+  createdAt           DateTime              @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt           DateTime              @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt           DateTime?             @map("deleted_at") @db.DateTime(0)
+
+  workPlacement WorkPlacement @relation(fields: [workPlacementId], references: [id], onDelete: Cascade)
+  createdByUser User?         @relation("PlacementFollowupCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@index([workPlacementId])
+  @@index([createdByUserId])
+  @@index([followupType])
+  @@index([followupAt])
+  @@index([deletedAt])
+  @@map("placement_followups")
+}
+
+model PlacementIncident {
+  id                  Int                       @id @default(autoincrement())
+  workPlacementId     Int                       @map("work_placement_id")
+  createdByUserId     Int?                      @map("created_by_user_id")
+  severity            PlacementIncidentSeverity @default(MEDIUM)
+  occurredAt          DateTime                  @map("occurred_at") @db.DateTime(0)
+  title               String                    @db.VarChar(191)
+  description         String                    @db.Text
+  resolution          String?                   @db.Text
+  resolvedAt          DateTime?                 @map("resolved_at") @db.DateTime(0)
+  createdAt           DateTime                  @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt           DateTime                  @updatedAt @map("updated_at") @db.DateTime(0)
+  deletedAt           DateTime?                 @map("deleted_at") @db.DateTime(0)
+
+  workPlacement WorkPlacement @relation(fields: [workPlacementId], references: [id], onDelete: Cascade)
+  createdByUser User?         @relation("PlacementIncidentCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@index([workPlacementId])
+  @@index([createdByUserId])
+  @@index([severity])
+  @@index([occurredAt])
+  @@index([resolvedAt])
+  @@index([deletedAt])
+  @@map("placement_incidents")
 }

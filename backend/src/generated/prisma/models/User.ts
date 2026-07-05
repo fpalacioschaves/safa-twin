@@ -250,6 +250,9 @@ export type UserWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   userRoles?: Prisma.UserRoleListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
+  academicTutoredPlacements?: Prisma.WorkPlacementListRelationFilter
+  placementFollowupsCreated?: Prisma.PlacementFollowupListRelationFilter
+  placementIncidentsCreated?: Prisma.PlacementIncidentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -264,6 +267,9 @@ export type UserOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   userRoles?: Prisma.UserRoleOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
+  academicTutoredPlacements?: Prisma.WorkPlacementOrderByRelationAggregateInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupOrderByRelationAggregateInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentOrderByRelationAggregateInput
   _relevance?: Prisma.UserOrderByRelevanceInput
 }
 
@@ -282,6 +288,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   userRoles?: Prisma.UserRoleListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
+  academicTutoredPlacements?: Prisma.WorkPlacementListRelationFilter
+  placementFollowupsCreated?: Prisma.PlacementFollowupListRelationFilter
+  placementIncidentsCreated?: Prisma.PlacementIncidentListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -327,6 +336,9 @@ export type UserCreateInput = {
   deletedAt?: Date | string | null
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentCreateNestedManyWithoutCreatedByUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -341,6 +353,9 @@ export type UserUncheckedCreateInput = {
   deletedAt?: Date | string | null
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedCreateNestedManyWithoutCreatedByUserInput
 }
 
 export type UserUpdateInput = {
@@ -354,6 +369,9 @@ export type UserUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUpdateManyWithoutCreatedByUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -368,6 +386,9 @@ export type UserUncheckedUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedUpdateManyWithoutCreatedByUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -460,6 +481,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -512,6 +538,54 @@ export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
 }
 
+export type UserCreateNestedOneWithoutAcademicTutoredPlacementsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAcademicTutoredPlacementsInput, Prisma.UserUncheckedCreateWithoutAcademicTutoredPlacementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAcademicTutoredPlacementsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAcademicTutoredPlacementsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAcademicTutoredPlacementsInput, Prisma.UserUncheckedCreateWithoutAcademicTutoredPlacementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAcademicTutoredPlacementsInput
+  upsert?: Prisma.UserUpsertWithoutAcademicTutoredPlacementsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAcademicTutoredPlacementsInput, Prisma.UserUpdateWithoutAcademicTutoredPlacementsInput>, Prisma.UserUncheckedUpdateWithoutAcademicTutoredPlacementsInput>
+}
+
+export type UserCreateNestedOneWithoutPlacementFollowupsCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlacementFollowupsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementFollowupsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlacementFollowupsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutPlacementFollowupsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlacementFollowupsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementFollowupsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlacementFollowupsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutPlacementFollowupsCreatedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPlacementFollowupsCreatedInput, Prisma.UserUpdateWithoutPlacementFollowupsCreatedInput>, Prisma.UserUncheckedUpdateWithoutPlacementFollowupsCreatedInput>
+}
+
+export type UserCreateNestedOneWithoutPlacementIncidentsCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlacementIncidentsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementIncidentsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlacementIncidentsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutPlacementIncidentsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlacementIncidentsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementIncidentsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlacementIncidentsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutPlacementIncidentsCreatedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPlacementIncidentsCreatedInput, Prisma.UserUpdateWithoutPlacementIncidentsCreatedInput>, Prisma.UserUncheckedUpdateWithoutPlacementIncidentsCreatedInput>
+}
+
 export type UserCreateWithoutUserRolesInput = {
   name: string
   email: string
@@ -522,6 +596,9 @@ export type UserCreateWithoutUserRolesInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentCreateNestedManyWithoutCreatedByUserInput
 }
 
 export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -535,6 +612,9 @@ export type UserUncheckedCreateWithoutUserRolesInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedCreateNestedManyWithoutCreatedByUserInput
 }
 
 export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -563,6 +643,9 @@ export type UserUpdateWithoutUserRolesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUpdateManyWithoutCreatedByUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -576,6 +659,9 @@ export type UserUncheckedUpdateWithoutUserRolesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedUpdateManyWithoutCreatedByUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -588,6 +674,9 @@ export type UserCreateWithoutSessionsInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentCreateNestedManyWithoutCreatedByUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -601,6 +690,9 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedCreateNestedManyWithoutCreatedByUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -629,6 +721,9 @@ export type UserUpdateWithoutSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUpdateManyWithoutCreatedByUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -642,6 +737,243 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedUpdateManyWithoutCreatedByUserNestedInput
+}
+
+export type UserCreateWithoutAcademicTutoredPlacementsInput = {
+  name: string
+  email: string
+  passwordHash: string
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserUncheckedCreateWithoutAcademicTutoredPlacementsInput = {
+  id?: number
+  name: string
+  email: string
+  passwordHash: string
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedCreateNestedManyWithoutCreatedByUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserCreateOrConnectWithoutAcademicTutoredPlacementsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAcademicTutoredPlacementsInput, Prisma.UserUncheckedCreateWithoutAcademicTutoredPlacementsInput>
+}
+
+export type UserUpsertWithoutAcademicTutoredPlacementsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAcademicTutoredPlacementsInput, Prisma.UserUncheckedUpdateWithoutAcademicTutoredPlacementsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAcademicTutoredPlacementsInput, Prisma.UserUncheckedCreateWithoutAcademicTutoredPlacementsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAcademicTutoredPlacementsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAcademicTutoredPlacementsInput, Prisma.UserUncheckedUpdateWithoutAcademicTutoredPlacementsInput>
+}
+
+export type UserUpdateWithoutAcademicTutoredPlacementsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUpdateManyWithoutCreatedByUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAcademicTutoredPlacementsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedUpdateManyWithoutCreatedByUserNestedInput
+}
+
+export type UserCreateWithoutPlacementFollowupsCreatedInput = {
+  name: string
+  email: string
+  passwordHash: string
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutAcademicTutorUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserUncheckedCreateWithoutPlacementFollowupsCreatedInput = {
+  id?: number
+  name: string
+  email: string
+  passwordHash: string
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutAcademicTutorUserInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserCreateOrConnectWithoutPlacementFollowupsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlacementFollowupsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementFollowupsCreatedInput>
+}
+
+export type UserUpsertWithoutPlacementFollowupsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPlacementFollowupsCreatedInput, Prisma.UserUncheckedUpdateWithoutPlacementFollowupsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlacementFollowupsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementFollowupsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPlacementFollowupsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPlacementFollowupsCreatedInput, Prisma.UserUncheckedUpdateWithoutPlacementFollowupsCreatedInput>
+}
+
+export type UserUpdateWithoutPlacementFollowupsCreatedInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUpdateManyWithoutAcademicTutorUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUpdateManyWithoutCreatedByUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPlacementFollowupsCreatedInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutAcademicTutorUserNestedInput
+  placementIncidentsCreated?: Prisma.PlacementIncidentUncheckedUpdateManyWithoutCreatedByUserNestedInput
+}
+
+export type UserCreateWithoutPlacementIncidentsCreatedInput = {
+  name: string
+  email: string
+  passwordHash: string
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserUncheckedCreateWithoutPlacementIncidentsCreatedInput = {
+  id?: number
+  name: string
+  email: string
+  passwordHash: string
+  isActive?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutAcademicTutorUserInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserCreateOrConnectWithoutPlacementIncidentsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlacementIncidentsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementIncidentsCreatedInput>
+}
+
+export type UserUpsertWithoutPlacementIncidentsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPlacementIncidentsCreatedInput, Prisma.UserUncheckedUpdateWithoutPlacementIncidentsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlacementIncidentsCreatedInput, Prisma.UserUncheckedCreateWithoutPlacementIncidentsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPlacementIncidentsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPlacementIncidentsCreatedInput, Prisma.UserUncheckedUpdateWithoutPlacementIncidentsCreatedInput>
+}
+
+export type UserUpdateWithoutPlacementIncidentsCreatedInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUpdateManyWithoutCreatedByUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPlacementIncidentsCreatedInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  academicTutoredPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutAcademicTutorUserNestedInput
+  placementFollowupsCreated?: Prisma.PlacementFollowupUncheckedUpdateManyWithoutCreatedByUserNestedInput
 }
 
 
@@ -652,11 +984,17 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
 export type UserCountOutputType = {
   userRoles: number
   sessions: number
+  academicTutoredPlacements: number
+  placementFollowupsCreated: number
+  placementIncidentsCreated: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userRoles?: boolean | UserCountOutputTypeCountUserRolesArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+  academicTutoredPlacements?: boolean | UserCountOutputTypeCountAcademicTutoredPlacementsArgs
+  placementFollowupsCreated?: boolean | UserCountOutputTypeCountPlacementFollowupsCreatedArgs
+  placementIncidentsCreated?: boolean | UserCountOutputTypeCountPlacementIncidentsCreatedArgs
 }
 
 /**
@@ -683,6 +1021,27 @@ export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.SessionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAcademicTutoredPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkPlacementWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPlacementFollowupsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlacementFollowupWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPlacementIncidentsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlacementIncidentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -696,6 +1055,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   deletedAt?: boolean
   userRoles?: boolean | Prisma.User$userRolesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  academicTutoredPlacements?: boolean | Prisma.User$academicTutoredPlacementsArgs<ExtArgs>
+  placementFollowupsCreated?: boolean | Prisma.User$placementFollowupsCreatedArgs<ExtArgs>
+  placementIncidentsCreated?: boolean | Prisma.User$placementIncidentsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -717,6 +1079,9 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userRoles?: boolean | Prisma.User$userRolesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
+  academicTutoredPlacements?: boolean | Prisma.User$academicTutoredPlacementsArgs<ExtArgs>
+  placementFollowupsCreated?: boolean | Prisma.User$placementFollowupsCreatedArgs<ExtArgs>
+  placementIncidentsCreated?: boolean | Prisma.User$placementIncidentsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -725,6 +1090,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     userRoles: Prisma.$UserRolePayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
+    academicTutoredPlacements: Prisma.$WorkPlacementPayload<ExtArgs>[]
+    placementFollowupsCreated: Prisma.$PlacementFollowupPayload<ExtArgs>[]
+    placementIncidentsCreated: Prisma.$PlacementIncidentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1078,6 +1446,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   userRoles<T extends Prisma.User$userRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  academicTutoredPlacements<T extends Prisma.User$academicTutoredPlacementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$academicTutoredPlacementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkPlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  placementFollowupsCreated<T extends Prisma.User$placementFollowupsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$placementFollowupsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlacementFollowupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  placementIncidentsCreated<T extends Prisma.User$placementIncidentsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$placementIncidentsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlacementIncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1509,6 +1880,78 @@ export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[]
+}
+
+/**
+ * User.academicTutoredPlacements
+ */
+export type User$academicTutoredPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkPlacement
+   */
+  select?: Prisma.WorkPlacementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkPlacement
+   */
+  omit?: Prisma.WorkPlacementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkPlacementInclude<ExtArgs> | null
+  where?: Prisma.WorkPlacementWhereInput
+  orderBy?: Prisma.WorkPlacementOrderByWithRelationInput | Prisma.WorkPlacementOrderByWithRelationInput[]
+  cursor?: Prisma.WorkPlacementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkPlacementScalarFieldEnum | Prisma.WorkPlacementScalarFieldEnum[]
+}
+
+/**
+ * User.placementFollowupsCreated
+ */
+export type User$placementFollowupsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlacementFollowup
+   */
+  select?: Prisma.PlacementFollowupSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlacementFollowup
+   */
+  omit?: Prisma.PlacementFollowupOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlacementFollowupInclude<ExtArgs> | null
+  where?: Prisma.PlacementFollowupWhereInput
+  orderBy?: Prisma.PlacementFollowupOrderByWithRelationInput | Prisma.PlacementFollowupOrderByWithRelationInput[]
+  cursor?: Prisma.PlacementFollowupWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlacementFollowupScalarFieldEnum | Prisma.PlacementFollowupScalarFieldEnum[]
+}
+
+/**
+ * User.placementIncidentsCreated
+ */
+export type User$placementIncidentsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlacementIncident
+   */
+  select?: Prisma.PlacementIncidentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlacementIncident
+   */
+  omit?: Prisma.PlacementIncidentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlacementIncidentInclude<ExtArgs> | null
+  where?: Prisma.PlacementIncidentWhereInput
+  orderBy?: Prisma.PlacementIncidentOrderByWithRelationInput | Prisma.PlacementIncidentOrderByWithRelationInput[]
+  cursor?: Prisma.PlacementIncidentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlacementIncidentScalarFieldEnum | Prisma.PlacementIncidentScalarFieldEnum[]
 }
 
 /**

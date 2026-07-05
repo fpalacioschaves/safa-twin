@@ -300,6 +300,7 @@ export type CentreWhereInput = {
   enrolments?: Prisma.EnrolmentListRelationFilter
   evaluations?: Prisma.EvaluationListRelationFilter
   assessmentSchemes?: Prisma.AssessmentSchemeListRelationFilter
+  workPlacements?: Prisma.WorkPlacementListRelationFilter
 }
 
 export type CentreOrderByWithRelationInput = {
@@ -322,6 +323,7 @@ export type CentreOrderByWithRelationInput = {
   enrolments?: Prisma.EnrolmentOrderByRelationAggregateInput
   evaluations?: Prisma.EvaluationOrderByRelationAggregateInput
   assessmentSchemes?: Prisma.AssessmentSchemeOrderByRelationAggregateInput
+  workPlacements?: Prisma.WorkPlacementOrderByRelationAggregateInput
   _relevance?: Prisma.CentreOrderByRelevanceInput
 }
 
@@ -348,6 +350,7 @@ export type CentreWhereUniqueInput = Prisma.AtLeast<{
   enrolments?: Prisma.EnrolmentListRelationFilter
   evaluations?: Prisma.EvaluationListRelationFilter
   assessmentSchemes?: Prisma.AssessmentSchemeListRelationFilter
+  workPlacements?: Prisma.WorkPlacementListRelationFilter
 }, "id" | "code">
 
 export type CentreOrderByWithAggregationInput = {
@@ -413,6 +416,7 @@ export type CentreCreateInput = {
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUncheckedCreateInput = {
@@ -435,6 +439,7 @@ export type CentreUncheckedCreateInput = {
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUpdateInput = {
@@ -456,6 +461,7 @@ export type CentreUpdateInput = {
   enrolments?: Prisma.EnrolmentUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreUncheckedUpdateInput = {
@@ -478,6 +484,7 @@ export type CentreUncheckedUpdateInput = {
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreCreateManyInput = {
@@ -662,6 +669,20 @@ export type CentreUpdateOneRequiredWithoutAssessmentSchemesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CentreUpdateToOneWithWhereWithoutAssessmentSchemesInput, Prisma.CentreUpdateWithoutAssessmentSchemesInput>, Prisma.CentreUncheckedUpdateWithoutAssessmentSchemesInput>
 }
 
+export type CentreCreateNestedOneWithoutWorkPlacementsInput = {
+  create?: Prisma.XOR<Prisma.CentreCreateWithoutWorkPlacementsInput, Prisma.CentreUncheckedCreateWithoutWorkPlacementsInput>
+  connectOrCreate?: Prisma.CentreCreateOrConnectWithoutWorkPlacementsInput
+  connect?: Prisma.CentreWhereUniqueInput
+}
+
+export type CentreUpdateOneRequiredWithoutWorkPlacementsNestedInput = {
+  create?: Prisma.XOR<Prisma.CentreCreateWithoutWorkPlacementsInput, Prisma.CentreUncheckedCreateWithoutWorkPlacementsInput>
+  connectOrCreate?: Prisma.CentreCreateOrConnectWithoutWorkPlacementsInput
+  upsert?: Prisma.CentreUpsertWithoutWorkPlacementsInput
+  connect?: Prisma.CentreWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CentreUpdateToOneWithWhereWithoutWorkPlacementsInput, Prisma.CentreUpdateWithoutWorkPlacementsInput>, Prisma.CentreUncheckedUpdateWithoutWorkPlacementsInput>
+}
+
 export type CentreCreateWithoutCentreProgrammesInput = {
   code: string
   name: string
@@ -680,6 +701,7 @@ export type CentreCreateWithoutCentreProgrammesInput = {
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUncheckedCreateWithoutCentreProgrammesInput = {
@@ -701,6 +723,7 @@ export type CentreUncheckedCreateWithoutCentreProgrammesInput = {
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutCentreInput
 }
 
 export type CentreCreateOrConnectWithoutCentreProgrammesInput = {
@@ -737,6 +760,7 @@ export type CentreUpdateWithoutCentreProgrammesInput = {
   enrolments?: Prisma.EnrolmentUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreUncheckedUpdateWithoutCentreProgrammesInput = {
@@ -758,6 +782,7 @@ export type CentreUncheckedUpdateWithoutCentreProgrammesInput = {
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreCreateWithoutEnrolmentsInput = {
@@ -778,6 +803,7 @@ export type CentreCreateWithoutEnrolmentsInput = {
   centreProgrammes?: Prisma.CentreProgrammeCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUncheckedCreateWithoutEnrolmentsInput = {
@@ -799,6 +825,7 @@ export type CentreUncheckedCreateWithoutEnrolmentsInput = {
   centreProgrammes?: Prisma.CentreProgrammeUncheckedCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutCentreInput
 }
 
 export type CentreCreateOrConnectWithoutEnrolmentsInput = {
@@ -835,6 +862,7 @@ export type CentreUpdateWithoutEnrolmentsInput = {
   centreProgrammes?: Prisma.CentreProgrammeUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreUncheckedUpdateWithoutEnrolmentsInput = {
@@ -856,6 +884,7 @@ export type CentreUncheckedUpdateWithoutEnrolmentsInput = {
   centreProgrammes?: Prisma.CentreProgrammeUncheckedUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreCreateWithoutEvaluationsInput = {
@@ -876,6 +905,7 @@ export type CentreCreateWithoutEvaluationsInput = {
   centreProgrammes?: Prisma.CentreProgrammeCreateNestedManyWithoutCentreInput
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUncheckedCreateWithoutEvaluationsInput = {
@@ -897,6 +927,7 @@ export type CentreUncheckedCreateWithoutEvaluationsInput = {
   centreProgrammes?: Prisma.CentreProgrammeUncheckedCreateNestedManyWithoutCentreInput
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutCentreInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutCentreInput
 }
 
 export type CentreCreateOrConnectWithoutEvaluationsInput = {
@@ -933,6 +964,7 @@ export type CentreUpdateWithoutEvaluationsInput = {
   centreProgrammes?: Prisma.CentreProgrammeUpdateManyWithoutCentreNestedInput
   enrolments?: Prisma.EnrolmentUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreUncheckedUpdateWithoutEvaluationsInput = {
@@ -954,6 +986,7 @@ export type CentreUncheckedUpdateWithoutEvaluationsInput = {
   centreProgrammes?: Prisma.CentreProgrammeUncheckedUpdateManyWithoutCentreNestedInput
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutCentreNestedInput
   assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreCreateWithoutAssessmentSchemesInput = {
@@ -974,6 +1007,7 @@ export type CentreCreateWithoutAssessmentSchemesInput = {
   centreProgrammes?: Prisma.CentreProgrammeCreateNestedManyWithoutCentreInput
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutCentreInput
 }
 
 export type CentreUncheckedCreateWithoutAssessmentSchemesInput = {
@@ -995,6 +1029,7 @@ export type CentreUncheckedCreateWithoutAssessmentSchemesInput = {
   centreProgrammes?: Prisma.CentreProgrammeUncheckedCreateNestedManyWithoutCentreInput
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutCentreInput
   evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutCentreInput
+  workPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutCentreInput
 }
 
 export type CentreCreateOrConnectWithoutAssessmentSchemesInput = {
@@ -1031,6 +1066,7 @@ export type CentreUpdateWithoutAssessmentSchemesInput = {
   centreProgrammes?: Prisma.CentreProgrammeUpdateManyWithoutCentreNestedInput
   enrolments?: Prisma.EnrolmentUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUpdateManyWithoutCentreNestedInput
 }
 
 export type CentreUncheckedUpdateWithoutAssessmentSchemesInput = {
@@ -1052,6 +1088,109 @@ export type CentreUncheckedUpdateWithoutAssessmentSchemesInput = {
   centreProgrammes?: Prisma.CentreProgrammeUncheckedUpdateManyWithoutCentreNestedInput
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutCentreNestedInput
   evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutCentreNestedInput
+  workPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutCentreNestedInput
+}
+
+export type CentreCreateWithoutWorkPlacementsInput = {
+  code: string
+  name: string
+  shortName?: string | null
+  taxId?: string | null
+  address?: string | null
+  postalCode?: string | null
+  city?: string | null
+  province?: string | null
+  phone?: string | null
+  email?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeCreateNestedManyWithoutCentreInput
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutCentreInput
+  evaluations?: Prisma.EvaluationCreateNestedManyWithoutCentreInput
+  assessmentSchemes?: Prisma.AssessmentSchemeCreateNestedManyWithoutCentreInput
+}
+
+export type CentreUncheckedCreateWithoutWorkPlacementsInput = {
+  id?: number
+  code: string
+  name: string
+  shortName?: string | null
+  taxId?: string | null
+  address?: string | null
+  postalCode?: string | null
+  city?: string | null
+  province?: string | null
+  phone?: string | null
+  email?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeUncheckedCreateNestedManyWithoutCentreInput
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutCentreInput
+  evaluations?: Prisma.EvaluationUncheckedCreateNestedManyWithoutCentreInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedCreateNestedManyWithoutCentreInput
+}
+
+export type CentreCreateOrConnectWithoutWorkPlacementsInput = {
+  where: Prisma.CentreWhereUniqueInput
+  create: Prisma.XOR<Prisma.CentreCreateWithoutWorkPlacementsInput, Prisma.CentreUncheckedCreateWithoutWorkPlacementsInput>
+}
+
+export type CentreUpsertWithoutWorkPlacementsInput = {
+  update: Prisma.XOR<Prisma.CentreUpdateWithoutWorkPlacementsInput, Prisma.CentreUncheckedUpdateWithoutWorkPlacementsInput>
+  create: Prisma.XOR<Prisma.CentreCreateWithoutWorkPlacementsInput, Prisma.CentreUncheckedCreateWithoutWorkPlacementsInput>
+  where?: Prisma.CentreWhereInput
+}
+
+export type CentreUpdateToOneWithWhereWithoutWorkPlacementsInput = {
+  where?: Prisma.CentreWhereInput
+  data: Prisma.XOR<Prisma.CentreUpdateWithoutWorkPlacementsInput, Prisma.CentreUncheckedUpdateWithoutWorkPlacementsInput>
+}
+
+export type CentreUpdateWithoutWorkPlacementsInput = {
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeUpdateManyWithoutCentreNestedInput
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutCentreNestedInput
+  evaluations?: Prisma.EvaluationUpdateManyWithoutCentreNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUpdateManyWithoutCentreNestedInput
+}
+
+export type CentreUncheckedUpdateWithoutWorkPlacementsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  centreProgrammes?: Prisma.CentreProgrammeUncheckedUpdateManyWithoutCentreNestedInput
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutCentreNestedInput
+  evaluations?: Prisma.EvaluationUncheckedUpdateManyWithoutCentreNestedInput
+  assessmentSchemes?: Prisma.AssessmentSchemeUncheckedUpdateManyWithoutCentreNestedInput
 }
 
 
@@ -1064,6 +1203,7 @@ export type CentreCountOutputType = {
   enrolments: number
   evaluations: number
   assessmentSchemes: number
+  workPlacements: number
 }
 
 export type CentreCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1071,6 +1211,7 @@ export type CentreCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   enrolments?: boolean | CentreCountOutputTypeCountEnrolmentsArgs
   evaluations?: boolean | CentreCountOutputTypeCountEvaluationsArgs
   assessmentSchemes?: boolean | CentreCountOutputTypeCountAssessmentSchemesArgs
+  workPlacements?: boolean | CentreCountOutputTypeCountWorkPlacementsArgs
 }
 
 /**
@@ -1111,6 +1252,13 @@ export type CentreCountOutputTypeCountAssessmentSchemesArgs<ExtArgs extends runt
   where?: Prisma.AssessmentSchemeWhereInput
 }
 
+/**
+ * CentreCountOutputType without action
+ */
+export type CentreCountOutputTypeCountWorkPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkPlacementWhereInput
+}
+
 
 export type CentreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1132,6 +1280,7 @@ export type CentreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   enrolments?: boolean | Prisma.Centre$enrolmentsArgs<ExtArgs>
   evaluations?: boolean | Prisma.Centre$evaluationsArgs<ExtArgs>
   assessmentSchemes?: boolean | Prisma.Centre$assessmentSchemesArgs<ExtArgs>
+  workPlacements?: boolean | Prisma.Centre$workPlacementsArgs<ExtArgs>
   _count?: boolean | Prisma.CentreCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["centre"]>
 
@@ -1161,6 +1310,7 @@ export type CentreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   enrolments?: boolean | Prisma.Centre$enrolmentsArgs<ExtArgs>
   evaluations?: boolean | Prisma.Centre$evaluationsArgs<ExtArgs>
   assessmentSchemes?: boolean | Prisma.Centre$assessmentSchemesArgs<ExtArgs>
+  workPlacements?: boolean | Prisma.Centre$workPlacementsArgs<ExtArgs>
   _count?: boolean | Prisma.CentreCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1171,6 +1321,7 @@ export type $CentrePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     enrolments: Prisma.$EnrolmentPayload<ExtArgs>[]
     evaluations: Prisma.$EvaluationPayload<ExtArgs>[]
     assessmentSchemes: Prisma.$AssessmentSchemePayload<ExtArgs>[]
+    workPlacements: Prisma.$WorkPlacementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1532,6 +1683,7 @@ export interface Prisma__CentreClient<T, Null = never, ExtArgs extends runtime.T
   enrolments<T extends Prisma.Centre$enrolmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Centre$enrolmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnrolmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   evaluations<T extends Prisma.Centre$evaluationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Centre$evaluationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assessmentSchemes<T extends Prisma.Centre$assessmentSchemesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Centre$assessmentSchemesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssessmentSchemePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workPlacements<T extends Prisma.Centre$workPlacementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Centre$workPlacementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkPlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2017,6 +2169,30 @@ export type Centre$assessmentSchemesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.AssessmentSchemeScalarFieldEnum | Prisma.AssessmentSchemeScalarFieldEnum[]
+}
+
+/**
+ * Centre.workPlacements
+ */
+export type Centre$workPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkPlacement
+   */
+  select?: Prisma.WorkPlacementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkPlacement
+   */
+  omit?: Prisma.WorkPlacementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkPlacementInclude<ExtArgs> | null
+  where?: Prisma.WorkPlacementWhereInput
+  orderBy?: Prisma.WorkPlacementOrderByWithRelationInput | Prisma.WorkPlacementOrderByWithRelationInput[]
+  cursor?: Prisma.WorkPlacementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkPlacementScalarFieldEnum | Prisma.WorkPlacementScalarFieldEnum[]
 }
 
 /**

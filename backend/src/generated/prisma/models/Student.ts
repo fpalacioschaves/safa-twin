@@ -345,6 +345,7 @@ export type StudentWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Student"> | Date | string | null
   enrolments?: Prisma.EnrolmentListRelationFilter
+  workPlacements?: Prisma.WorkPlacementListRelationFilter
 }
 
 export type StudentOrderByWithRelationInput = {
@@ -370,6 +371,7 @@ export type StudentOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   enrolments?: Prisma.EnrolmentOrderByRelationAggregateInput
+  workPlacements?: Prisma.WorkPlacementOrderByRelationAggregateInput
   _relevance?: Prisma.StudentOrderByRelevanceInput
 }
 
@@ -399,6 +401,7 @@ export type StudentWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Student"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Student"> | Date | string | null
   enrolments?: Prisma.EnrolmentListRelationFilter
+  workPlacements?: Prisma.WorkPlacementListRelationFilter
 }, "id" | "studentCode" | "documentNumber">
 
 export type StudentOrderByWithAggregationInput = {
@@ -479,6 +482,7 @@ export type StudentCreateInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   enrolments?: Prisma.EnrolmentCreateNestedManyWithoutStudentInput
+  workPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateInput = {
@@ -504,6 +508,7 @@ export type StudentUncheckedCreateInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutStudentInput
+  workPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUpdateInput = {
@@ -528,6 +533,7 @@ export type StudentUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   enrolments?: Prisma.EnrolmentUpdateManyWithoutStudentNestedInput
+  workPlacements?: Prisma.WorkPlacementUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateInput = {
@@ -553,6 +559,7 @@ export type StudentUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutStudentNestedInput
+  workPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentCreateManyInput = {
@@ -735,6 +742,20 @@ export type StudentUpdateOneRequiredWithoutEnrolmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutEnrolmentsInput, Prisma.StudentUpdateWithoutEnrolmentsInput>, Prisma.StudentUncheckedUpdateWithoutEnrolmentsInput>
 }
 
+export type StudentCreateNestedOneWithoutWorkPlacementsInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutWorkPlacementsInput, Prisma.StudentUncheckedCreateWithoutWorkPlacementsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutWorkPlacementsInput
+  connect?: Prisma.StudentWhereUniqueInput
+}
+
+export type StudentUpdateOneRequiredWithoutWorkPlacementsNestedInput = {
+  create?: Prisma.XOR<Prisma.StudentCreateWithoutWorkPlacementsInput, Prisma.StudentUncheckedCreateWithoutWorkPlacementsInput>
+  connectOrCreate?: Prisma.StudentCreateOrConnectWithoutWorkPlacementsInput
+  upsert?: Prisma.StudentUpsertWithoutWorkPlacementsInput
+  connect?: Prisma.StudentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StudentUpdateToOneWithWhereWithoutWorkPlacementsInput, Prisma.StudentUpdateWithoutWorkPlacementsInput>, Prisma.StudentUncheckedUpdateWithoutWorkPlacementsInput>
+}
+
 export type StudentCreateWithoutEnrolmentsInput = {
   studentCode?: string | null
   firstName: string
@@ -756,6 +777,7 @@ export type StudentCreateWithoutEnrolmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  workPlacements?: Prisma.WorkPlacementCreateNestedManyWithoutStudentInput
 }
 
 export type StudentUncheckedCreateWithoutEnrolmentsInput = {
@@ -780,6 +802,7 @@ export type StudentUncheckedCreateWithoutEnrolmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  workPlacements?: Prisma.WorkPlacementUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type StudentCreateOrConnectWithoutEnrolmentsInput = {
@@ -819,6 +842,7 @@ export type StudentUpdateWithoutEnrolmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workPlacements?: Prisma.WorkPlacementUpdateManyWithoutStudentNestedInput
 }
 
 export type StudentUncheckedUpdateWithoutEnrolmentsInput = {
@@ -843,6 +867,121 @@ export type StudentUncheckedUpdateWithoutEnrolmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workPlacements?: Prisma.WorkPlacementUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentCreateWithoutWorkPlacementsInput = {
+  studentCode?: string | null
+  firstName: string
+  lastName1: string
+  lastName2?: string | null
+  documentType?: $Enums.StudentDocumentType | null
+  documentNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  birthDate?: Date | string | null
+  address?: string | null
+  postalCode?: string | null
+  city?: string | null
+  province?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  notes?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  enrolments?: Prisma.EnrolmentCreateNestedManyWithoutStudentInput
+}
+
+export type StudentUncheckedCreateWithoutWorkPlacementsInput = {
+  id?: number
+  studentCode?: string | null
+  firstName: string
+  lastName1: string
+  lastName2?: string | null
+  documentType?: $Enums.StudentDocumentType | null
+  documentNumber?: string | null
+  email?: string | null
+  phone?: string | null
+  birthDate?: Date | string | null
+  address?: string | null
+  postalCode?: string | null
+  city?: string | null
+  province?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  notes?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedCreateNestedManyWithoutStudentInput
+}
+
+export type StudentCreateOrConnectWithoutWorkPlacementsInput = {
+  where: Prisma.StudentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StudentCreateWithoutWorkPlacementsInput, Prisma.StudentUncheckedCreateWithoutWorkPlacementsInput>
+}
+
+export type StudentUpsertWithoutWorkPlacementsInput = {
+  update: Prisma.XOR<Prisma.StudentUpdateWithoutWorkPlacementsInput, Prisma.StudentUncheckedUpdateWithoutWorkPlacementsInput>
+  create: Prisma.XOR<Prisma.StudentCreateWithoutWorkPlacementsInput, Prisma.StudentUncheckedCreateWithoutWorkPlacementsInput>
+  where?: Prisma.StudentWhereInput
+}
+
+export type StudentUpdateToOneWithWhereWithoutWorkPlacementsInput = {
+  where?: Prisma.StudentWhereInput
+  data: Prisma.XOR<Prisma.StudentUpdateWithoutWorkPlacementsInput, Prisma.StudentUncheckedUpdateWithoutWorkPlacementsInput>
+}
+
+export type StudentUpdateWithoutWorkPlacementsInput = {
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName1?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentType?: Prisma.NullableEnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType | null
+  documentNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  enrolments?: Prisma.EnrolmentUpdateManyWithoutStudentNestedInput
+}
+
+export type StudentUncheckedUpdateWithoutWorkPlacementsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  studentCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName1?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentType?: Prisma.NullableEnumStudentDocumentTypeFieldUpdateOperationsInput | $Enums.StudentDocumentType | null
+  documentNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birthDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  enrolments?: Prisma.EnrolmentUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 
@@ -852,10 +991,12 @@ export type StudentUncheckedUpdateWithoutEnrolmentsInput = {
 
 export type StudentCountOutputType = {
   enrolments: number
+  workPlacements: number
 }
 
 export type StudentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   enrolments?: boolean | StudentCountOutputTypeCountEnrolmentsArgs
+  workPlacements?: boolean | StudentCountOutputTypeCountWorkPlacementsArgs
 }
 
 /**
@@ -873,6 +1014,13 @@ export type StudentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  */
 export type StudentCountOutputTypeCountEnrolmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EnrolmentWhereInput
+}
+
+/**
+ * StudentCountOutputType without action
+ */
+export type StudentCountOutputTypeCountWorkPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkPlacementWhereInput
 }
 
 
@@ -899,6 +1047,7 @@ export type StudentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   deletedAt?: boolean
   enrolments?: boolean | Prisma.Student$enrolmentsArgs<ExtArgs>
+  workPlacements?: boolean | Prisma.Student$workPlacementsArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["student"]>
 
@@ -931,6 +1080,7 @@ export type StudentSelectScalar = {
 export type StudentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentCode" | "firstName" | "lastName1" | "lastName2" | "documentType" | "documentNumber" | "email" | "phone" | "birthDate" | "address" | "postalCode" | "city" | "province" | "emergencyContactName" | "emergencyContactPhone" | "notes" | "isActive" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["student"]>
 export type StudentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   enrolments?: boolean | Prisma.Student$enrolmentsArgs<ExtArgs>
+  workPlacements?: boolean | Prisma.Student$workPlacementsArgs<ExtArgs>
   _count?: boolean | Prisma.StudentCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -938,6 +1088,7 @@ export type $StudentPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Student"
   objects: {
     enrolments: Prisma.$EnrolmentPayload<ExtArgs>[]
+    workPlacements: Prisma.$WorkPlacementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1302,6 +1453,7 @@ readonly fields: StudentFieldRefs;
 export interface Prisma__StudentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   enrolments<T extends Prisma.Student$enrolmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$enrolmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnrolmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workPlacements<T extends Prisma.Student$workPlacementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Student$workPlacementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkPlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1721,6 +1873,30 @@ export type Student$enrolmentsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.EnrolmentScalarFieldEnum | Prisma.EnrolmentScalarFieldEnum[]
+}
+
+/**
+ * Student.workPlacements
+ */
+export type Student$workPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkPlacement
+   */
+  select?: Prisma.WorkPlacementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkPlacement
+   */
+  omit?: Prisma.WorkPlacementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkPlacementInclude<ExtArgs> | null
+  where?: Prisma.WorkPlacementWhereInput
+  orderBy?: Prisma.WorkPlacementOrderByWithRelationInput | Prisma.WorkPlacementOrderByWithRelationInput[]
+  cursor?: Prisma.WorkPlacementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkPlacementScalarFieldEnum | Prisma.WorkPlacementScalarFieldEnum[]
 }
 
 /**

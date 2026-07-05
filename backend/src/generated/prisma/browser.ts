@@ -122,3 +122,28 @@ export type Grade = Prisma.GradeModel
  * 
  */
 export type GradeComponentScore = Prisma.GradeComponentScoreModel
+/**
+ * Model Company
+ * 
+ */
+export type Company = Prisma.CompanyModel
+/**
+ * Model CompanyTutor
+ * 
+ */
+export type CompanyTutor = Prisma.CompanyTutorModel
+/**
+ * Model WorkPlacement
+ * 
+ */
+export type WorkPlacement = Prisma.WorkPlacementModel
+/**
+ * Model PlacementFollowup
+ * 
+ */
+export type PlacementFollowup = Prisma.PlacementFollowupModel
+/**
+ * Model PlacementIncident
+ * 
+ */
+export type PlacementIncident = Prisma.PlacementIncidentModel

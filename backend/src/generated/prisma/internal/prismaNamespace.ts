@@ -404,7 +404,12 @@ export const ModelName = {
   AssessmentScheme: 'AssessmentScheme',
   AssessmentComponent: 'AssessmentComponent',
   Grade: 'Grade',
-  GradeComponentScore: 'GradeComponentScore'
+  GradeComponentScore: 'GradeComponentScore',
+  Company: 'Company',
+  CompanyTutor: 'CompanyTutor',
+  WorkPlacement: 'WorkPlacement',
+  PlacementFollowup: 'PlacementFollowup',
+  PlacementIncident: 'PlacementIncident'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session" | "academicYear" | "centre" | "vocationalProgramme" | "centreProgramme" | "academicLevel" | "academicOffering" | "module" | "student" | "enrolment" | "evaluation" | "gradeStatus" | "assessmentScheme" | "assessmentComponent" | "grade" | "gradeComponentScore"
+    modelProps: "user" | "role" | "permission" | "userRole" | "rolePermission" | "session" | "academicYear" | "centre" | "vocationalProgramme" | "centreProgramme" | "academicLevel" | "academicOffering" | "module" | "student" | "enrolment" | "evaluation" | "gradeStatus" | "assessmentScheme" | "assessmentComponent" | "grade" | "gradeComponentScore" | "company" | "companyTutor" | "workPlacement" | "placementFollowup" | "placementIncident"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1810,6 +1815,336 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Company: {
+      payload: Prisma.$CompanyPayload<ExtArgs>
+      fields: Prisma.CompanyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload>
+        }
+        findMany: {
+          args: Prisma.CompanyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload>[]
+        }
+        create: {
+          args: Prisma.CompanyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload>
+        }
+        createMany: {
+          args: Prisma.CompanyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CompanyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload>
+        }
+        update: {
+          args: Prisma.CompanyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CompanyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompany>
+        }
+        groupBy: {
+          args: Prisma.CompanyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanyTutor: {
+      payload: Prisma.$CompanyTutorPayload<ExtArgs>
+      fields: Prisma.CompanyTutorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanyTutorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanyTutorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanyTutorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanyTutorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload>
+        }
+        findMany: {
+          args: Prisma.CompanyTutorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload>[]
+        }
+        create: {
+          args: Prisma.CompanyTutorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload>
+        }
+        createMany: {
+          args: Prisma.CompanyTutorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CompanyTutorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload>
+        }
+        update: {
+          args: Prisma.CompanyTutorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanyTutorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanyTutorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CompanyTutorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyTutorPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanyTutorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanyTutor>
+        }
+        groupBy: {
+          args: Prisma.CompanyTutorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyTutorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanyTutorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyTutorCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkPlacement: {
+      payload: Prisma.$WorkPlacementPayload<ExtArgs>
+      fields: Prisma.WorkPlacementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkPlacementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkPlacementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkPlacementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkPlacementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload>
+        }
+        findMany: {
+          args: Prisma.WorkPlacementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload>[]
+        }
+        create: {
+          args: Prisma.WorkPlacementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload>
+        }
+        createMany: {
+          args: Prisma.WorkPlacementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.WorkPlacementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload>
+        }
+        update: {
+          args: Prisma.WorkPlacementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkPlacementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkPlacementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.WorkPlacementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkPlacementPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkPlacementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkPlacement>
+        }
+        groupBy: {
+          args: Prisma.WorkPlacementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkPlacementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkPlacementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkPlacementCountAggregateOutputType> | number
+        }
+      }
+    }
+    PlacementFollowup: {
+      payload: Prisma.$PlacementFollowupPayload<ExtArgs>
+      fields: Prisma.PlacementFollowupFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlacementFollowupFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlacementFollowupFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload>
+        }
+        findFirst: {
+          args: Prisma.PlacementFollowupFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlacementFollowupFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload>
+        }
+        findMany: {
+          args: Prisma.PlacementFollowupFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload>[]
+        }
+        create: {
+          args: Prisma.PlacementFollowupCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload>
+        }
+        createMany: {
+          args: Prisma.PlacementFollowupCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PlacementFollowupDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload>
+        }
+        update: {
+          args: Prisma.PlacementFollowupUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlacementFollowupDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlacementFollowupUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PlacementFollowupUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementFollowupPayload>
+        }
+        aggregate: {
+          args: Prisma.PlacementFollowupAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlacementFollowup>
+        }
+        groupBy: {
+          args: Prisma.PlacementFollowupGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlacementFollowupGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlacementFollowupCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlacementFollowupCountAggregateOutputType> | number
+        }
+      }
+    }
+    PlacementIncident: {
+      payload: Prisma.$PlacementIncidentPayload<ExtArgs>
+      fields: Prisma.PlacementIncidentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlacementIncidentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlacementIncidentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload>
+        }
+        findFirst: {
+          args: Prisma.PlacementIncidentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlacementIncidentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload>
+        }
+        findMany: {
+          args: Prisma.PlacementIncidentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload>[]
+        }
+        create: {
+          args: Prisma.PlacementIncidentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload>
+        }
+        createMany: {
+          args: Prisma.PlacementIncidentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.PlacementIncidentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload>
+        }
+        update: {
+          args: Prisma.PlacementIncidentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlacementIncidentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlacementIncidentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.PlacementIncidentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementIncidentPayload>
+        }
+        aggregate: {
+          args: Prisma.PlacementIncidentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlacementIncident>
+        }
+        groupBy: {
+          args: Prisma.PlacementIncidentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlacementIncidentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlacementIncidentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlacementIncidentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2183,6 +2518,108 @@ export const GradeComponentScoreScalarFieldEnum = {
 export type GradeComponentScoreScalarFieldEnum = (typeof GradeComponentScoreScalarFieldEnum)[keyof typeof GradeComponentScoreScalarFieldEnum]
 
 
+export const CompanyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  taxIdentifier: 'taxIdentifier',
+  sector: 'sector',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email',
+  website: 'website',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+export const CompanyTutorScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  position: 'position',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CompanyTutorScalarFieldEnum = (typeof CompanyTutorScalarFieldEnum)[keyof typeof CompanyTutorScalarFieldEnum]
+
+
+export const WorkPlacementScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  companyId: 'companyId',
+  companyTutorId: 'companyTutorId',
+  academicTutorUserId: 'academicTutorUserId',
+  status: 'status',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  schedule: 'schedule',
+  totalHours: 'totalHours',
+  completedHours: 'completedHours',
+  activities: 'activities',
+  learningOutcomes: 'learningOutcomes',
+  finalEvaluation: 'finalEvaluation',
+  documentationPending: 'documentationPending',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type WorkPlacementScalarFieldEnum = (typeof WorkPlacementScalarFieldEnum)[keyof typeof WorkPlacementScalarFieldEnum]
+
+
+export const PlacementFollowupScalarFieldEnum = {
+  id: 'id',
+  workPlacementId: 'workPlacementId',
+  createdByUserId: 'createdByUserId',
+  followupType: 'followupType',
+  followupAt: 'followupAt',
+  title: 'title',
+  description: 'description',
+  nextActions: 'nextActions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type PlacementFollowupScalarFieldEnum = (typeof PlacementFollowupScalarFieldEnum)[keyof typeof PlacementFollowupScalarFieldEnum]
+
+
+export const PlacementIncidentScalarFieldEnum = {
+  id: 'id',
+  workPlacementId: 'workPlacementId',
+  createdByUserId: 'createdByUserId',
+  severity: 'severity',
+  occurredAt: 'occurredAt',
+  title: 'title',
+  description: 'description',
+  resolution: 'resolution',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type PlacementIncidentScalarFieldEnum = (typeof PlacementIncidentScalarFieldEnum)[keyof typeof PlacementIncidentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2359,6 +2796,64 @@ export const GradeComponentScoreOrderByRelevanceFieldEnum = {
 export type GradeComponentScoreOrderByRelevanceFieldEnum = (typeof GradeComponentScoreOrderByRelevanceFieldEnum)[keyof typeof GradeComponentScoreOrderByRelevanceFieldEnum]
 
 
+export const CompanyOrderByRelevanceFieldEnum = {
+  name: 'name',
+  taxIdentifier: 'taxIdentifier',
+  sector: 'sector',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email',
+  website: 'website',
+  notes: 'notes'
+} as const
+
+export type CompanyOrderByRelevanceFieldEnum = (typeof CompanyOrderByRelevanceFieldEnum)[keyof typeof CompanyOrderByRelevanceFieldEnum]
+
+
+export const CompanyTutorOrderByRelevanceFieldEnum = {
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  position: 'position',
+  notes: 'notes'
+} as const
+
+export type CompanyTutorOrderByRelevanceFieldEnum = (typeof CompanyTutorOrderByRelevanceFieldEnum)[keyof typeof CompanyTutorOrderByRelevanceFieldEnum]
+
+
+export const WorkPlacementOrderByRelevanceFieldEnum = {
+  schedule: 'schedule',
+  activities: 'activities',
+  learningOutcomes: 'learningOutcomes',
+  finalEvaluation: 'finalEvaluation',
+  remarks: 'remarks'
+} as const
+
+export type WorkPlacementOrderByRelevanceFieldEnum = (typeof WorkPlacementOrderByRelevanceFieldEnum)[keyof typeof WorkPlacementOrderByRelevanceFieldEnum]
+
+
+export const PlacementFollowupOrderByRelevanceFieldEnum = {
+  title: 'title',
+  description: 'description',
+  nextActions: 'nextActions'
+} as const
+
+export type PlacementFollowupOrderByRelevanceFieldEnum = (typeof PlacementFollowupOrderByRelevanceFieldEnum)[keyof typeof PlacementFollowupOrderByRelevanceFieldEnum]
+
+
+export const PlacementIncidentOrderByRelevanceFieldEnum = {
+  title: 'title',
+  description: 'description',
+  resolution: 'resolution'
+} as const
+
+export type PlacementIncidentOrderByRelevanceFieldEnum = (typeof PlacementIncidentOrderByRelevanceFieldEnum)[keyof typeof PlacementIncidentOrderByRelevanceFieldEnum]
+
+
 
 /**
  * Field references
@@ -2439,6 +2934,27 @@ export type EnumEvaluationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'AssessmentComponentType'
  */
 export type EnumAssessmentComponentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssessmentComponentType'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkPlacementStatus'
+ */
+export type EnumWorkPlacementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkPlacementStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PlacementFollowupType'
+ */
+export type EnumPlacementFollowupTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlacementFollowupType'>
+    
+
+
+/**
+ * Reference to a field of type 'PlacementIncidentSeverity'
+ */
+export type EnumPlacementIncidentSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlacementIncidentSeverity'>
     
 
 
@@ -2579,6 +3095,11 @@ export type GlobalOmitConfig = {
   assessmentComponent?: Prisma.AssessmentComponentOmit
   grade?: Prisma.GradeOmit
   gradeComponentScore?: Prisma.GradeComponentScoreOmit
+  company?: Prisma.CompanyOmit
+  companyTutor?: Prisma.CompanyTutorOmit
+  workPlacement?: Prisma.WorkPlacementOmit
+  placementFollowup?: Prisma.PlacementFollowupOmit
+  placementIncident?: Prisma.PlacementIncidentOmit
 }
 
 /* Types for Logging */

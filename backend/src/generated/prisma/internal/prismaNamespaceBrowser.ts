@@ -71,7 +71,12 @@ export const ModelName = {
   AssessmentScheme: 'AssessmentScheme',
   AssessmentComponent: 'AssessmentComponent',
   Grade: 'Grade',
-  GradeComponentScore: 'GradeComponentScore'
+  GradeComponentScore: 'GradeComponentScore',
+  Company: 'Company',
+  CompanyTutor: 'CompanyTutor',
+  WorkPlacement: 'WorkPlacement',
+  PlacementFollowup: 'PlacementFollowup',
+  PlacementIncident: 'PlacementIncident'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -424,6 +429,108 @@ export const GradeComponentScoreScalarFieldEnum = {
 export type GradeComponentScoreScalarFieldEnum = (typeof GradeComponentScoreScalarFieldEnum)[keyof typeof GradeComponentScoreScalarFieldEnum]
 
 
+export const CompanyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  taxIdentifier: 'taxIdentifier',
+  sector: 'sector',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email',
+  website: 'website',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+export const CompanyTutorScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  position: 'position',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CompanyTutorScalarFieldEnum = (typeof CompanyTutorScalarFieldEnum)[keyof typeof CompanyTutorScalarFieldEnum]
+
+
+export const WorkPlacementScalarFieldEnum = {
+  id: 'id',
+  studentId: 'studentId',
+  academicYearId: 'academicYearId',
+  centreId: 'centreId',
+  companyId: 'companyId',
+  companyTutorId: 'companyTutorId',
+  academicTutorUserId: 'academicTutorUserId',
+  status: 'status',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  schedule: 'schedule',
+  totalHours: 'totalHours',
+  completedHours: 'completedHours',
+  activities: 'activities',
+  learningOutcomes: 'learningOutcomes',
+  finalEvaluation: 'finalEvaluation',
+  documentationPending: 'documentationPending',
+  remarks: 'remarks',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type WorkPlacementScalarFieldEnum = (typeof WorkPlacementScalarFieldEnum)[keyof typeof WorkPlacementScalarFieldEnum]
+
+
+export const PlacementFollowupScalarFieldEnum = {
+  id: 'id',
+  workPlacementId: 'workPlacementId',
+  createdByUserId: 'createdByUserId',
+  followupType: 'followupType',
+  followupAt: 'followupAt',
+  title: 'title',
+  description: 'description',
+  nextActions: 'nextActions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type PlacementFollowupScalarFieldEnum = (typeof PlacementFollowupScalarFieldEnum)[keyof typeof PlacementFollowupScalarFieldEnum]
+
+
+export const PlacementIncidentScalarFieldEnum = {
+  id: 'id',
+  workPlacementId: 'workPlacementId',
+  createdByUserId: 'createdByUserId',
+  severity: 'severity',
+  occurredAt: 'occurredAt',
+  title: 'title',
+  description: 'description',
+  resolution: 'resolution',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type PlacementIncidentScalarFieldEnum = (typeof PlacementIncidentScalarFieldEnum)[keyof typeof PlacementIncidentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -598,4 +705,62 @@ export const GradeComponentScoreOrderByRelevanceFieldEnum = {
 } as const
 
 export type GradeComponentScoreOrderByRelevanceFieldEnum = (typeof GradeComponentScoreOrderByRelevanceFieldEnum)[keyof typeof GradeComponentScoreOrderByRelevanceFieldEnum]
+
+
+export const CompanyOrderByRelevanceFieldEnum = {
+  name: 'name',
+  taxIdentifier: 'taxIdentifier',
+  sector: 'sector',
+  address: 'address',
+  postalCode: 'postalCode',
+  city: 'city',
+  province: 'province',
+  phone: 'phone',
+  email: 'email',
+  website: 'website',
+  notes: 'notes'
+} as const
+
+export type CompanyOrderByRelevanceFieldEnum = (typeof CompanyOrderByRelevanceFieldEnum)[keyof typeof CompanyOrderByRelevanceFieldEnum]
+
+
+export const CompanyTutorOrderByRelevanceFieldEnum = {
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  position: 'position',
+  notes: 'notes'
+} as const
+
+export type CompanyTutorOrderByRelevanceFieldEnum = (typeof CompanyTutorOrderByRelevanceFieldEnum)[keyof typeof CompanyTutorOrderByRelevanceFieldEnum]
+
+
+export const WorkPlacementOrderByRelevanceFieldEnum = {
+  schedule: 'schedule',
+  activities: 'activities',
+  learningOutcomes: 'learningOutcomes',
+  finalEvaluation: 'finalEvaluation',
+  remarks: 'remarks'
+} as const
+
+export type WorkPlacementOrderByRelevanceFieldEnum = (typeof WorkPlacementOrderByRelevanceFieldEnum)[keyof typeof WorkPlacementOrderByRelevanceFieldEnum]
+
+
+export const PlacementFollowupOrderByRelevanceFieldEnum = {
+  title: 'title',
+  description: 'description',
+  nextActions: 'nextActions'
+} as const
+
+export type PlacementFollowupOrderByRelevanceFieldEnum = (typeof PlacementFollowupOrderByRelevanceFieldEnum)[keyof typeof PlacementFollowupOrderByRelevanceFieldEnum]
+
+
+export const PlacementIncidentOrderByRelevanceFieldEnum = {
+  title: 'title',
+  description: 'description',
+  resolution: 'resolution'
+} as const
+
+export type PlacementIncidentOrderByRelevanceFieldEnum = (typeof PlacementIncidentOrderByRelevanceFieldEnum)[keyof typeof PlacementIncidentOrderByRelevanceFieldEnum]
 

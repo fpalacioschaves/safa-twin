@@ -69,3 +69,34 @@ export const AssessmentComponentType = {
 } as const
 
 export type AssessmentComponentType = (typeof AssessmentComponentType)[keyof typeof AssessmentComponentType]
+
+
+export const WorkPlacementStatus = {
+  PENDING: 'PENDING',
+  ASSIGNED: 'ASSIGNED',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type WorkPlacementStatus = (typeof WorkPlacementStatus)[keyof typeof WorkPlacementStatus]
+
+
+export const PlacementFollowupType = {
+  VISIT: 'VISIT',
+  PHONE: 'PHONE',
+  EMAIL: 'EMAIL',
+  MEETING: 'MEETING',
+  OTHER: 'OTHER'
+} as const
+
+export type PlacementFollowupType = (typeof PlacementFollowupType)[keyof typeof PlacementFollowupType]
+
+
+export const PlacementIncidentSeverity = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type PlacementIncidentSeverity = (typeof PlacementIncidentSeverity)[keyof typeof PlacementIncidentSeverity]
