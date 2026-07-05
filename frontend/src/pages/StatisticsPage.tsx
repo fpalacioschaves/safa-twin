@@ -1,8 +1,13 @@
 import {
   useEffect,
+  useMemo,
   useState,
   type FormEvent,
 } from 'react';
+
+import type {
+  ProfessionalModule,
+} from '../types/modules';
 
 import type {
   AcademicStatisticsMetrics,
@@ -17,6 +22,10 @@ import {
 } from '../services/api.service';
 
 import {
+  getAcademicLevels,
+} from '../services/academic-levels.service';
+
+import {
   getAcademicYears,
 } from '../services/academic-years.service';
 
@@ -29,8 +38,16 @@ import {
 } from '../services/evaluations.service';
 
 import {
+  getModules,
+} from '../services/modules.service';
+
+import {
   getAcademicStatistics,
 } from '../services/statistics.service';
+
+import {
+  getVocationalProgrammes,
+} from '../services/vocational-programmes.service';
 
 import './StatisticsPage.css';
 
@@ -43,6 +60,9 @@ interface FilterState {
   academicYearId: string;
   centreId: string;
   evaluationId: string;
+  vocationalProgrammeId: string;
+  academicLevelId: string;
+  moduleId: string;
 }
 
 interface ChartDataItem {
@@ -56,6 +76,9 @@ const emptyFilters: FilterState = {
   academicYearId: '',
   centreId: '',
   evaluationId: '',
+  vocationalProgrammeId: '',
+  academicLevelId: '',
+  moduleId: '',
 };
 
 function getErrorMessage(error: unknown): string {
@@ -70,9 +93,7 @@ function getErrorMessage(error: unknown): string {
   return 'Se ha producido un error inesperado.';
 }
 
-function getOptionalNumber(
-  value: string,
-): number | undefined {
+function getOptionalNumber(value: string): number | undefined {
   if (!value) {
     return undefined;
   }
@@ -88,9 +109,7 @@ function formatInteger(value: number): string {
   return value.toLocaleString('es-ES');
 }
 
-function formatDecimal(
-  value: number | null,
-): string {
+function formatDecimal(value: number | null): string {
   if (value === null) {
     return '—';
   }
@@ -112,9 +131,7 @@ function formatRate(value: number | null): string {
   return `${formatDecimal(value)} %`;
 }
 
-function getMaximumValue(
-  items: ChartDataItem[],
-): number {
+function getMaximumValue(items: ChartDataItem[]): number {
   return Math.max(
     1,
     ...items.map((item) => item.value),
@@ -130,12 +147,6 @@ function getBarWidth(
   }
 
   return `${Math.max(2, value * 100 / maximum)}%`;
-}
-
-function getRateNumber(
-  value: number | null,
-): number {
-  return value ?? 0;
 }
 
 function StatisticsTable({
@@ -185,41 +196,13 @@ function StatisticsTable({
                     </strong>
                     <span>{item.name}</span>
                   </td>
-                  <td>
-                    {formatInteger(
-                      item.metrics.enrolled,
-                    )}
-                  </td>
-                  <td>
-                    {formatInteger(
-                      item.metrics.evaluated,
-                    )}
-                  </td>
-                  <td>
-                    {formatInteger(
-                      item.metrics.passed,
-                    )}
-                  </td>
-                  <td>
-                    {formatInteger(
-                      item.metrics.failed,
-                    )}
-                  </td>
-                  <td>
-                    {formatRate(
-                      item.metrics.successRate,
-                    )}
-                  </td>
-                  <td>
-                    {formatRate(
-                      item.metrics.performanceRate,
-                    )}
-                  </td>
-                  <td>
-                    {formatDecimal(
-                      item.metrics.averageGrade,
-                    )}
-                  </td>
+                  <td>{formatInteger(item.metrics.enrolled)}</td>
+                  <td>{formatInteger(item.metrics.evaluated)}</td>
+                  <td>{formatInteger(item.metrics.passed)}</td>
+                  <td>{formatInteger(item.metrics.failed)}</td>
+                  <td>{formatRate(item.metrics.successRate)}</td>
+                  <td>{formatRate(item.metrics.performanceRate)}</td>
+                  <td>{formatDecimal(item.metrics.averageGrade)}</td>
                 </tr>
               ))}
             </tbody>
@@ -234,12 +217,10 @@ function HorizontalBarChart({
   title,
   description,
   items,
-  valueSuffix = '',
 }: {
   title: string;
   description: string;
   items: ChartDataItem[];
-  valueSuffix?: string;
 }) {
   const visibleItems = items.filter(
     (item) => item.value > 0,
@@ -259,7 +240,7 @@ function HorizontalBarChart({
 
       {visibleItems.length === 0 ? (
         <p className="statistics-muted">
-          No hay datos suficientes para representar esta gráfica.
+          No hay datos suficientes para esta gráfica.
         </p>
       ) : (
         <div className="statistics-chart-list">
@@ -274,24 +255,16 @@ function HorizontalBarChart({
                   <span>{item.secondaryLabel}</span>
                 ) : null}
               </div>
-
-              <div
-                className="statistics-chart-track"
-                aria-hidden="true"
-              >
+              <div className="statistics-chart-track">
                 <span
                   className="statistics-chart-fill"
                   style={{
-                    width: getBarWidth(
-                      item.value,
-                      maximum,
-                    ),
+                    width: getBarWidth(item.value, maximum),
                   }}
                 />
               </div>
-
               <strong className="statistics-chart-value">
-                {formatInteger(item.value)}{valueSuffix}
+                {formatInteger(item.value)}
               </strong>
             </div>
           ))}
@@ -316,14 +289,10 @@ function RateBarChart({
     .map((item) => ({
       key: item.id.toString(),
       label: item.acronym ?? item.code,
-      value: getRateNumber(
-        item.metrics[metric],
-      ),
+      value: item.metrics[metric] ?? 0,
       secondaryLabel: item.name,
     }))
     .filter((item) => item.value > 0);
-
-  const maximum = 100;
 
   return (
     <article className="statistics-card">
@@ -350,22 +319,14 @@ function RateBarChart({
                 <strong>{item.label}</strong>
                 <span>{item.secondaryLabel}</span>
               </div>
-
-              <div
-                className="statistics-chart-track"
-                aria-hidden="true"
-              >
+              <div className="statistics-chart-track">
                 <span
                   className="statistics-chart-fill"
                   style={{
-                    width: getBarWidth(
-                      item.value,
-                      maximum,
-                    ),
+                    width: getBarWidth(item.value, 100),
                   }}
                 />
               </div>
-
               <strong className="statistics-chart-value">
                 {formatRate(item.value)}
               </strong>
@@ -385,7 +346,7 @@ function GradeDistributionChart({
   return (
     <HorizontalBarChart
       title="Distribución de notas numéricas"
-      description="Solo incluye calificaciones numéricas. Los estados NE, NC, NP, PFE y equivalentes se muestran aparte."
+      description="Solo incluye calificaciones numéricas. Los estados administrativos quedan separados."
       items={items.map((item) => ({
         key: item.key,
         label: item.label,
@@ -403,8 +364,8 @@ function StatusDistributionChart({
 }) {
   return (
     <HorizontalBarChart
-      title="Estados no numéricos y administrativos"
-      description="Permite controlar situaciones como no evaluado, no presentado, pendiente de formación en empresa, convalidaciones o exenciones."
+      title="Estados no numéricos"
+      description="Controla situaciones como no evaluado, no presentado, convalidado o exento."
       items={items.map((item) => ({
         key: item.code,
         label: item.code,
@@ -420,39 +381,37 @@ function OutcomeChart({
 }: {
   metrics: AcademicStatisticsMetrics;
 }) {
-  const items: ChartDataItem[] = [
-    {
-      key: 'passed',
-      label: 'Aprobados',
-      value: metrics.passed,
-    },
-    {
-      key: 'failed',
-      label: 'Suspensos',
-      value: metrics.failed,
-    },
-    {
-      key: 'not-evaluated',
-      label: 'No evaluados',
-      value: metrics.notEvaluated ?? 0,
-    },
-    {
-      key: 'no-show',
-      label: 'No presentados',
-      value: metrics.noShow,
-    },
-    {
-      key: 'non-evaluable',
-      label: 'No evaluables',
-      value: metrics.nonEvaluable,
-    },
-  ];
-
   return (
     <HorizontalBarChart
-      title="Resultado global de la evaluación"
-      description="Separa aprobados, suspensos y estados no evaluables para no convertir estados administrativos en notas."
-      items={items}
+      title="Resultado global"
+      description="Separa aprobados, suspensos y estados sin convertirlos en notas."
+      items={[
+        {
+          key: 'passed',
+          label: 'Aprobados',
+          value: metrics.passed,
+        },
+        {
+          key: 'failed',
+          label: 'Suspensos',
+          value: metrics.failed,
+        },
+        {
+          key: 'not-evaluated',
+          label: 'No evaluados',
+          value: metrics.notEvaluated ?? 0,
+        },
+        {
+          key: 'no-show',
+          label: 'No presentados',
+          value: metrics.noShow,
+        },
+        {
+          key: 'non-evaluable',
+          label: 'No evaluables',
+          value: metrics.nonEvaluable,
+        },
+      ]}
     />
   );
 }
@@ -470,6 +429,15 @@ export function StatisticsPage() {
   const [evaluations, setEvaluations] =
     useState<OptionItem[]>([]);
 
+  const [vocationalProgrammes, setVocationalProgrammes] =
+    useState<OptionItem[]>([]);
+
+  const [academicLevels, setAcademicLevels] =
+    useState<OptionItem[]>([]);
+
+  const [modules, setModules] =
+    useState<ProfessionalModule[]>([]);
+
   const [statistics, setStatistics] =
     useState<AcademicStatisticsResponse | null>(null);
 
@@ -478,6 +446,30 @@ export function StatisticsPage() {
 
   const [error, setError] =
     useState<string | null>(null);
+
+  const filteredModules = useMemo(
+    () => {
+      const vocationalProgrammeId = getOptionalNumber(
+        filters.vocationalProgrammeId,
+      );
+
+      const academicLevelId = getOptionalNumber(
+        filters.academicLevelId,
+      );
+
+      return modules.filter((module) => (
+        (!vocationalProgrammeId
+          || module.vocationalProgrammeId === vocationalProgrammeId)
+        && (!academicLevelId
+          || module.academicLevelId === academicLevelId)
+      ));
+    },
+    [
+      filters.academicLevelId,
+      filters.vocationalProgrammeId,
+      modules,
+    ],
+  );
 
   async function loadStatistics(
     nextFilters: FilterState,
@@ -491,6 +483,15 @@ export function StatisticsPage() {
       ),
       evaluationId: getOptionalNumber(
         nextFilters.evaluationId,
+      ),
+      vocationalProgrammeId: getOptionalNumber(
+        nextFilters.vocationalProgrammeId,
+      ),
+      academicLevelId: getOptionalNumber(
+        nextFilters.academicLevelId,
+      ),
+      moduleId: getOptionalNumber(
+        nextFilters.moduleId,
       ),
     });
 
@@ -507,6 +508,9 @@ export function StatisticsPage() {
           academicYearsResponse,
           centresResponse,
           evaluationsResponse,
+          programmesResponse,
+          levelsResponse,
+          modulesResponse,
         ] = await Promise.all([
           getAcademicYears({
             page: 1,
@@ -523,6 +527,22 @@ export function StatisticsPage() {
             page: 1,
             pageSize: 50,
             status: 'all',
+          }),
+          getVocationalProgrammes({
+            page: 1,
+            pageSize: 50,
+            status: 'active',
+            type: 'all',
+          }),
+          getAcademicLevels({
+            page: 1,
+            pageSize: 50,
+            status: 'active',
+          }),
+          getModules({
+            page: 1,
+            pageSize: 50,
+            status: 'active',
           }),
         ]);
 
@@ -555,10 +575,29 @@ export function StatisticsPage() {
           ),
         );
 
+        setVocationalProgrammes(
+          programmesResponse.items.map(
+            (programme) => ({
+              id: programme.id,
+              label: `${programme.acronym} · ${programme.name}`,
+            }),
+          ),
+        );
+
+        setAcademicLevels(
+          levelsResponse.items.map(
+            (level) => ({
+              id: level.id,
+              label: level.name,
+            }),
+          ),
+        );
+
+        setModules(modulesResponse.items);
+
         const currentAcademicYear =
           academicYearsResponse.items.find(
-            (academicYear) =>
-              academicYear.isCurrent,
+            (academicYear) => academicYear.isCurrent,
           );
 
         const nextFilters = {
@@ -596,14 +635,50 @@ export function StatisticsPage() {
     }
   }
 
+  async function handleReset(): Promise<void> {
+    const currentAcademicYear = academicYears.find(
+      (academicYear) => academicYear.label.includes('actual'),
+    );
+
+    const nextFilters = {
+      ...emptyFilters,
+      academicYearId:
+        currentAcademicYear?.id.toString()
+        ?? '',
+    };
+
+    setFilters(nextFilters);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await loadStatistics(nextFilters);
+    } catch (loadError: unknown) {
+      setError(getErrorMessage(loadError));
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   function handleFilterChange(
     field: keyof FilterState,
     value: string,
   ): void {
-    setFilters((currentFilters) => ({
-      ...currentFilters,
-      [field]: value,
-    }));
+    setFilters((currentFilters) => {
+      const nextFilters = {
+        ...currentFilters,
+        [field]: value,
+      };
+
+      if (
+        field === 'vocationalProgrammeId'
+        || field === 'academicLevelId'
+      ) {
+        nextFilters.moduleId = '';
+      }
+
+      return nextFilters;
+    });
   }
 
   return (
@@ -625,10 +700,19 @@ export function StatisticsPage() {
       </section>
 
       <section className="statistics-card">
-        <h3>Filtros principales</h3>
+        <div className="statistics-section-heading">
+          <div>
+            <p className="eyebrow">Filtros</p>
+            <h3>Ámbito estadístico</h3>
+            <p>
+              Acota los datos por curso, centro, evaluación,
+              ciclo, nivel y módulo.
+            </p>
+          </div>
+        </div>
 
         <form
-          className="statistics-filters"
+          className="statistics-filters statistics-filters-advanced"
           onSubmit={(event) => {
             void handleSubmit(event);
           }}
@@ -705,15 +789,98 @@ export function StatisticsPage() {
             </select>
           </label>
 
-          <button
-            className="button button-primary"
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading
-              ? 'Calculando...'
-              : 'Actualizar'}
-          </button>
+          <label htmlFor="vocationalProgrammeId">
+            Ciclo formativo
+            <select
+              id="vocationalProgrammeId"
+              value={filters.vocationalProgrammeId}
+              onChange={(event) => {
+                handleFilterChange(
+                  'vocationalProgrammeId',
+                  event.target.value,
+                );
+              }}
+            >
+              <option value="">Todos</option>
+              {vocationalProgrammes.map((programme) => (
+                <option
+                  key={programme.id}
+                  value={programme.id}
+                >
+                  {programme.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label htmlFor="academicLevelId">
+            Nivel académico
+            <select
+              id="academicLevelId"
+              value={filters.academicLevelId}
+              onChange={(event) => {
+                handleFilterChange(
+                  'academicLevelId',
+                  event.target.value,
+                );
+              }}
+            >
+              <option value="">Todos</option>
+              {academicLevels.map((level) => (
+                <option
+                  key={level.id}
+                  value={level.id}
+                >
+                  {level.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label htmlFor="moduleId">
+            Módulo profesional
+            <select
+              id="moduleId"
+              value={filters.moduleId}
+              onChange={(event) => {
+                handleFilterChange(
+                  'moduleId',
+                  event.target.value,
+                );
+              }}
+            >
+              <option value="">Todos</option>
+              {filteredModules.map((module) => (
+                <option
+                  key={module.id}
+                  value={module.id}
+                >
+                  {module.code} · {module.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="statistics-filter-actions">
+            <button
+              className="button button-primary"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Calculando...' : 'Actualizar'}
+            </button>
+
+            <button
+              className="button button-secondary"
+              type="button"
+              disabled={isLoading}
+              onClick={() => {
+                void handleReset();
+              }}
+            >
+              Restablecer
+            </button>
+          </div>
         </form>
       </section>
 
@@ -736,104 +903,65 @@ export function StatisticsPage() {
           <section className="statistics-grid">
             <article className="statistics-metric">
               <span>Matriculados</span>
-              <strong>
-                {formatInteger(
-                  statistics.summary.enrolled,
-                )}
-              </strong>
+              <strong>{formatInteger(statistics.summary.enrolled)}</strong>
             </article>
             <article className="statistics-metric">
               <span>Evaluados</span>
-              <strong>
-                {formatInteger(
-                  statistics.summary.evaluated,
-                )}
-              </strong>
+              <strong>{formatInteger(statistics.summary.evaluated)}</strong>
             </article>
             <article className="statistics-metric">
               <span>Aprobados</span>
-              <strong>
-                {formatInteger(
-                  statistics.summary.passed,
-                )}
-              </strong>
+              <strong>{formatInteger(statistics.summary.passed)}</strong>
             </article>
             <article className="statistics-metric">
               <span>Suspensos</span>
-              <strong>
-                {formatInteger(
-                  statistics.summary.failed,
-                )}
-              </strong>
+              <strong>{formatInteger(statistics.summary.failed)}</strong>
             </article>
             <article className="statistics-metric">
               <span>Tasa de éxito</span>
-              <strong>
-                {formatRate(
-                  statistics.summary.successRate,
-                )}
-              </strong>
+              <strong>{formatRate(statistics.summary.successRate)}</strong>
             </article>
             <article className="statistics-metric">
               <span>Tasa de rendimiento</span>
-              <strong>
-                {formatRate(
-                  statistics.summary.performanceRate,
-                )}
-              </strong>
+              <strong>{formatRate(statistics.summary.performanceRate)}</strong>
             </article>
             <article className="statistics-metric">
               <span>Nota media</span>
-              <strong>
-                {formatDecimal(
-                  statistics.summary.averageGrade,
-                )}
-              </strong>
+              <strong>{formatDecimal(statistics.summary.averageGrade)}</strong>
             </article>
             <article className="statistics-metric">
               <span>No evaluados</span>
               <strong>
                 {statistics.summary.notEvaluated === null
                   ? '—'
-                  : formatInteger(
-                    statistics.summary.notEvaluated,
-                  )}
+                  : formatInteger(statistics.summary.notEvaluated)}
               </strong>
             </article>
           </section>
 
           <section className="statistics-chart-grid">
             <OutcomeChart metrics={statistics.summary} />
-
             <GradeDistributionChart
-              items={
-                statistics.summary.gradeDistribution
-              }
+              items={statistics.summary.gradeDistribution}
             />
-
             <StatusDistributionChart
-              items={
-                statistics.summary.statusDistribution
-              }
+              items={statistics.summary.statusDistribution}
             />
-
             <RateBarChart
               title="Tasa de éxito por módulo"
               description="Porcentaje de aprobados sobre evaluados en cada módulo."
               items={statistics.byModule}
               metric="successRate"
             />
-
             <RateBarChart
               title="Tasa de rendimiento por módulo"
               description="Porcentaje de aprobados sobre matriculados en cada módulo."
               items={statistics.byModule}
               metric="performanceRate"
             />
-
             <RateBarChart
-              title="Comparativa de rendimiento por ciclo"
-              description="Comparación entre ciclos como DAW, DAM u otros ciclos filtrados."
+              title="Rendimiento por ciclo"
+              description="Comparación entre ciclos dentro del ámbito filtrado."
               items={statistics.byProgramme}
               metric="performanceRate"
             />
@@ -841,17 +969,17 @@ export function StatisticsPage() {
 
           <StatisticsTable
             title="Comparativa por ciclo"
-            description="Diferencia DAW, DAM u otros ciclos sin duplicar módulos entre planes."
+            description="Diferencia ciclos sin duplicar módulos entre planes."
             items={statistics.byProgramme}
           />
           <StatisticsTable
             title="Comparativa por nivel"
-            description="Separa primero y segundo para evitar lecturas cruzadas entre cursos."
+            description="Separa primero y segundo para evitar lecturas cruzadas."
             items={statistics.byLevel}
           />
           <StatisticsTable
             title="Comparativa por módulo"
-            description="Muestra resultados módulo a módulo dentro del ámbito filtrado."
+            description="Muestra resultados módulo a módulo."
             items={statistics.byModule}
           />
         </>
