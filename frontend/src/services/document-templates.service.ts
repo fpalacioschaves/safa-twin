@@ -3,6 +3,7 @@ import {
 } from './api.service';
 
 import type {
+  DocumentTemplateContextOptionsResponse,
   DocumentTemplateDefinition,
   DocumentTemplateGenerationRequest,
   DocumentTemplateGenerationResult,
@@ -78,6 +79,14 @@ export async function getDocumentTemplateRequiredInputs(
 ): Promise<DocumentTemplateRequiredInputsResponse> {
   return apiRequest<DocumentTemplateRequiredInputsResponse>(
     `${BASE_URL}/${encodeURIComponent(code)}/required-inputs`,
+  );
+}
+
+export async function getDocumentTemplateContextOptions(
+  code: string,
+): Promise<DocumentTemplateContextOptionsResponse> {
+  return apiRequest<DocumentTemplateContextOptionsResponse>(
+    `${BASE_URL}/${encodeURIComponent(code)}/context-options`,
   );
 }
 
