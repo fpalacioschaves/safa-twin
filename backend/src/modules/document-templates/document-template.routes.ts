@@ -7,11 +7,20 @@ import {
   requirePermission,
 } from '../../middleware/authorization.middleware.js';
 
+import type {
+  AuthenticatedUser,
+} from '../auth/auth.service.js';
+
 import {
+  documentTemplateGenerationBodySchema,
   documentTemplateListQuerySchema,
   documentTemplateParamsSchema,
   documentTemplateValidationBodySchema,
 } from './document-template.schemas.js';
+
+import {
+  generateDocumentFromTemplate,
+} from './document-template-generator.service.js';
 
 import {
   getDocumentTemplateByCode,
@@ -64,6 +73,17 @@ function sendTemplateNotFound(
       code: 'DOCUMENT_TEMPLATE_NOT_FOUND',
       message:
         'No existe una plantilla documental activa con ese código.',
+    },
+  });
+}
+
+function sendAuthenticationRequired(
+  response: Response,
+): void {
+  response.status(401).json({
+    error: {
+      code: 'AUTHENTICATION_REQUIRED',
+      message: 'Es necesario iniciar sesión.',
     },
   });
 }
@@ -245,6 +265,85 @@ documentTemplateRouter.post(
 
       response.status(200).json(result);
     } catch (error: unknown) {
+      next(error);
+    }
+  },
+);
+
+documentTemplateRouter.post(
+  '/:code/generate',
+  requirePermission(DOCUMENT_TEMPLATE_VIEW_PERMISSION),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const paramsValidation =
+      documentTemplateParamsSchema.safeParse(
+        request.params,
+      );
+
+    if (!paramsValidation.success) {
+      sendValidationError(
+        response,
+        paramsValidation.error.issues,
+      );
+
+      return;
+    }
+
+    const bodyValidation =
+      documentTemplateGenerationBodySchema.safeParse(
+        request.body,
+      );
+
+    if (!bodyValidation.success) {
+      sendValidationError(
+        response,
+        bodyValidation.error.issues,
+      );
+
+      return;
+    }
+
+    const authenticatedUser =
+      response.locals.authenticatedUser as
+        | AuthenticatedUser
+        | undefined;
+
+    if (!authenticatedUser) {
+      sendAuthenticationRequired(response);
+
+      return;
+    }
+
+    try {
+      const result =
+        await generateDocumentFromTemplate(
+          paramsValidation.data.code,
+          bodyValidation.data,
+          authenticatedUser.id,
+        );
+
+      if (!result) {
+        sendTemplateNotFound(response);
+
+        return;
+      }
+
+      response.status(201).json(result);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        response.status(422).json({
+          error: {
+            code: 'DOCUMENT_TEMPLATE_GENERATION_ERROR',
+            message: error.message,
+          },
+        });
+
+        return;
+      }
+
       next(error);
     }
   },
