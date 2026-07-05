@@ -27,6 +27,9 @@ import {
   CompanyTrainingPage,
 } from './CompanyTrainingPage';
 import {
+  CompanyTrainingReportsPage,
+} from './CompanyTrainingReportsPage';
+import {
   EnrolmentsPage,
 } from './EnrolmentsPage';
 import {
@@ -76,6 +79,7 @@ type ActiveSection =
   | 'grades'
   | 'statistics'
   | 'company-training'
+  | 'company-training-reports'
   | 'generated-documents';
 
 interface NavigationButtonProps {
@@ -207,6 +211,10 @@ function getPageHeader(
       eyebrow: 'Formación en empresa',
       title: 'Empresas y estancias formativas',
     },
+    'company-training-reports': {
+      eyebrow: 'Formación en empresa',
+      title: 'Informes y documentación',
+    },
     'generated-documents': {
       eyebrow: 'Documentos generados',
       title: 'Historial documental',
@@ -277,6 +285,7 @@ function DashboardHome({
             <li>Evaluaciones, sistemas de calificación y notas</li>
             <li>Estadísticas académicas</li>
             <li>Formación en empresa</li>
+            <li>Informes de formación en empresa</li>
             <li>Historial documental</li>
           </ul>
         </article>
@@ -405,6 +414,8 @@ export function DashboardPage({
         canManageIncidents={canUseBuiltModules}
       />
     );
+  } else if (activeSection === 'company-training-reports') {
+    activeContent = <CompanyTrainingReportsPage />;
   } else if (activeSection === 'generated-documents') {
     activeContent = <GeneratedDocumentsPage />;
   } else {
@@ -429,6 +440,7 @@ export function DashboardPage({
     { id: 'grades', label: 'Notas' },
     { id: 'statistics', label: 'Estadísticas' },
     { id: 'company-training', label: 'Empresa' },
+    { id: 'company-training-reports', label: 'Inf. empresa' },
     { id: 'generated-documents', label: 'Documentos' },
   ];
 
@@ -542,6 +554,12 @@ export function DashboardPage({
             activeSection={activeSection}
             id="company-training"
             label="Formación en empresa"
+            onSelect={setActiveSection}
+          />
+          <NavigationButton
+            activeSection={activeSection}
+            id="company-training-reports"
+            label="Informes de empresa"
             onSelect={setActiveSection}
           />
           <NavigationButton
