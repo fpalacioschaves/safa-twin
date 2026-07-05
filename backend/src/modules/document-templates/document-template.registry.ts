@@ -4,12 +4,12 @@ import type {
 
 export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
   {
-    code: 'evaluation_group_report',
-    name: 'Informe de evaluación de grupo',
+    code: 'evaluation_academic_offering_report',
+    name: 'Informe de evaluación de oferta académica',
     description:
-      'Plantilla base para generar un informe de evaluación por grupo, módulo y periodo de evaluación, separando calificaciones numéricas de estados no evaluables.',
+      'Plantilla base para generar un informe de evaluación por oferta académica, módulo y periodo de evaluación, separando calificaciones numéricas de estados no evaluables.',
     category: 'evaluation',
-    scope: ['academic_year', 'group', 'module'],
+    scope: ['academic_year', 'academic_offering', 'module'],
     outputFormats: ['docx', 'pdf', 'xlsx'],
     requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
@@ -17,25 +17,25 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico sobre el que se genera el informe.',
+        description: 'Selecciona el curso académico sobre el que se genera el informe.',
       },
       {
         key: 'evaluationId',
         label: 'Evaluación',
         required: true,
-        description: 'Identificador del periodo de evaluación.',
+        description: 'Selecciona el periodo de evaluación.',
       },
       {
-        key: 'groupId',
-        label: 'Grupo',
+        key: 'academicOfferingId',
+        label: 'Oferta académica',
         required: true,
-        description: 'Identificador del grupo evaluado.',
+        description: 'Selecciona la oferta académica: curso, centro, ciclo, nivel y modalidad.',
       },
       {
         key: 'moduleId',
         label: 'Módulo',
         required: false,
-        description: 'Identificador del módulo profesional cuando el informe se genere por módulo.',
+        description: 'Selecciona el módulo profesional si quieres generar el informe por módulo.',
       },
     ],
     variables: [
@@ -56,12 +56,12 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         example: 'Segunda evaluación',
       },
       {
-        key: 'group.name',
-        label: 'Grupo',
+        key: 'academicOffering.name',
+        label: 'Oferta académica',
         type: 'string',
         required: true,
-        description: 'Nombre del grupo académico.',
-        example: '2º DAW',
+        description: 'Curso, centro, ciclo, nivel y modalidad de la oferta académica.',
+        example: '2025/2026 · DAW · 2º · PRESENTIAL',
       },
       {
         key: 'stats.enrolled',
@@ -119,8 +119,8 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         title: 'Portada',
         order: 1,
         required: true,
-        description: 'Identificación del centro, curso, grupo, evaluación y fecha de generación.',
-        variables: ['academicYear.name', 'evaluation.name', 'group.name'],
+        description: 'Identificación del centro, curso, oferta académica, evaluación y fecha de generación.',
+        variables: ['academicYear.name', 'evaluation.name', 'academicOffering.name'],
       },
       {
         key: 'summary',
@@ -152,12 +152,12 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     isActive: true,
   },
   {
-    code: 'final_memory_group',
-    name: 'Memoria final de grupo',
+    code: 'final_memory_academic_offering',
+    name: 'Memoria final de oferta académica',
     description:
-      'Plantilla base para la memoria final de un grupo, con resultados académicos, evolución, absentismo, incidencias y propuestas de mejora.',
+      'Plantilla base para la memoria final de una oferta académica, con resultados académicos, evolución, absentismo, incidencias y propuestas de mejora.',
     category: 'final_memory',
-    scope: ['academic_year', 'programme', 'level', 'group'],
+    scope: ['academic_year', 'programme', 'level', 'academic_offering'],
     outputFormats: ['docx', 'pdf'],
     requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
@@ -165,13 +165,13 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico.',
+        description: 'Selecciona el curso académico.',
       },
       {
-        key: 'groupId',
-        label: 'Grupo',
+        key: 'academicOfferingId',
+        label: 'Oferta académica',
         required: true,
-        description: 'Identificador del grupo del que se genera la memoria.',
+        description: 'Selecciona la oferta académica para la que se genera la memoria.',
       },
     ],
     variables: [
@@ -192,12 +192,12 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         example: 'Desarrollo de Aplicaciones Web',
       },
       {
-        key: 'group.name',
-        label: 'Grupo',
+        key: 'academicOffering.name',
+        label: 'Oferta académica',
         type: 'string',
         required: true,
-        description: 'Nombre del grupo.',
-        example: '2º DAW',
+        description: 'Curso, centro, ciclo, nivel y modalidad de la oferta académica.',
+        example: '2025/2026 · DAW · 2º · PRESENTIAL',
       },
       {
         key: 'stats.enrolled',
@@ -234,15 +234,15 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         title: 'Portada',
         order: 1,
         required: true,
-        description: 'Identificación de curso, ciclo, grupo y centro.',
-        variables: ['academicYear.name', 'programme.name', 'group.name'],
+        description: 'Identificación de curso, ciclo, oferta académica y centro.',
+        variables: ['academicYear.name', 'programme.name', 'academicOffering.name'],
       },
       {
         key: 'academic_results',
         title: 'Resultados académicos',
         order: 2,
         required: true,
-        description: 'Resumen de resultados globales del grupo.',
+        description: 'Resumen de resultados globales.',
         variables: ['stats.enrolled', 'stats.averageGrade'],
       },
       {
@@ -270,9 +270,9 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     code: 'attendance_absenteeism_report',
     name: 'Informe de absentismo',
     description:
-      'Plantilla base para generar informes de absentismo por alumno, grupo, módulo o periodo temporal.',
+      'Plantilla base para generar informes de absentismo por alumno, oferta académica, módulo o periodo temporal.',
     category: 'attendance',
-    scope: ['academic_year', 'group', 'module', 'student'],
+    scope: ['academic_year', 'academic_offering', 'module', 'student'],
     outputFormats: ['docx', 'pdf', 'xlsx', 'csv'],
     requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
@@ -280,7 +280,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico.',
+        description: 'Selecciona el curso académico.',
       },
       {
         key: 'dateFrom',
@@ -368,7 +368,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         key: 'studentId',
         label: 'Alumno',
         required: true,
-        description: 'Identificador del alumno.',
+        description: 'Selecciona el alumno.',
       },
     ],
     variables: [
@@ -444,7 +444,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     description:
       'Plantilla base para documentar estancias de formación en empresa, seguimientos, incidencias, horas, actividades y evaluación final.',
     category: 'work_placement',
-    scope: ['academic_year', 'programme', 'group', 'student', 'company', 'work_placement'],
+    scope: ['academic_year', 'programme', 'academic_offering', 'student', 'company', 'work_placement'],
     outputFormats: ['docx', 'pdf', 'xlsx'],
     requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
@@ -452,7 +452,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico.',
+        description: 'Selecciona el curso académico.',
       },
     ],
     variables: [
