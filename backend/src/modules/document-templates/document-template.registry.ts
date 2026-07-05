@@ -1,4 +1,6 @@
-import { DocumentTemplateDefinition } from './document-template.types';
+import type {
+  DocumentTemplateDefinition,
+} from './document-template.types.js';
 
 export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
   {
@@ -9,32 +11,32 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     category: 'evaluation',
     scope: ['academic_year', 'group', 'module'],
     outputFormats: ['docx', 'pdf', 'xlsx'],
-    allowedRoles: ['Administrador', 'Jefatura', 'Coordinacion', 'Profesor', 'TutorGrupo'],
+    requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
       {
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico sobre el que se genera el informe.'
+        description: 'Identificador del curso académico sobre el que se genera el informe.',
       },
       {
         key: 'evaluationId',
         label: 'Evaluación',
         required: true,
-        description: 'Identificador del periodo de evaluación.'
+        description: 'Identificador del periodo de evaluación.',
       },
       {
         key: 'groupId',
         label: 'Grupo',
         required: true,
-        description: 'Identificador del grupo evaluado.'
+        description: 'Identificador del grupo evaluado.',
       },
       {
         key: 'moduleId',
         label: 'Módulo',
         required: false,
-        description: 'Identificador del módulo. Si no se indica, el informe puede agregarse por todos los módulos del grupo.'
-      }
+        description: 'Identificador del módulo profesional cuando el informe se genere por módulo.',
+      },
     ],
     variables: [
       {
@@ -43,7 +45,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         type: 'string',
         required: true,
         description: 'Nombre visible del curso académico.',
-        example: '2025/2026'
+        example: '2025/2026',
       },
       {
         key: 'evaluation.name',
@@ -51,7 +53,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         type: 'string',
         required: true,
         description: 'Nombre del periodo de evaluación.',
-        example: 'Segunda evaluación'
+        example: 'Segunda evaluación',
       },
       {
         key: 'group.name',
@@ -59,65 +61,57 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         type: 'string',
         required: true,
         description: 'Nombre del grupo académico.',
-        example: '2º DAW'
-      },
-      {
-        key: 'module.name',
-        label: 'Módulo',
-        type: 'string',
-        required: false,
-        description: 'Nombre del módulo profesional, cuando el informe se genere por módulo.',
-        example: 'Desarrollo Web en Entorno Servidor'
+        example: '2º DAW',
       },
       {
         key: 'stats.enrolled',
         label: 'Matriculados',
         type: 'number',
         required: true,
-        description: 'Número de matrículas activas en el contexto del informe.'
+        description: 'Número de matrículas activas en el contexto del informe.',
       },
       {
         key: 'stats.evaluated',
         label: 'Evaluados',
         type: 'number',
         required: true,
-        description: 'Número de alumnos con calificación numérica válida.'
+        description: 'Número de alumnos con calificación numérica válida.',
       },
       {
         key: 'stats.passed',
         label: 'Aprobados',
         type: 'number',
         required: true,
-        description: 'Número de alumnos aprobados.'
+        description: 'Número de alumnos aprobados.',
       },
       {
         key: 'stats.failed',
         label: 'Suspensos',
         type: 'number',
         required: true,
-        description: 'Número de alumnos suspensos.'
+        description: 'Número de alumnos suspensos.',
       },
       {
         key: 'stats.notEvaluated',
         label: 'No evaluados',
         type: 'number',
         required: true,
-        description: 'Número de alumnos con estados no numéricos como NE, NC, NP, PFE, convalidado, exento o baja.'
+        description: 'Número de alumnos con estados no numéricos.',
       },
       {
         key: 'stats.successRate',
         label: 'Tasa de éxito',
         type: 'number',
         required: true,
-        description: 'Porcentaje de aprobados sobre evaluados.'
+        description: 'Porcentaje de aprobados sobre evaluados.',
       },
       {
         key: 'stats.performanceRate',
         label: 'Tasa de rendimiento',
         type: 'number',
         required: true,
-        description: 'Porcentaje de aprobados sobre matriculados.'
-      }
+        description: 'Porcentaje de aprobados sobre matriculados.',
+      },
     ],
     sections: [
       {
@@ -126,7 +120,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 1,
         required: true,
         description: 'Identificación del centro, curso, grupo, evaluación y fecha de generación.',
-        variables: ['academicYear.name', 'evaluation.name', 'group.name']
+        variables: ['academicYear.name', 'evaluation.name', 'group.name'],
       },
       {
         key: 'summary',
@@ -134,7 +128,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 2,
         required: true,
         description: 'Síntesis de resultados y advertencias sobre estados no evaluables.',
-        variables: ['stats.enrolled', 'stats.evaluated', 'stats.successRate', 'stats.performanceRate']
+        variables: ['stats.enrolled', 'stats.evaluated', 'stats.successRate', 'stats.performanceRate'],
       },
       {
         key: 'results',
@@ -142,7 +136,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 3,
         required: true,
         description: 'Detalle de aprobados, suspensos, no evaluados y distribución de calificaciones.',
-        variables: ['stats.passed', 'stats.failed', 'stats.notEvaluated']
+        variables: ['stats.passed', 'stats.failed', 'stats.notEvaluated'],
       },
       {
         key: 'observations',
@@ -150,12 +144,12 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 4,
         required: false,
         description: 'Comentarios del equipo docente, tutoría o coordinación.',
-        variables: []
-      }
+        variables: [],
+      },
     ],
     createdForPhase: '7A',
     isBaseTemplate: true,
-    isActive: true
+    isActive: true,
   },
   {
     code: 'final_memory_group',
@@ -165,20 +159,20 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     category: 'final_memory',
     scope: ['academic_year', 'programme', 'level', 'group'],
     outputFormats: ['docx', 'pdf'],
-    allowedRoles: ['Administrador', 'Jefatura', 'Coordinacion', 'TutorGrupo'],
+    requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
       {
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico.'
+        description: 'Identificador del curso académico.',
       },
       {
         key: 'groupId',
         label: 'Grupo',
         required: true,
-        description: 'Identificador del grupo del que se genera la memoria.'
-      }
+        description: 'Identificador del grupo del que se genera la memoria.',
+      },
     ],
     variables: [
       {
@@ -187,7 +181,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         type: 'string',
         required: true,
         description: 'Nombre del curso académico.',
-        example: '2025/2026'
+        example: '2025/2026',
       },
       {
         key: 'programme.name',
@@ -195,15 +189,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         type: 'string',
         required: true,
         description: 'Nombre del ciclo formativo.',
-        example: 'Desarrollo de Aplicaciones Web'
-      },
-      {
-        key: 'level.name',
-        label: 'Curso',
-        type: 'string',
-        required: true,
-        description: 'Nivel académico del grupo.',
-        example: '2º'
+        example: 'Desarrollo de Aplicaciones Web',
       },
       {
         key: 'group.name',
@@ -211,43 +197,36 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         type: 'string',
         required: true,
         description: 'Nombre del grupo.',
-        example: '2º DAW'
+        example: '2º DAW',
       },
       {
         key: 'stats.enrolled',
         label: 'Alumnado matriculado',
         type: 'number',
         required: true,
-        description: 'Número total de alumnos matriculados.'
+        description: 'Número total de alumnos matriculados.',
       },
       {
         key: 'stats.averageGrade',
         label: 'Nota media',
         type: 'number',
         required: false,
-        description: 'Nota media calculada solo con calificaciones numéricas.'
+        description: 'Nota media calculada solo con calificaciones numéricas.',
       },
       {
         key: 'attendance.absenteeismRate',
         label: 'Tasa de absentismo',
         type: 'number',
         required: false,
-        description: 'Porcentaje de ausencias sobre sesiones registradas.'
-      },
-      {
-        key: 'incidents.total',
-        label: 'Incidencias',
-        type: 'number',
-        required: false,
-        description: 'Número total de incidencias registradas durante el curso.'
+        description: 'Porcentaje de ausencias sobre sesiones registradas.',
       },
       {
         key: 'improvementProposals',
         label: 'Propuestas de mejora',
         type: 'array',
         required: false,
-        description: 'Listado de propuestas de mejora redactadas por el equipo docente.'
-      }
+        description: 'Listado de propuestas de mejora redactadas por el equipo docente.',
+      },
     ],
     sections: [
       {
@@ -256,7 +235,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 1,
         required: true,
         description: 'Identificación de curso, ciclo, grupo y centro.',
-        variables: ['academicYear.name', 'programme.name', 'level.name', 'group.name']
+        variables: ['academicYear.name', 'programme.name', 'group.name'],
       },
       {
         key: 'academic_results',
@@ -264,7 +243,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 2,
         required: true,
         description: 'Resumen de resultados globales del grupo.',
-        variables: ['stats.enrolled', 'stats.averageGrade']
+        variables: ['stats.enrolled', 'stats.averageGrade'],
       },
       {
         key: 'attendance',
@@ -272,28 +251,20 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 3,
         required: false,
         description: 'Análisis de asistencia, absentismo y patrones relevantes.',
-        variables: ['attendance.absenteeismRate']
-      },
-      {
-        key: 'incidents',
-        title: 'Incidencias',
-        order: 4,
-        required: false,
-        description: 'Resumen de incidencias académicas o disciplinarias.',
-        variables: ['incidents.total']
+        variables: ['attendance.absenteeismRate'],
       },
       {
         key: 'improvement',
         title: 'Propuestas de mejora',
-        order: 5,
+        order: 4,
         required: false,
         description: 'Conclusiones y propuestas para el siguiente curso.',
-        variables: ['improvementProposals']
-      }
+        variables: ['improvementProposals'],
+      },
     ],
     createdForPhase: '7A',
     isBaseTemplate: true,
-    isActive: true
+    isActive: true,
   },
   {
     code: 'attendance_absenteeism_report',
@@ -303,38 +274,26 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     category: 'attendance',
     scope: ['academic_year', 'group', 'module', 'student'],
     outputFormats: ['docx', 'pdf', 'xlsx', 'csv'],
-    allowedRoles: ['Administrador', 'Jefatura', 'Coordinacion', 'Profesor', 'TutorGrupo'],
+    requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
       {
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico.'
-      },
-      {
-        key: 'groupId',
-        label: 'Grupo',
-        required: false,
-        description: 'Grupo usado como filtro del informe.'
-      },
-      {
-        key: 'studentId',
-        label: 'Alumno',
-        required: false,
-        description: 'Alumno usado como filtro cuando el informe sea individual.'
+        description: 'Identificador del curso académico.',
       },
       {
         key: 'dateFrom',
         label: 'Fecha inicial',
         required: true,
-        description: 'Inicio del periodo analizado.'
+        description: 'Inicio del periodo analizado.',
       },
       {
         key: 'dateTo',
         label: 'Fecha final',
         required: true,
-        description: 'Fin del periodo analizado.'
-      }
+        description: 'Fin del periodo analizado.',
+      },
     ],
     variables: [
       {
@@ -342,50 +301,36 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         label: 'Desde',
         type: 'date',
         required: true,
-        description: 'Fecha inicial del informe.'
+        description: 'Fecha inicial del informe.',
       },
       {
         key: 'period.to',
         label: 'Hasta',
         type: 'date',
         required: true,
-        description: 'Fecha final del informe.'
+        description: 'Fecha final del informe.',
       },
       {
         key: 'attendance.totalSessions',
         label: 'Sesiones registradas',
         type: 'number',
         required: true,
-        description: 'Número de sesiones con registro de asistencia.'
+        description: 'Número de sesiones con registro de asistencia.',
       },
       {
         key: 'attendance.totalAbsences',
         label: 'Ausencias',
         type: 'number',
         required: true,
-        description: 'Número total de faltas de asistencia.'
-      },
-      {
-        key: 'attendance.justifiedAbsences',
-        label: 'Ausencias justificadas',
-        type: 'number',
-        required: false,
-        description: 'Número de faltas justificadas.'
-      },
-      {
-        key: 'attendance.unjustifiedAbsences',
-        label: 'Ausencias injustificadas',
-        type: 'number',
-        required: false,
-        description: 'Número de faltas injustificadas.'
+        description: 'Número total de faltas de asistencia.',
       },
       {
         key: 'attendance.absenteeismRate',
         label: 'Tasa de absentismo',
         type: 'number',
         required: true,
-        description: 'Porcentaje de ausencias sobre sesiones registradas.'
-      }
+        description: 'Porcentaje de ausencias sobre sesiones registradas.',
+      },
     ],
     sections: [
       {
@@ -394,7 +339,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 1,
         required: true,
         description: 'Datos generales del informe y periodo analizado.',
-        variables: ['period.from', 'period.to']
+        variables: ['period.from', 'period.to'],
       },
       {
         key: 'summary',
@@ -402,20 +347,12 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 2,
         required: true,
         description: 'Totales y tasa de absentismo.',
-        variables: ['attendance.totalSessions', 'attendance.totalAbsences', 'attendance.absenteeismRate']
+        variables: ['attendance.totalSessions', 'attendance.totalAbsences', 'attendance.absenteeismRate'],
       },
-      {
-        key: 'detail',
-        title: 'Detalle de ausencias',
-        order: 3,
-        required: false,
-        description: 'Desglose por alumno, módulo, fecha o tipo de falta.',
-        variables: ['attendance.justifiedAbsences', 'attendance.unjustifiedAbsences']
-      }
     ],
     createdForPhase: '7A',
     isBaseTemplate: true,
-    isActive: true
+    isActive: true,
   },
   {
     code: 'student_academic_record',
@@ -425,20 +362,14 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     category: 'student',
     scope: ['academic_year', 'student'],
     outputFormats: ['docx', 'pdf'],
-    allowedRoles: ['Administrador', 'Jefatura', 'Coordinacion', 'Profesor', 'TutorGrupo', 'TutorFCT'],
+    requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
       {
         key: 'studentId',
         label: 'Alumno',
         required: true,
-        description: 'Identificador del alumno.'
+        description: 'Identificador del alumno.',
       },
-      {
-        key: 'academicYearId',
-        label: 'Curso académico',
-        required: false,
-        description: 'Curso académico usado para limitar el informe. Si no se indica, el expediente puede generarse como histórico.'
-      }
     ],
     variables: [
       {
@@ -446,50 +377,36 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         label: 'Nombre completo',
         type: 'string',
         required: true,
-        description: 'Nombre completo del alumno.'
-      },
-      {
-        key: 'student.identifier',
-        label: 'Identificador académico',
-        type: 'string',
-        required: false,
-        description: 'Documento, código interno o identificador académico del alumno.'
+        description: 'Nombre completo del alumno.',
       },
       {
         key: 'enrolments',
         label: 'Matrículas',
         type: 'array',
         required: true,
-        description: 'Listado de matrículas del alumno.'
+        description: 'Listado de matrículas del alumno.',
       },
       {
         key: 'grades',
         label: 'Calificaciones',
         type: 'array',
         required: false,
-        description: 'Listado de calificaciones y estados.'
+        description: 'Listado de calificaciones y estados.',
       },
       {
         key: 'attendance.summary',
         label: 'Resumen de asistencia',
         type: 'object',
         required: false,
-        description: 'Resumen de asistencia del alumno.'
-      },
-      {
-        key: 'incidents',
-        label: 'Incidencias',
-        type: 'array',
-        required: false,
-        description: 'Incidencias asociadas al alumno.'
+        description: 'Resumen de asistencia del alumno.',
       },
       {
         key: 'workPlacements',
         label: 'Formación en empresa',
         type: 'array',
         required: false,
-        description: 'Estancias de formación en empresa asociadas al alumno.'
-      }
+        description: 'Estancias de formación en empresa asociadas al alumno.',
+      },
     ],
     sections: [
       {
@@ -498,7 +415,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 1,
         required: true,
         description: 'Identificación académica del alumno.',
-        variables: ['student.fullName', 'student.identifier']
+        variables: ['student.fullName'],
       },
       {
         key: 'enrolments',
@@ -506,7 +423,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 2,
         required: true,
         description: 'Historial de matrículas.',
-        variables: ['enrolments']
+        variables: ['enrolments'],
       },
       {
         key: 'grades',
@@ -514,28 +431,12 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 3,
         required: false,
         description: 'Resultados académicos y estados no numéricos.',
-        variables: ['grades']
+        variables: ['grades'],
       },
-      {
-        key: 'attendance',
-        title: 'Asistencia',
-        order: 4,
-        required: false,
-        description: 'Resumen de asistencia.',
-        variables: ['attendance.summary']
-      },
-      {
-        key: 'work_placements',
-        title: 'Formación en empresa',
-        order: 5,
-        required: false,
-        description: 'Información de estancias, seguimientos e incidencias de empresa.',
-        variables: ['workPlacements']
-      }
     ],
     createdForPhase: '7A',
     isBaseTemplate: true,
-    isActive: true
+    isActive: true,
   },
   {
     code: 'work_placement_memory',
@@ -545,32 +446,14 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     category: 'work_placement',
     scope: ['academic_year', 'programme', 'group', 'student', 'company', 'work_placement'],
     outputFormats: ['docx', 'pdf', 'xlsx'],
-    allowedRoles: ['Administrador', 'Jefatura', 'Coordinacion', 'TutorGrupo', 'TutorFCT'],
+    requiredPermission: 'evaluations.statistics.view',
     requiredInputs: [
       {
         key: 'academicYearId',
         label: 'Curso académico',
         required: true,
-        description: 'Identificador del curso académico.'
+        description: 'Identificador del curso académico.',
       },
-      {
-        key: 'groupId',
-        label: 'Grupo',
-        required: false,
-        description: 'Grupo de alumnado en formación en empresa.'
-      },
-      {
-        key: 'studentId',
-        label: 'Alumno',
-        required: false,
-        description: 'Alumno concreto cuando se genere una memoria individual.'
-      },
-      {
-        key: 'companyId',
-        label: 'Empresa',
-        required: false,
-        description: 'Empresa usada como filtro del informe.'
-      }
     ],
     variables: [
       {
@@ -578,43 +461,36 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         label: 'Alumnos en empresa',
         type: 'number',
         required: true,
-        description: 'Número de alumnos con estancia registrada.'
+        description: 'Número de alumnos con estancia registrada.',
       },
       {
         key: 'workPlacement.totalHours',
         label: 'Horas totales',
         type: 'number',
         required: false,
-        description: 'Suma de horas previstas o realizadas.'
+        description: 'Suma de horas previstas o realizadas.',
       },
       {
         key: 'workPlacement.pendingDocuments',
         label: 'Documentación pendiente',
         type: 'array',
         required: false,
-        description: 'Listado de documentos pendientes.'
+        description: 'Listado de documentos pendientes.',
       },
       {
         key: 'workPlacement.followUps',
         label: 'Seguimientos',
         type: 'array',
         required: false,
-        description: 'Visitas, llamadas o controles de seguimiento.'
-      },
-      {
-        key: 'workPlacement.incidents',
-        label: 'Incidencias',
-        type: 'array',
-        required: false,
-        description: 'Incidencias producidas durante la estancia.'
+        description: 'Visitas, llamadas o controles de seguimiento.',
       },
       {
         key: 'workPlacement.finalAssessment',
         label: 'Evaluación final',
         type: 'object',
         required: false,
-        description: 'Resultado final de la formación en empresa.'
-      }
+        description: 'Resultado final de la formación en empresa.',
+      },
     ],
     sections: [
       {
@@ -623,7 +499,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 1,
         required: true,
         description: 'Estado general de la formación en empresa.',
-        variables: ['workPlacement.totalStudents', 'workPlacement.totalHours']
+        variables: ['workPlacement.totalStudents', 'workPlacement.totalHours'],
       },
       {
         key: 'followups',
@@ -631,35 +507,27 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         order: 2,
         required: false,
         description: 'Registro de visitas, contactos y observaciones.',
-        variables: ['workPlacement.followUps']
-      },
-      {
-        key: 'incidents',
-        title: 'Incidencias',
-        order: 3,
-        required: false,
-        description: 'Resumen de incidencias producidas.',
-        variables: ['workPlacement.incidents']
+        variables: ['workPlacement.followUps'],
       },
       {
         key: 'documents',
         title: 'Documentación pendiente',
-        order: 4,
+        order: 3,
         required: false,
         description: 'Control documental de la estancia.',
-        variables: ['workPlacement.pendingDocuments']
+        variables: ['workPlacement.pendingDocuments'],
       },
       {
         key: 'assessment',
         title: 'Evaluación final',
-        order: 5,
+        order: 4,
         required: false,
         description: 'Valoración final de la estancia.',
-        variables: ['workPlacement.finalAssessment']
-      }
+        variables: ['workPlacement.finalAssessment'],
+      },
     ],
     createdForPhase: '7A',
     isBaseTemplate: true,
-    isActive: true
-  }
+    isActive: true,
+  },
 ];

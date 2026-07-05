@@ -40,6 +40,10 @@ import {
 } from './modules/company-training/company-training.routes.js';
 
 import {
+  documentTemplateRouter,
+} from './modules/document-templates/document-template.routes.js';
+
+import {
   enrolmentsRouter,
 } from './modules/enrolments/enrolments.routes.js';
 
@@ -189,6 +193,11 @@ export function createApp(): Express {
   app.use(
     '/api/generated-documents',
     generatedDocumentsRouter,
+  );
+
+  app.use(
+    '/api/document-templates',
+    documentTemplateRouter,
   );
 
   app.use(
