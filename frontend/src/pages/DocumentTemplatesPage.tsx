@@ -11,6 +11,7 @@ import {
 import {
   generateDocumentFromTemplate,
   getDocumentTemplate,
+  getDocumentTemplateContextOptions,
   getDocumentTemplateRequiredInputs,
   getDocumentTemplates,
   getDocumentTemplateVariables,
@@ -20,6 +21,7 @@ import {
 import type {
   DocumentOutputFormat,
   DocumentTemplateCategory,
+  DocumentTemplateContextOption,
   DocumentTemplateDefinition,
   DocumentTemplateGenerationResult,
   DocumentTemplateInputDefinition,
@@ -99,14 +101,51 @@ function buildInitialInputValues(
   );
 }
 
-function buildValidationContext(
+function isDateInputKey(key: string): boolean {
+  return key.toLowerCase().includes('date')
+    || key.toLowerCase().endsWith('from')
+    || key.toLowerCase().endsWith('to');
+}
+
+function buildContextWithLabels(
   inputValues: Record<string, string>,
+  contextOptions: Record<string, DocumentTemplateContextOption[]>,
 ): Record<string, unknown> {
-  return Object.fromEntries(
-    Object.entries(inputValues)
-      .filter(([, value]) => value.trim().length > 0)
-      .map(([key, value]) => [key, value.trim()]),
+  const context: Record<string, unknown> = {};
+
+  Object.entries(inputValues).forEach(([key, value]) => {
+    const trimmedValue = value.trim();
+
+    if (trimmedValue.length === 0) {
+      return;
+    }
+
+    context[key] = trimmedValue;
+
+    const selectedOption = contextOptions[key]?.find(
+      (option) => option.value === trimmedValue,
+    );
+
+    if (selectedOption) {
+      context[`${key}Label`] = selectedOption.description
+        ? `${selectedOption.label} · ${selectedOption.description}`
+        : selectedOption.label;
+    }
+  });
+
+  return context;
+}
+
+function getSelectedOptionDescription(
+  inputKey: string,
+  value: string,
+  contextOptions: Record<string, DocumentTemplateContextOption[]>,
+): string | null {
+  const selectedOption = contextOptions[inputKey]?.find(
+    (option) => option.value === value,
   );
+
+  return selectedOption?.description ?? null;
 }
 
 export function DocumentTemplatesPage() {
@@ -127,6 +166,9 @@ export function DocumentTemplatesPage() {
 
   const [requiredInputs, setRequiredInputs] =
     useState<DocumentTemplateInputDefinition[]>([]);
+
+  const [contextOptions, setContextOptions] =
+    useState<Record<string, DocumentTemplateContextOption[]>>({});
 
   const [inputValues, setInputValues] =
     useState<Record<string, string>>({});
@@ -168,16 +210,19 @@ export function DocumentTemplatesPage() {
         template,
         variables,
         requiredInputsResponse,
+        contextOptionsResponse,
       ] = await Promise.all([
         getDocumentTemplate(code),
         getDocumentTemplateVariables(code),
         getDocumentTemplateRequiredInputs(code),
+        getDocumentTemplateContextOptions(code),
       ]);
 
       setSelectedCode(code);
       setSelectedTemplate(template);
       setVariablesData(variables);
       setRequiredInputs(requiredInputsResponse.requiredInputs);
+      setContextOptions(contextOptionsResponse.options);
       setInputValues(
         buildInitialInputValues(
           requiredInputsResponse.requiredInputs,
@@ -191,6 +236,7 @@ export function DocumentTemplatesPage() {
       setSelectedTemplate(null);
       setVariablesData(null);
       setRequiredInputs([]);
+      setContextOptions({});
       setInputValues({});
     } finally {
       setIsLoadingDetail(false);
@@ -212,6 +258,7 @@ export function DocumentTemplatesPage() {
         setSelectedTemplate(null);
         setVariablesData(null);
         setRequiredInputs([]);
+        setContextOptions({});
         setInputValues({});
         setGenerationResult(null);
         return;
@@ -266,7 +313,10 @@ export function DocumentTemplatesPage() {
         selectedTemplate.code,
         {
           outputFormat: validationFormat,
-          context: buildValidationContext(inputValues),
+          context: buildContextWithLabels(
+            inputValues,
+            contextOptions,
+          ),
         },
       );
 
@@ -296,7 +346,10 @@ export function DocumentTemplatesPage() {
         selectedTemplate.code,
         {
           outputFormat: validationFormat,
-          context: buildValidationContext(inputValues),
+          context: buildContextWithLabels(
+            inputValues,
+            contextOptions,
+          ),
         },
       );
 
@@ -306,6 +359,97 @@ export function DocumentTemplatesPage() {
     } finally {
       setIsGenerating(false);
     }
+  }
+
+  function renderContextInput(
+    input: DocumentTemplateInputDefinition,
+  ) {
+    const options = contextOptions[input.key] ?? [];
+    const selectedDescription = getSelectedOptionDescription(
+      input.key,
+      inputValues[input.key] ?? '',
+      contextOptions,
+    );
+
+    if (options.length > 0) {
+      return (
+        <label key={input.key}>
+          {input.label}
+          <select
+            value={inputValues[input.key] ?? ''}
+            required={input.required}
+            onChange={(event) => {
+              setInputValues((current) => ({
+                ...current,
+                [input.key]: event.target.value,
+              }));
+              setValidationResult(null);
+              setGenerationResult(null);
+            }}
+          >
+            <option value="">
+              {input.required
+                ? 'Selecciona una opción'
+                : 'Sin seleccionar'}
+            </option>
+            {options.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {selectedDescription ? (
+            <small className="document-template-input-help">
+              {selectedDescription}
+            </small>
+          ) : null}
+        </label>
+      );
+    }
+
+    if (isDateInputKey(input.key)) {
+      return (
+        <label key={input.key}>
+          {input.label}
+          <input
+            type="date"
+            value={inputValues[input.key] ?? ''}
+            required={input.required}
+            onChange={(event) => {
+              setInputValues((current) => ({
+                ...current,
+                [input.key]: event.target.value,
+              }));
+              setValidationResult(null);
+              setGenerationResult(null);
+            }}
+          />
+        </label>
+      );
+    }
+
+    return (
+      <label key={input.key}>
+        {input.label}
+        <input
+          type="text"
+          value={inputValues[input.key] ?? ''}
+          required={input.required}
+          placeholder={input.description}
+          onChange={(event) => {
+            setInputValues((current) => ({
+              ...current,
+              [input.key]: event.target.value,
+            }));
+            setValidationResult(null);
+            setGenerationResult(null);
+          }}
+        />
+      </label>
+    );
   }
 
   return (
@@ -596,8 +740,8 @@ export function DocumentTemplatesPage() {
               <section className="document-template-validation">
                 <h4>Validar contexto</h4>
                 <p>
-                  Comprueba que el formato y los datos mínimos son aceptados
-                  antes de generar el documento.
+                  Selecciona los datos académicos desde los desplegables.
+                  La aplicación enviará internamente los identificadores necesarios.
                 </p>
 
                 <form onSubmit={(event) => {
@@ -624,24 +768,7 @@ export function DocumentTemplatesPage() {
                     </select>
                   </label>
 
-                  {requiredInputs.map((input) => (
-                    <label key={input.key}>
-                      {input.label}
-                      <input
-                        type="text"
-                        value={inputValues[input.key] ?? ''}
-                        placeholder={input.description}
-                        onChange={(event) => {
-                          setInputValues((current) => ({
-                            ...current,
-                            [input.key]: event.target.value,
-                          }));
-                          setValidationResult(null);
-                          setGenerationResult(null);
-                        }}
-                      />
-                    </label>
-                  ))}
+                  {requiredInputs.map(renderContextInput)}
 
                   <button
                     className="button button-primary"
