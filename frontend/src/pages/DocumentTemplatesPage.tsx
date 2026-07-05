@@ -9,6 +9,7 @@ import {
 } from '../services/api.service';
 
 import {
+  generateDocumentFromTemplate,
   getDocumentTemplate,
   getDocumentTemplateRequiredInputs,
   getDocumentTemplates,
@@ -20,6 +21,7 @@ import type {
   DocumentOutputFormat,
   DocumentTemplateCategory,
   DocumentTemplateDefinition,
+  DocumentTemplateGenerationResult,
   DocumentTemplateInputDefinition,
   DocumentTemplateListQuery,
   DocumentTemplateScope,
@@ -135,6 +137,9 @@ export function DocumentTemplatesPage() {
   const [validationResult, setValidationResult] =
     useState<DocumentTemplateValidationResult | null>(null);
 
+  const [generationResult, setGenerationResult] =
+    useState<DocumentTemplateGenerationResult | null>(null);
+
   const [isLoadingList, setIsLoadingList] =
     useState(false);
 
@@ -142,6 +147,9 @@ export function DocumentTemplatesPage() {
     useState(false);
 
   const [isValidating, setIsValidating] =
+    useState(false);
+
+  const [isGenerating, setIsGenerating] =
     useState(false);
 
   const [error, setError] =
@@ -153,6 +161,7 @@ export function DocumentTemplatesPage() {
     setIsLoadingDetail(true);
     setError(null);
     setValidationResult(null);
+    setGenerationResult(null);
 
     try {
       const [
@@ -204,6 +213,7 @@ export function DocumentTemplatesPage() {
         setVariablesData(null);
         setRequiredInputs([]);
         setInputValues({});
+        setGenerationResult(null);
         return;
       }
 
@@ -248,6 +258,7 @@ export function DocumentTemplatesPage() {
 
     setIsValidating(true);
     setValidationResult(null);
+    setGenerationResult(null);
     setError(null);
 
     try {
@@ -267,6 +278,36 @@ export function DocumentTemplatesPage() {
     }
   }
 
+  async function handleGenerationSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ): Promise<void> {
+    event.preventDefault();
+
+    if (!selectedTemplate) {
+      return;
+    }
+
+    setIsGenerating(true);
+    setGenerationResult(null);
+    setError(null);
+
+    try {
+      const result = await generateDocumentFromTemplate(
+        selectedTemplate.code,
+        {
+          outputFormat: validationFormat,
+          context: buildValidationContext(inputValues),
+        },
+      );
+
+      setGenerationResult(result);
+    } catch (generationError: unknown) {
+      setError(getErrorMessage(generationError));
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
   return (
     <main className="dashboard-content document-templates-page">
       <section className="document-templates-hero">
@@ -277,8 +318,8 @@ export function DocumentTemplatesPage() {
           <h2>Catálogo base de documentos académicos</h2>
           <p>
             Consulta las plantillas disponibles, revisa sus variables,
-            comprueba los datos obligatorios y valida el contexto mínimo
-            antes de generar documentos reales en la siguiente subfase.
+            comprueba los datos obligatorios y genera documentos reales
+            que quedan registrados en el historial documental.
           </p>
         </div>
 
@@ -555,8 +596,8 @@ export function DocumentTemplatesPage() {
               <section className="document-template-validation">
                 <h4>Validar contexto</h4>
                 <p>
-                  Esta validación no genera todavía el documento: comprueba
-                  que el formato y los datos mínimos son aceptados por la API.
+                  Comprueba que el formato y los datos mínimos son aceptados
+                  antes de generar el documento.
                 </p>
 
                 <form onSubmit={(event) => {
@@ -568,6 +609,8 @@ export function DocumentTemplatesPage() {
                       value={validationFormat}
                       onChange={(event) => {
                         setValidationFormat(event.target.value as DocumentOutputFormat);
+                        setValidationResult(null);
+                        setGenerationResult(null);
                       }}
                     >
                       {selectedTemplate.outputFormats.map((format) => (
@@ -593,6 +636,8 @@ export function DocumentTemplatesPage() {
                             ...current,
                             [input.key]: event.target.value,
                           }));
+                          setValidationResult(null);
+                          setGenerationResult(null);
                         }}
                       />
                     </label>
@@ -631,10 +676,50 @@ export function DocumentTemplatesPage() {
                       </ul>
                     ) : (
                       <p>
-                        La plantilla puede pasar a la fase de vista previa
-                        cuando se implemente la generación documental.
+                        La plantilla puede generar documento en el formato seleccionado.
                       </p>
                     )}
+                  </div>
+                ) : null}
+              </section>
+
+              <section className="document-template-generation">
+                <h4>Generar documento</h4>
+                <p>
+                  Genera un archivo real desde la plantilla seleccionada.
+                  El documento quedará guardado en el historial documental.
+                </p>
+
+                <form onSubmit={(event) => {
+                  void handleGenerationSubmit(event);
+                }}>
+                  <button
+                    className="button button-primary"
+                    type="submit"
+                    disabled={isGenerating}
+                  >
+                    {isGenerating
+                      ? 'Generando...'
+                      : `Generar ${FORMAT_LABELS[validationFormat]}`}
+                  </button>
+                </form>
+
+                {generationResult ? (
+                  <div className="document-template-generation-result">
+                    <strong>Documento generado</strong>
+                    <p>
+                      {generationResult.fileName}
+                    </p>
+                    <p>
+                      Tamaño: {generationResult.fileSizeBytes} bytes · ID:
+                      {' '}{generationResult.documentId}
+                    </p>
+                    <a
+                      className="button button-primary document-template-download-link"
+                      href={generationResult.downloadUrl}
+                    >
+                      Descargar documento
+                    </a>
                   </div>
                 ) : null}
               </section>
