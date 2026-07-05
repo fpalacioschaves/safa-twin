@@ -44,7 +44,7 @@ const CATEGORY_LABELS: Record<DocumentTemplateCategory, string> = {
   final_memory: 'Memoria final',
   attendance: 'Asistencia',
   student: 'Alumno',
-  group: 'Grupo',
+  academic_offering: 'Oferta académica',
   work_placement: 'Formación en empresa',
   statistics: 'Estadísticas',
   incidents: 'Incidencias',
@@ -54,7 +54,7 @@ const SCOPE_LABELS: Record<DocumentTemplateScope, string> = {
   academic_year: 'Curso académico',
   programme: 'Ciclo',
   level: 'Nivel',
-  group: 'Grupo',
+  academic_offering: 'Oferta académica',
   module: 'Módulo',
   student: 'Alumno',
   company: 'Empresa',
@@ -89,41 +89,39 @@ function getErrorMessage(error: unknown): string {
   return 'Se ha producido un error inesperado.';
 }
 
-function buildInitialInputValues(
-  requiredInputs: DocumentTemplateInputDefinition[],
+function getInitialValues(
+  inputs: DocumentTemplateInputDefinition[],
 ): Record<string, string> {
-  return requiredInputs.reduce<Record<string, string>>(
-    (values, input) => ({
-      ...values,
-      [input.key]: '',
-    }),
-    {},
+  return Object.fromEntries(
+    inputs.map((input) => [input.key, '']),
   );
 }
 
-function isDateInputKey(key: string): boolean {
-  return key.toLowerCase().includes('date')
-    || key.toLowerCase().endsWith('from')
-    || key.toLowerCase().endsWith('to');
+function isDateInput(key: string): boolean {
+  const normalizedKey = key.toLowerCase();
+
+  return normalizedKey.includes('date')
+    || normalizedKey.endsWith('from')
+    || normalizedKey.endsWith('to');
 }
 
-function buildContextWithLabels(
-  inputValues: Record<string, string>,
-  contextOptions: Record<string, DocumentTemplateContextOption[]>,
+function buildContext(
+  values: Record<string, string>,
+  options: Record<string, DocumentTemplateContextOption[]>,
 ): Record<string, unknown> {
   const context: Record<string, unknown> = {};
 
-  Object.entries(inputValues).forEach(([key, value]) => {
-    const trimmedValue = value.trim();
+  Object.entries(values).forEach(([key, value]) => {
+    const cleanValue = value.trim();
 
-    if (trimmedValue.length === 0) {
+    if (!cleanValue) {
       return;
     }
 
-    context[key] = trimmedValue;
+    context[key] = cleanValue;
 
-    const selectedOption = contextOptions[key]?.find(
-      (option) => option.value === trimmedValue,
+    const selectedOption = options[key]?.find(
+      (option) => option.value === cleanValue,
     );
 
     if (selectedOption) {
@@ -136,70 +134,41 @@ function buildContextWithLabels(
   return context;
 }
 
-function getSelectedOptionDescription(
-  inputKey: string,
-  value: string,
-  contextOptions: Record<string, DocumentTemplateContextOption[]>,
-): string | null {
-  const selectedOption = contextOptions[inputKey]?.find(
-    (option) => option.value === value,
-  );
-
-  return selectedOption?.description ?? null;
-}
-
 export function DocumentTemplatesPage() {
   const [filters, setFilters] =
     useState<DocumentTemplateListQuery>(DEFAULT_FILTERS);
-
   const [templates, setTemplates] =
     useState<DocumentTemplateDefinition[]>([]);
-
   const [selectedCode, setSelectedCode] =
     useState<string | null>(null);
-
   const [selectedTemplate, setSelectedTemplate] =
     useState<DocumentTemplateDefinition | null>(null);
-
   const [variablesData, setVariablesData] =
     useState<DocumentTemplateVariablesResponse | null>(null);
-
   const [requiredInputs, setRequiredInputs] =
     useState<DocumentTemplateInputDefinition[]>([]);
-
   const [contextOptions, setContextOptions] =
     useState<Record<string, DocumentTemplateContextOption[]>>({});
-
   const [inputValues, setInputValues] =
     useState<Record<string, string>>({});
-
   const [validationFormat, setValidationFormat] =
     useState<DocumentOutputFormat>('docx');
-
   const [validationResult, setValidationResult] =
     useState<DocumentTemplateValidationResult | null>(null);
-
   const [generationResult, setGenerationResult] =
     useState<DocumentTemplateGenerationResult | null>(null);
-
   const [isLoadingList, setIsLoadingList] =
     useState(false);
-
   const [isLoadingDetail, setIsLoadingDetail] =
     useState(false);
-
   const [isValidating, setIsValidating] =
     useState(false);
-
   const [isGenerating, setIsGenerating] =
     useState(false);
-
   const [error, setError] =
     useState<string | null>(null);
 
-  async function loadTemplateDetail(
-    code: string,
-  ): Promise<void> {
+  async function loadTemplateDetail(code: string): Promise<void> {
     setIsLoadingDetail(true);
     setError(null);
     setValidationResult(null);
@@ -209,8 +178,8 @@ export function DocumentTemplatesPage() {
       const [
         template,
         variables,
-        requiredInputsResponse,
-        contextOptionsResponse,
+        inputs,
+        options,
       ] = await Promise.all([
         getDocumentTemplate(code),
         getDocumentTemplateVariables(code),
@@ -221,16 +190,10 @@ export function DocumentTemplatesPage() {
       setSelectedCode(code);
       setSelectedTemplate(template);
       setVariablesData(variables);
-      setRequiredInputs(requiredInputsResponse.requiredInputs);
-      setContextOptions(contextOptionsResponse.options);
-      setInputValues(
-        buildInitialInputValues(
-          requiredInputsResponse.requiredInputs,
-        ),
-      );
-      setValidationFormat(
-        template.outputFormats[0] ?? 'docx',
-      );
+      setRequiredInputs(inputs.requiredInputs);
+      setContextOptions(options.options);
+      setInputValues(getInitialValues(inputs.requiredInputs));
+      setValidationFormat(template.outputFormats[0] ?? 'docx');
     } catch (loadError: unknown) {
       setError(getErrorMessage(loadError));
       setSelectedTemplate(null);
@@ -256,21 +219,15 @@ export function DocumentTemplatesPage() {
       if (result.items.length === 0) {
         setSelectedCode(null);
         setSelectedTemplate(null);
-        setVariablesData(null);
-        setRequiredInputs([]);
-        setContextOptions({});
-        setInputValues({});
-        setGenerationResult(null);
         return;
       }
 
-      const nextSelectedCode =
-        selectedCode
+      const nextCode = selectedCode
         && result.items.some((template) => template.code === selectedCode)
-          ? selectedCode
-          : result.items[0].code;
+        ? selectedCode
+        : result.items[0].code;
 
-      await loadTemplateDetail(nextSelectedCode);
+      await loadTemplateDetail(nextCode);
     } catch (loadError: unknown) {
       setError(getErrorMessage(loadError));
     } finally {
@@ -282,16 +239,71 @@ export function DocumentTemplatesPage() {
     void loadTemplates(DEFAULT_FILTERS);
   }, []);
 
-  function handleFilterSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ): void {
-    event.preventDefault();
-    void loadTemplates(filters);
+  function resetGeneratedState(): void {
+    setValidationResult(null);
+    setGenerationResult(null);
   }
 
-  function handleFilterReset(): void {
-    setFilters(DEFAULT_FILTERS);
-    void loadTemplates(DEFAULT_FILTERS);
+  function renderContextInput(
+    input: DocumentTemplateInputDefinition,
+  ) {
+    const options = contextOptions[input.key] ?? [];
+    const selectedOption = options.find(
+      (option) => option.value === inputValues[input.key],
+    );
+
+    if (options.length > 0) {
+      return (
+        <label key={input.key}>
+          {input.label}
+          <select
+            required={input.required}
+            value={inputValues[input.key] ?? ''}
+            onChange={(event) => {
+              setInputValues((current) => ({
+                ...current,
+                [input.key]: event.target.value,
+              }));
+              resetGeneratedState();
+            }}
+          >
+            <option value="">Selecciona una opción</option>
+            {options.map((option) => (
+              <option
+                key={option.value}
+                value={option.value}
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {selectedOption?.description ? (
+            <small className="document-template-input-help">
+              {selectedOption.description}
+            </small>
+          ) : null}
+        </label>
+      );
+    }
+
+    return (
+      <label key={input.key}>
+        {input.label}
+        <input
+          required={input.required}
+          type={isDateInput(input.key) ? 'date' : 'text'}
+          value={inputValues[input.key] ?? ''}
+          placeholder={input.description}
+          onChange={(event) => {
+            setInputValues((current) => ({
+              ...current,
+              [input.key]: event.target.value,
+            }));
+            resetGeneratedState();
+          }}
+        />
+      </label>
+    );
   }
 
   async function handleValidationSubmit(
@@ -304,19 +316,15 @@ export function DocumentTemplatesPage() {
     }
 
     setIsValidating(true);
-    setValidationResult(null);
-    setGenerationResult(null);
     setError(null);
+    setGenerationResult(null);
 
     try {
       const result = await validateDocumentTemplateContext(
         selectedTemplate.code,
         {
           outputFormat: validationFormat,
-          context: buildContextWithLabels(
-            inputValues,
-            contextOptions,
-          ),
+          context: buildContext(inputValues, contextOptions),
         },
       );
 
@@ -338,18 +346,15 @@ export function DocumentTemplatesPage() {
     }
 
     setIsGenerating(true);
-    setGenerationResult(null);
     setError(null);
+    setGenerationResult(null);
 
     try {
       const result = await generateDocumentFromTemplate(
         selectedTemplate.code,
         {
           outputFormat: validationFormat,
-          context: buildContextWithLabels(
-            inputValues,
-            contextOptions,
-          ),
+          context: buildContext(inputValues, contextOptions),
         },
       );
 
@@ -361,137 +366,38 @@ export function DocumentTemplatesPage() {
     }
   }
 
-  function renderContextInput(
-    input: DocumentTemplateInputDefinition,
-  ) {
-    const options = contextOptions[input.key] ?? [];
-    const selectedDescription = getSelectedOptionDescription(
-      input.key,
-      inputValues[input.key] ?? '',
-      contextOptions,
-    );
-
-    if (options.length > 0) {
-      return (
-        <label key={input.key}>
-          {input.label}
-          <select
-            value={inputValues[input.key] ?? ''}
-            required={input.required}
-            onChange={(event) => {
-              setInputValues((current) => ({
-                ...current,
-                [input.key]: event.target.value,
-              }));
-              setValidationResult(null);
-              setGenerationResult(null);
-            }}
-          >
-            <option value="">
-              {input.required
-                ? 'Selecciona una opción'
-                : 'Sin seleccionar'}
-            </option>
-            {options.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ))}
-          </select>
-          {selectedDescription ? (
-            <small className="document-template-input-help">
-              {selectedDescription}
-            </small>
-          ) : null}
-        </label>
-      );
-    }
-
-    if (isDateInputKey(input.key)) {
-      return (
-        <label key={input.key}>
-          {input.label}
-          <input
-            type="date"
-            value={inputValues[input.key] ?? ''}
-            required={input.required}
-            onChange={(event) => {
-              setInputValues((current) => ({
-                ...current,
-                [input.key]: event.target.value,
-              }));
-              setValidationResult(null);
-              setGenerationResult(null);
-            }}
-          />
-        </label>
-      );
-    }
-
-    return (
-      <label key={input.key}>
-        {input.label}
-        <input
-          type="text"
-          value={inputValues[input.key] ?? ''}
-          required={input.required}
-          placeholder={input.description}
-          onChange={(event) => {
-            setInputValues((current) => ({
-              ...current,
-              [input.key]: event.target.value,
-            }));
-            setValidationResult(null);
-            setGenerationResult(null);
-          }}
-        />
-      </label>
-    );
-  }
-
   return (
     <main className="dashboard-content document-templates-page">
       <section className="document-templates-hero">
         <div>
-          <p className="eyebrow">
-            Plantillas documentales
-          </p>
+          <p className="eyebrow">Plantillas documentales</p>
           <h2>Catálogo base de documentos académicos</h2>
           <p>
-            Consulta las plantillas disponibles, revisa sus variables,
-            comprueba los datos obligatorios y genera documentos reales
-            que quedan registrados en el historial documental.
+            Selecciona plantillas, revisa sus variables y genera documentos
+            registrados en el historial documental.
           </p>
         </div>
-
         <span className="document-templates-status">
           {templates.length} plantillas
         </span>
       </section>
 
-      {error ? (
-        <div className="alert alert-error">
-          {error}
-        </div>
-      ) : null}
+      {error ? <div className="alert alert-error">{error}</div> : null}
 
       <section className="document-templates-card">
         <div className="document-templates-card-header">
           <div>
             <p className="eyebrow">Filtros</p>
             <h3>Buscar plantillas</h3>
-            <p>
-              Filtra por categoría, ámbito, formato de salida o texto libre.
-            </p>
           </div>
         </div>
 
         <form
           className="document-templates-filters"
-          onSubmit={handleFilterSubmit}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void loadTemplates(filters);
+          }}
         >
           <label>
             Texto
@@ -521,10 +427,7 @@ export function DocumentTemplatesPage() {
             >
               <option value="">Todas</option>
               {DOCUMENT_TEMPLATE_CATEGORIES.map((category) => (
-                <option
-                  key={category}
-                  value={category}
-                >
+                <option key={category} value={category}>
                   {CATEGORY_LABELS[category]}
                 </option>
               ))}
@@ -544,10 +447,7 @@ export function DocumentTemplatesPage() {
             >
               <option value="">Todos</option>
               {DOCUMENT_TEMPLATE_SCOPES.map((scope) => (
-                <option
-                  key={scope}
-                  value={scope}
-                >
+                <option key={scope} value={scope}>
                   {SCOPE_LABELS[scope]}
                 </option>
               ))}
@@ -567,44 +467,24 @@ export function DocumentTemplatesPage() {
             >
               <option value="">Todos</option>
               {DOCUMENT_OUTPUT_FORMATS.map((format) => (
-                <option
-                  key={format}
-                  value={format}
-                >
+                <option key={format} value={format}>
                   {FORMAT_LABELS[format]}
                 </option>
               ))}
             </select>
           </label>
 
-          <label className="document-templates-checkbox">
-            <input
-              type="checkbox"
-              checked={filters.activeOnly ?? true}
-              onChange={(event) => {
-                setFilters((current) => ({
-                  ...current,
-                  activeOnly: event.target.checked,
-                }));
-              }}
-            />
-            Solo activas
-          </label>
-
           <div className="document-templates-filter-actions">
-            <button
-              className="button button-primary"
-              type="submit"
-              disabled={isLoadingList}
-            >
+            <button className="button button-primary" type="submit">
               {isLoadingList ? 'Buscando...' : 'Buscar'}
             </button>
-
             <button
               className="button button-secondary"
               type="button"
-              disabled={isLoadingList}
-              onClick={handleFilterReset}
+              onClick={() => {
+                setFilters(DEFAULT_FILTERS);
+                void loadTemplates(DEFAULT_FILTERS);
+              }}
             >
               Limpiar
             </button>
@@ -622,46 +502,34 @@ export function DocumentTemplatesPage() {
             <span>{templates.length}</span>
           </div>
 
-          {templates.length === 0 ? (
-            <p className="document-templates-empty">
-              No hay plantillas que coincidan con los filtros actuales.
-            </p>
-          ) : (
-            <div className="document-templates-list">
-              {templates.map((template) => (
-                <button
-                  className={
-                    selectedCode === template.code
-                      ? 'document-template-list-item document-template-list-item-active'
-                      : 'document-template-list-item'
-                  }
-                  key={template.code}
-                  type="button"
-                  onClick={() => {
-                    void loadTemplateDetail(template.code);
-                  }}
-                >
-                  <strong>{template.name}</strong>
-                  <span>{CATEGORY_LABELS[template.category]}</span>
-                  <small>{template.code}</small>
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="document-templates-list">
+            {templates.map((template) => (
+              <button
+                className={selectedCode === template.code
+                  ? 'document-template-list-item document-template-list-item-active'
+                  : 'document-template-list-item'}
+                key={template.code}
+                type="button"
+                onClick={() => {
+                  void loadTemplateDetail(template.code);
+                }}
+              >
+                <strong>{template.name}</strong>
+                <span>{CATEGORY_LABELS[template.category]}</span>
+                <small>{template.code}</small>
+              </button>
+            ))}
+          </div>
         </article>
 
         <article className="document-templates-card document-templates-detail-card">
           {isLoadingDetail ? (
-            <p className="document-templates-empty">
-              Cargando detalle de la plantilla...
-            </p>
+            <p className="document-templates-empty">Cargando plantilla...</p>
           ) : selectedTemplate ? (
             <>
               <div className="document-templates-card-header">
                 <div>
-                  <p className="eyebrow">
-                    {CATEGORY_LABELS[selectedTemplate.category]}
-                  </p>
+                  <p className="eyebrow">{CATEGORY_LABELS[selectedTemplate.category]}</p>
                   <h3>{selectedTemplate.name}</h3>
                   <p>{selectedTemplate.description}</p>
                 </div>
@@ -669,9 +537,7 @@ export function DocumentTemplatesPage() {
 
               <div className="document-template-badges">
                 {selectedTemplate.outputFormats.map((format) => (
-                  <span key={format}>
-                    {FORMAT_LABELS[format]}
-                  </span>
+                  <span key={format}>{FORMAT_LABELS[format]}</span>
                 ))}
               </div>
 
@@ -687,38 +553,16 @@ export function DocumentTemplatesPage() {
 
                 <section>
                   <h4>Datos obligatorios</h4>
-                  {requiredInputs.length === 0 ? (
-                    <p>No requiere datos de contexto.</p>
-                  ) : (
-                    <ul>
-                      {requiredInputs.map((input) => (
-                        <li key={input.key}>
-                          <strong>{input.label}</strong>
-                          <span>{input.description}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <ul>
+                    {requiredInputs.map((input) => (
+                      <li key={input.key}>
+                        <strong>{input.label}</strong>
+                        <span>{input.description}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </section>
               </div>
-
-              <section className="document-template-sections">
-                <h4>Secciones</h4>
-                <div className="document-template-section-list">
-                  {selectedTemplate.sections
-                    .slice()
-                    .sort((first, second) => first.order - second.order)
-                    .map((section) => (
-                      <article key={section.key}>
-                        <strong>{section.title}</strong>
-                        <p>{section.description}</p>
-                        <span>
-                          {section.required ? 'Obligatoria' : 'Opcional'}
-                        </span>
-                      </article>
-                    ))}
-                </div>
-              </section>
 
               <section className="document-template-variables">
                 <h4>Variables disponibles</h4>
@@ -727,10 +571,7 @@ export function DocumentTemplatesPage() {
                     <article key={variable.key}>
                       <strong>{variable.key}</strong>
                       <span>{variable.label}</span>
-                      <small>
-                        {variable.type}
-                        {variable.required ? ' · obligatoria' : ' · opcional'}
-                      </small>
+                      <small>{variable.type}</small>
                       <p>{variable.description}</p>
                     </article>
                   ))}
@@ -740,8 +581,8 @@ export function DocumentTemplatesPage() {
               <section className="document-template-validation">
                 <h4>Validar contexto</h4>
                 <p>
-                  Selecciona los datos académicos desde los desplegables.
-                  La aplicación enviará internamente los identificadores necesarios.
+                  Elige los datos desde desplegables. El código interno se envía
+                  automáticamente al backend.
                 </p>
 
                 <form onSubmit={(event) => {
@@ -753,15 +594,11 @@ export function DocumentTemplatesPage() {
                       value={validationFormat}
                       onChange={(event) => {
                         setValidationFormat(event.target.value as DocumentOutputFormat);
-                        setValidationResult(null);
-                        setGenerationResult(null);
+                        resetGeneratedState();
                       }}
                     >
                       {selectedTemplate.outputFormats.map((format) => (
-                        <option
-                          key={format}
-                          value={format}
-                        >
+                        <option key={format} value={format}>
                           {FORMAT_LABELS[format]}
                         </option>
                       ))}
@@ -780,19 +617,15 @@ export function DocumentTemplatesPage() {
                 </form>
 
                 {validationResult ? (
-                  <div
-                    className={
-                      validationResult.valid
-                        ? 'document-template-validation-result document-template-validation-ok'
-                        : 'document-template-validation-result document-template-validation-error'
-                    }
+                  <div className={validationResult.valid
+                    ? 'document-template-validation-result document-template-validation-ok'
+                    : 'document-template-validation-result document-template-validation-error'}
                   >
                     <strong>
                       {validationResult.valid
                         ? 'Contexto válido'
                         : 'Contexto incompleto'}
                     </strong>
-
                     {validationResult.issues.length > 0 ? (
                       <ul>
                         {validationResult.issues.map((issue) => (
@@ -802,9 +635,7 @@ export function DocumentTemplatesPage() {
                         ))}
                       </ul>
                     ) : (
-                      <p>
-                        La plantilla puede generar documento en el formato seleccionado.
-                      </p>
+                      <p>La plantilla puede generar documento.</p>
                     )}
                   </div>
                 ) : null}
@@ -813,10 +644,8 @@ export function DocumentTemplatesPage() {
               <section className="document-template-generation">
                 <h4>Generar documento</h4>
                 <p>
-                  Genera un archivo real desde la plantilla seleccionada.
-                  El documento quedará guardado en el historial documental.
+                  El archivo generado quedará guardado en el historial documental.
                 </p>
-
                 <form onSubmit={(event) => {
                   void handleGenerationSubmit(event);
                 }}>
@@ -834,12 +663,9 @@ export function DocumentTemplatesPage() {
                 {generationResult ? (
                   <div className="document-template-generation-result">
                     <strong>Documento generado</strong>
+                    <p>{generationResult.fileName}</p>
                     <p>
-                      {generationResult.fileName}
-                    </p>
-                    <p>
-                      Tamaño: {generationResult.fileSizeBytes} bytes · ID:
-                      {' '}{generationResult.documentId}
+                      Tamaño: {generationResult.fileSizeBytes} bytes · ID: {generationResult.documentId}
                     </p>
                     <a
                       className="button button-primary document-template-download-link"
