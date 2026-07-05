@@ -40,6 +40,10 @@ import {
 } from './modules/evaluations/evaluations.routes.js';
 
 import {
+  generatedDocumentsRouter,
+} from './modules/generated-documents/generated-documents.routes.js';
+
+import {
   gradeStatusesRouter,
 } from './modules/grade-statuses/grade-statuses.routes.js';
 
@@ -172,6 +176,11 @@ export function createApp(): Express {
   app.use(
     '/api/statistics',
     statisticsRouter,
+  );
+
+  app.use(
+    '/api/generated-documents',
+    generatedDocumentsRouter,
   );
 
   app.use(
