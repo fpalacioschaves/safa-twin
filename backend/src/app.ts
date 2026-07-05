@@ -52,6 +52,10 @@ import {
 } from './modules/modules/modules.routes.js';
 
 import {
+  statisticsRouter,
+} from './modules/statistics/statistics.routes.js';
+
+import {
   studentsRouter,
 } from './modules/students/students.routes.js';
 
@@ -163,6 +167,11 @@ export function createApp(): Express {
   app.use(
     '/api/grades',
     gradesRouter,
+  );
+
+  app.use(
+    '/api/statistics',
+    statisticsRouter,
   );
 
   app.use(
