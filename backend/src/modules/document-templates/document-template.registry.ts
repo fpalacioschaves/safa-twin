@@ -135,7 +135,7 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
     code: 'final_memory_programme_level',
     name: 'Memoria final de ciclo y curso',
     description:
-      'Plantilla base para la memoria final de un ciclo y curso académico, con resultados académicos, evolución, absentismo, incidencias y propuestas de mejora.',
+      'Plantilla base para la memoria final de un ciclo formativo y un curso concreto, con resultados académicos, evolución, absentismo, incidencias y propuestas de mejora.',
     category: 'final_memory',
     scope: ['academic_year', 'programme', 'level'],
     outputFormats: ['docx', 'pdf'],
@@ -146,6 +146,18 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         label: 'Curso académico',
         required: true,
         description: 'Selecciona el curso académico.',
+      },
+      {
+        key: 'vocationalProgrammeId',
+        label: 'Ciclo formativo',
+        required: true,
+        description: 'Selecciona el ciclo formativo, por ejemplo DAW o DAM.',
+      },
+      {
+        key: 'academicLevelId',
+        label: 'Curso / nivel',
+        required: true,
+        description: 'Selecciona el curso o nivel, por ejemplo primero o segundo.',
       },
     ],
     variables: [
@@ -161,8 +173,17 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         key: 'programme.name',
         label: 'Ciclo formativo',
         type: 'string',
-        required: false,
-        description: 'Nombre del ciclo formativo cuando se aplique el filtro.',
+        required: true,
+        description: 'Nombre del ciclo formativo.',
+        example: 'Desarrollo de Aplicaciones Web',
+      },
+      {
+        key: 'level.name',
+        label: 'Curso / nivel',
+        type: 'string',
+        required: true,
+        description: 'Curso académico dentro del ciclo formativo.',
+        example: '2º',
       },
       {
         key: 'stats.enrolled',
@@ -199,8 +220,8 @@ export const DOCUMENT_TEMPLATE_REGISTRY: DocumentTemplateDefinition[] = [
         title: 'Portada',
         order: 1,
         required: true,
-        description: 'Identificación del curso académico y alcance de la memoria.',
-        variables: ['academicYear.name', 'programme.name'],
+        description: 'Identificación del curso académico, ciclo formativo y curso o nivel.',
+        variables: ['academicYear.name', 'programme.name', 'level.name'],
       },
       {
         key: 'academic_results',
