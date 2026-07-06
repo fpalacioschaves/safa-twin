@@ -30,6 +30,9 @@ import {
   CompanyTrainingReportsPage,
 } from './CompanyTrainingReportsPage';
 import {
+  CurriculumPage,
+} from './CurriculumPage';
+import {
   DocumentTemplatesPage,
 } from './DocumentTemplatesPage';
 import {
@@ -78,6 +81,7 @@ type ActiveSection =
   | 'vocational-programmes'
   | 'academic-levels'
   | 'modules'
+  | 'curriculum'
   | 'students'
   | 'enrolments'
   | 'evaluations'
@@ -191,6 +195,10 @@ function getPageHeader(
       eyebrow: 'Estructura académica',
       title: 'Módulos profesionales',
     },
+    curriculum: {
+      eyebrow: 'Currículo académico',
+      title: 'Resultados de Aprendizaje y Acciones Formativas',
+    },
     students: {
       eyebrow: 'Gestión académica',
       title: 'Alumnado',
@@ -297,6 +305,7 @@ function DashboardHome({
             <li>Autenticación y sesiones</li>
             <li>Roles y permisos en backend</li>
             <li>Gestión de estructura académica</li>
+            <li>Currículo de módulos profesionales</li>
             <li>Gestión de alumnado y matrículas</li>
             <li>Evaluaciones, sistemas de calificación y notas</li>
             <li>Estadísticas académicas</li>
@@ -389,6 +398,8 @@ export function DashboardPage({
         canArchiveModules={canUseBuiltModules}
       />
     );
+  } else if (activeSection === 'curriculum') {
+    activeContent = <CurriculumPage />;
   } else if (activeSection === 'students') {
     activeContent = (
       <StudentsPage
@@ -455,6 +466,7 @@ export function DashboardPage({
     { id: 'vocational-programmes', label: 'Ciclos' },
     { id: 'academic-levels', label: 'Niveles' },
     { id: 'modules', label: 'Módulos' },
+    { id: 'curriculum', label: 'Currículo' },
     { id: 'students', label: 'Alumnado' },
     { id: 'enrolments', label: 'Matrículas' },
     { id: 'evaluations', label: 'Evaluaciones' },
@@ -529,6 +541,12 @@ export function DashboardPage({
             activeSection={activeSection}
             id="modules"
             label="Módulos"
+            onSelect={setActiveSection}
+          />
+          <NavigationButton
+            activeSection={activeSection}
+            id="curriculum"
+            label="Currículo RA/AF"
             onSelect={setActiveSection}
           />
           <span className="nav-link nav-link-disabled">
