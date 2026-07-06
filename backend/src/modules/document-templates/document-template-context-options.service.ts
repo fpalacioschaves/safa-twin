@@ -25,6 +25,19 @@ interface AcademicYearOptionRow {
   is_current: boolean | number;
 }
 
+interface VocationalProgrammeOptionRow {
+  id: bigint | number;
+  code: string;
+  name: string;
+  acronym: string;
+}
+
+interface AcademicLevelOptionRow {
+  id: bigint | number;
+  name: string;
+  number: number;
+}
+
 interface EvaluationOptionRow {
   id: bigint | number;
   code: string;
@@ -33,18 +46,6 @@ interface EvaluationOptionRow {
   academic_year_name: string;
   centre_name: string;
   centre_short_name: string | null;
-}
-
-interface AcademicOfferingOptionRow {
-  id: bigint | number;
-  academic_year_name: string;
-  centre_name: string;
-  centre_short_name: string | null;
-  programme_code: string;
-  programme_name: string;
-  programme_acronym: string;
-  level_name: string;
-  modality: string;
 }
 
 interface ModuleOptionRow {
@@ -123,6 +124,45 @@ async function getAcademicYearOptions(): Promise<DocumentTemplateContextOption[]
   }));
 }
 
+async function getVocationalProgrammeOptions(): Promise<DocumentTemplateContextOption[]> {
+  const rows = await prisma.$queryRaw<VocationalProgrammeOptionRow[]>`
+    SELECT
+      id,
+      code,
+      name,
+      acronym
+    FROM vocational_programmes
+    WHERE deleted_at IS NULL
+      AND is_active = 1
+    ORDER BY acronym ASC, name ASC
+  `;
+
+  return rows.map((row) => ({
+    value: toOptionValue(row.id),
+    label: row.acronym,
+    description: `${row.code} · ${row.name}`,
+  }));
+}
+
+async function getAcademicLevelOptions(): Promise<DocumentTemplateContextOption[]> {
+  const rows = await prisma.$queryRaw<AcademicLevelOptionRow[]>`
+    SELECT
+      id,
+      name,
+      number
+    FROM academic_levels
+    WHERE deleted_at IS NULL
+      AND is_active = 1
+    ORDER BY number ASC, name ASC
+  `;
+
+  return rows.map((row) => ({
+    value: toOptionValue(row.id),
+    label: row.name,
+    description: `Curso ${row.number}`,
+  }));
+}
+
 async function getEvaluationOptions(): Promise<DocumentTemplateContextOption[]> {
   const rows = await prisma.$queryRaw<EvaluationOptionRow[]>`
     SELECT
@@ -146,39 +186,6 @@ async function getEvaluationOptions(): Promise<DocumentTemplateContextOption[]> 
     value: toOptionValue(row.id),
     label: `${row.academic_year_name} · ${row.code} · ${row.name}`,
     description: `${getCentreLabel(row.centre_short_name, row.centre_name)} · ${row.status}`,
-  }));
-}
-
-async function getAcademicOfferingOptions(): Promise<DocumentTemplateContextOption[]> {
-  const rows = await prisma.$queryRaw<AcademicOfferingOptionRow[]>`
-    SELECT
-      ao.id,
-      ay.name AS academic_year_name,
-      c.name AS centre_name,
-      c.short_name AS centre_short_name,
-      vp.code AS programme_code,
-      vp.name AS programme_name,
-      vp.acronym AS programme_acronym,
-      al.name AS level_name,
-      ao.modality
-    FROM academic_offerings ao
-    INNER JOIN academic_years ay ON ay.id = ao.academic_year_id
-    INNER JOIN centres c ON c.id = ao.centre_id
-    INNER JOIN vocational_programmes vp ON vp.id = ao.vocational_programme_id
-    INNER JOIN academic_levels al ON al.id = ao.academic_level_id
-    WHERE ao.deleted_at IS NULL
-      AND ao.is_active = 1
-      AND ay.deleted_at IS NULL
-      AND c.deleted_at IS NULL
-      AND vp.deleted_at IS NULL
-      AND al.deleted_at IS NULL
-    ORDER BY ay.start_date DESC, vp.acronym ASC, al.number ASC, ao.modality ASC
-  `;
-
-  return rows.map((row) => ({
-    value: toOptionValue(row.id),
-    label: `${row.academic_year_name} · ${row.programme_acronym} · ${row.level_name} · ${row.modality}`,
-    description: `${getCentreLabel(row.centre_short_name, row.centre_name)} · ${row.programme_name}`,
   }));
 }
 
@@ -295,12 +302,16 @@ async function getOptionsForInput(
     return getAcademicYearOptions();
   }
 
-  if (input.key === 'evaluationId') {
-    return getEvaluationOptions();
+  if (input.key === 'vocationalProgrammeId') {
+    return getVocationalProgrammeOptions();
   }
 
-  if (input.key === 'academicOfferingId') {
-    return getAcademicOfferingOptions();
+  if (input.key === 'academicLevelId') {
+    return getAcademicLevelOptions();
+  }
+
+  if (input.key === 'evaluationId') {
+    return getEvaluationOptions();
   }
 
   if (input.key === 'moduleId') {
