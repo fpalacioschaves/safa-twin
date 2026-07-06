@@ -1,5 +1,6 @@
 import {
   Router,
+  type Request,
   type Response,
 } from 'express';
 
@@ -99,7 +100,9 @@ documentTemplateRouterV2.post(
         return;
       }
 
-      const authenticatedUser = request.user as AuthenticatedUser | undefined;
+      const authenticatedUser = (request as Request & {
+        user?: AuthenticatedUser;
+      }).user;
 
       if (!authenticatedUser) {
         response.status(401).json({
