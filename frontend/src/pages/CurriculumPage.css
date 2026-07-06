@@ -1,0 +1,225 @@
+.curriculum-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.curriculum-hero,
+.curriculum-card {
+  border: 1px solid #d9e2ef;
+  border-radius: 1.25rem;
+  background: #ffffff;
+}
+
+.curriculum-hero {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
+.curriculum-hero h2,
+.curriculum-card h3 {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.curriculum-hero p,
+.curriculum-card p,
+.curriculum-empty {
+  margin: 0;
+  color: #50627f;
+  line-height: 1.55;
+}
+
+.curriculum-status {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  color: #164a2c;
+  background: #d8f6e2;
+  font-weight: 800;
+}
+
+.curriculum-card {
+  padding: 1.5rem;
+}
+
+.curriculum-card-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.curriculum-filters {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(15rem, 1.4fr) repeat(3, minmax(8rem, 0.8fr)) auto;
+  align-items: end;
+}
+
+.curriculum-filters label,
+.curriculum-import label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: #253955;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.curriculum-filters input,
+.curriculum-filters select,
+.curriculum-import textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #c8d5e5;
+  border-radius: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  color: #17324d;
+  background: #ffffff;
+  font: inherit;
+}
+
+.curriculum-import textarea {
+  min-height: 24rem;
+  resize: vertical;
+  font-family: Consolas, 'Liberation Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.curriculum-filter-actions,
+.curriculum-import-actions,
+.curriculum-pagination {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.curriculum-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.curriculum-tab {
+  border: 1px solid #c8d5e5;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  color: #17324d;
+  background: #ffffff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.curriculum-tab:hover,
+.curriculum-tab-active {
+  border-color: #2f74c0;
+  color: #123d6b;
+  background: #eef6ff;
+}
+
+.curriculum-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e3ebf5;
+  border-radius: 1rem;
+}
+
+.curriculum-table {
+  width: 100%;
+  min-width: 58rem;
+  border-collapse: collapse;
+}
+
+.curriculum-table th,
+.curriculum-table td {
+  border-bottom: 1px solid #e3ebf5;
+  padding: 0.85rem;
+  color: #253955;
+  text-align: left;
+  vertical-align: top;
+}
+
+.curriculum-table th {
+  color: #17324d;
+  background: #f4f8fd;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.curriculum-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.curriculum-table td strong,
+.curriculum-table td span {
+  display: block;
+}
+
+.curriculum-table td span {
+  margin-top: 0.35rem;
+  color: #60708c;
+  line-height: 1.45;
+}
+
+.curriculum-empty {
+  border: 1px dashed #c8d5e5;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  background: #f8fbff;
+}
+
+.curriculum-pagination {
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.curriculum-pagination span {
+  color: #50627f;
+  font-weight: 800;
+}
+
+.curriculum-import {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.curriculum-import-actions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 1200px) {
+  .curriculum-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .curriculum-hero,
+  .curriculum-card-header,
+  .curriculum-filter-actions,
+  .curriculum-import-actions,
+  .curriculum-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .curriculum-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculum-filter-actions button,
+  .curriculum-import-actions button,
+  .curriculum-pagination button {
+    width: 100%;
+  }
+}
