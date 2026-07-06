@@ -40,8 +40,8 @@ import {
 } from './modules/company-training/company-training.routes.js';
 
 import {
-  documentTemplateRouter,
-} from './modules/document-templates/document-template.routes.js';
+  documentTemplateRouterV2,
+} from './modules/document-templates/document-template.routes.v2.js';
 
 import {
   enrolmentsRouter,
@@ -197,7 +197,7 @@ export function createApp(): Express {
 
   app.use(
     '/api/document-templates',
-    documentTemplateRouter,
+    documentTemplateRouterV2,
   );
 
   app.use(
