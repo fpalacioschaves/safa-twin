@@ -1,3 +1,3 @@
 export {
   DocumentTemplatesPage,
-} from './DocumentTemplatesPageV2';
+} from './DocumentTemplatesPageV3';
