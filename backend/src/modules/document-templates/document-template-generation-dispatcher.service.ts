@@ -15,6 +15,9 @@ import {
 import {
   generateStudentAcademicRecordFromTemplate,
 } from './reports/student-academic-record-generator.service.js';
+import {
+  generateWorkPlacementMemoryFromTemplate,
+} from './reports/work-placement-memory-generator.service.js';
 
 export type {
   DocumentTemplateGenerationRequest,
@@ -50,6 +53,14 @@ export async function generateDocumentFromTemplate(
 
   if (template.code === 'student_academic_record') {
     return generateStudentAcademicRecordFromTemplate({
+      template,
+      request,
+      userId,
+    });
+  }
+
+  if (template.code === 'work_placement_memory') {
+    return generateWorkPlacementMemoryFromTemplate({
       template,
       request,
       userId,
