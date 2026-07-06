@@ -11,18 +11,23 @@ import {
 import {
   getCurriculumLearningOutcomes,
   getCurriculumTrainingActions,
-  importCurriculum,
 } from '../services/curriculum.service';
 
+import {
+  getModules,
+} from '../services/modules.service';
+
 import type {
-  CurriculumImportRequest,
-  CurriculumImportResponse,
   CurriculumLearningOutcomeItem,
   CurriculumPagination,
   CurriculumStatus,
   CurriculumTab,
   CurriculumTrainingActionItem,
 } from '../types/curriculum';
+
+import type {
+  ProfessionalModule,
+} from '../types/modules';
 
 import './CurriculumPage.css';
 
@@ -35,44 +40,11 @@ const EMPTY_PAGINATION: CurriculumPagination = {
   totalPages: 1,
 };
 
-const DEFAULT_IMPORT_EXAMPLE = JSON.stringify(
-  {
-    sourceName: 'Plan de formación dual DAW/DAM pendiente de validar',
-    learningOutcomes: [
-      {
-        moduleCode: '0613',
-        vocationalProgrammeAcronym: 'DAW',
-        academicLevelNumber: 2,
-        code: 'RA1',
-        title: 'Resultado de aprendizaje pendiente de cargar desde documento real',
-        description: 'Texto procedente de normativa, programación o plan validado.',
-        sortOrder: 1,
-      },
-    ],
-    trainingActions: [
-      {
-        moduleCode: '0613',
-        vocationalProgrammeAcronym: 'DAW',
-        academicLevelNumber: 2,
-        code: 'AF1',
-        title: 'Acción formativa pendiente de cargar desde documento real',
-        description: 'Texto procedente del plan de formación real.',
-        plannedHours: 10,
-        sortOrder: 1,
-        relatedLearningOutcomeCodes: [
-          'RA1',
-        ],
-      },
-    ],
-  },
-  null,
-  2,
-);
-
 interface CurriculumFilters {
   search: string;
   vocationalProgrammeAcronym: string;
   academicLevelNumber: string;
+  moduleId: string;
   status: CurriculumStatus;
 }
 
@@ -80,6 +52,7 @@ const DEFAULT_FILTERS: CurriculumFilters = {
   search: '',
   vocationalProgrammeAcronym: '',
   academicLevelNumber: '',
+  moduleId: '',
   status: 'active',
 };
 
@@ -109,6 +82,12 @@ function getProgrammeLevelLabel(
   },
 ): string {
   return `${item.module.vocationalProgramme.acronym} · ${item.module.academicLevel.name}`;
+}
+
+function getModuleOptionLabel(
+  module: ProfessionalModule,
+): string {
+  return `${module.vocationalProgramme.acronym} · ${module.academicLevel.name} · ${module.code} · ${module.name}`;
 }
 
 function getStatusLabel(
@@ -144,6 +123,9 @@ function buildQuery(
     academicLevelNumber: filters.academicLevelNumber
       ? Number(filters.academicLevelNumber)
       : undefined,
+    moduleId: filters.moduleId
+      ? Number(filters.moduleId)
+      : undefined,
     status: filters.status,
     page,
     pageSize: PAGE_SIZE,
@@ -158,17 +140,29 @@ function renderDescription(value: string | null): string {
   return value ?? 'Sin descripción';
 }
 
-function isCurriculumImportRequest(
-  value: unknown,
-): value is CurriculumImportRequest {
-  return (
-    typeof value === 'object'
-    && value !== null
-    && (
-      'learningOutcomes' in value
-      || 'trainingActions' in value
-    )
-  );
+function filterModuleOptions(
+  modules: ProfessionalModule[],
+  filters: CurriculumFilters,
+): ProfessionalModule[] {
+  return modules.filter((module) => {
+    if (
+      filters.vocationalProgrammeAcronym
+      && module.vocationalProgramme.acronym
+        !== filters.vocationalProgrammeAcronym
+    ) {
+      return false;
+    }
+
+    if (
+      filters.academicLevelNumber
+      && module.academicLevel.number
+        !== Number(filters.academicLevelNumber)
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 }
 
 export function CurriculumPage() {
@@ -177,6 +171,9 @@ export function CurriculumPage() {
 
   const [filters, setFilters] =
     useState<CurriculumFilters>(DEFAULT_FILTERS);
+
+  const [moduleOptions, setModuleOptions] =
+    useState<ProfessionalModule[]>([]);
 
   const [learningOutcomes, setLearningOutcomes] =
     useState<CurriculumLearningOutcomeItem[]>([]);
@@ -190,17 +187,29 @@ export function CurriculumPage() {
   const [isLoading, setIsLoading] =
     useState(false);
 
+  const [isLoadingModules, setIsLoadingModules] =
+    useState(false);
+
   const [error, setError] =
     useState<string | null>(null);
 
-  const [importText, setImportText] =
-    useState(DEFAULT_IMPORT_EXAMPLE);
+  async function loadModules(): Promise<void> {
+    setIsLoadingModules(true);
 
-  const [isImporting, setIsImporting] =
-    useState(false);
+    try {
+      const result = await getModules({
+        page: 1,
+        pageSize: 200,
+        status: 'active',
+      });
 
-  const [importResult, setImportResult] =
-    useState<CurriculumImportResponse | null>(null);
+      setModuleOptions(result.items);
+    } catch (loadError: unknown) {
+      setError(getErrorMessage(loadError));
+    } finally {
+      setIsLoadingModules(false);
+    }
+  }
 
   async function loadItems(
     page: number,
@@ -235,6 +244,10 @@ export function CurriculumPage() {
   }
 
   useEffect(() => {
+    void loadModules();
+  }, []);
+
+  useEffect(() => {
     void loadItems(
       1,
       filters,
@@ -265,38 +278,14 @@ export function CurriculumPage() {
     setError(null);
   }
 
-  async function handleImport(
-    event: FormEvent<HTMLFormElement>,
-  ): Promise<void> {
-    event.preventDefault();
-    setIsImporting(true);
-    setError(null);
-    setImportResult(null);
-
-    try {
-      const parsed = JSON.parse(importText) as unknown;
-
-      if (!isCurriculumImportRequest(parsed)) {
-        throw new Error(
-          'El JSON debe incluir learningOutcomes o trainingActions.',
-        );
-      }
-
-      const result = await importCurriculum(parsed);
-
-      setImportResult(result);
-
-      await loadItems(1);
-    } catch (importError: unknown) {
-      setError(getErrorMessage(importError));
-    } finally {
-      setIsImporting(false);
-    }
-  }
-
   const visibleItemsCount = activeTab === 'learning-outcomes'
     ? learningOutcomes.length
     : trainingActions.length;
+
+  const filteredModuleOptions = filterModuleOptions(
+    moduleOptions,
+    filters,
+  );
 
   return (
     <main className="dashboard-content curriculum-page">
@@ -305,9 +294,9 @@ export function CurriculumPage() {
           <p className="eyebrow">Currículo oficial y dual</p>
           <h2>Resultados de Aprendizaje y Acciones Formativas</h2>
           <p>
-            Consulta el currículo asociado a cada módulo profesional. La base
-            queda preparada para cargar RA oficiales y AF reales cuando se
-            disponga del documento validado del centro o de Séneca.
+            Consulta el currículo asociado a cada módulo profesional. Usa los
+            filtros para separar DAW, DAM, curso, asignatura, RA y acciones
+            formativas sin mezclar datos de ciclos o niveles distintos.
           </p>
         </div>
 
@@ -322,24 +311,15 @@ export function CurriculumPage() {
         </div>
       ) : null}
 
-      {importResult ? (
-        <div className="alert alert-success">
-          {importResult.message} RA procesados:{' '}
-          {importResult.summary.learningOutcomesProcessed}. AF procesadas:{' '}
-          {importResult.summary.trainingActionsProcessed}. Relaciones:{' '}
-          {importResult.summary.linksProcessed}.
-        </div>
-      ) : null}
-
       <section className="curriculum-card">
         <div className="curriculum-card-header">
           <div>
             <p className="eyebrow">Filtros</p>
             <h3>Consulta curricular</h3>
             <p>
-              Filtra por texto, ciclo, curso y estado. De momento la tabla
-              puede aparecer vacía hasta que carguemos datos curriculares
-              reales.
+              Filtra por texto, ciclo, curso, módulo profesional y estado. El
+              selector de módulo se adapta automáticamente al ciclo y curso
+              seleccionados.
             </p>
           </div>
         </div>
@@ -371,6 +351,7 @@ export function CurriculumPage() {
                 setFilters((current) => ({
                   ...current,
                   vocationalProgrammeAcronym: event.target.value,
+                  moduleId: '',
                 }));
               }}
             >
@@ -388,12 +369,41 @@ export function CurriculumPage() {
                 setFilters((current) => ({
                   ...current,
                   academicLevelNumber: event.target.value,
+                  moduleId: '',
                 }));
               }}
             >
               <option value="">Todos</option>
               <option value="1">Primero</option>
               <option value="2">Segundo</option>
+            </select>
+          </label>
+
+          <label>
+            Módulo / asignatura
+            <select
+              value={filters.moduleId}
+              disabled={isLoadingModules}
+              onChange={(event) => {
+                setFilters((current) => ({
+                  ...current,
+                  moduleId: event.target.value,
+                }));
+              }}
+            >
+              <option value="">
+                {isLoadingModules
+                  ? 'Cargando módulos...'
+                  : 'Todos los módulos'}
+              </option>
+              {filteredModuleOptions.map((module) => (
+                <option
+                  key={module.id}
+                  value={module.id}
+                >
+                  {getModuleOptionLabel(module)}
+                </option>
+              ))}
             </select>
           </label>
 
@@ -607,63 +617,6 @@ export function CurriculumPage() {
             Siguiente
           </button>
         </div>
-      </section>
-
-      <section className="curriculum-card">
-        <div className="curriculum-card-header">
-          <div>
-            <p className="eyebrow">Importación preparada</p>
-            <h3>Cargar currículo validado</h3>
-            <p>
-              Cuando tengamos los datos reales, podremos pegarlos aquí en JSON
-              o transformar un Excel/CSV a este formato. La importación valida
-              módulos, ciclos, cursos, RA relacionados y evita duplicados por
-              código dentro del mismo módulo.
-            </p>
-          </div>
-        </div>
-
-        <form
-          className="curriculum-import"
-          onSubmit={(event) => {
-            void handleImport(event);
-          }}
-        >
-          <label>
-            JSON de importación
-            <textarea
-              rows={18}
-              value={importText}
-              onChange={(event) => {
-                setImportText(event.target.value);
-              }}
-            />
-          </label>
-
-          <div className="curriculum-import-actions">
-            <button
-              className="button button-primary"
-              type="submit"
-              disabled={isImporting}
-            >
-              {isImporting
-                ? 'Importando...'
-                : 'Importar currículo'}
-            </button>
-
-            <button
-              className="button button-secondary"
-              type="button"
-              disabled={isImporting}
-              onClick={() => {
-                setImportText(DEFAULT_IMPORT_EXAMPLE);
-                setImportResult(null);
-              }}
-            >
-              Restaurar ejemplo
-            </button>
-          </div>
-        </form>
       </section>
     </main>
   );
