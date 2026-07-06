@@ -1,7 +1,6 @@
 export const DOCUMENT_TEMPLATE_CATEGORIES = [
   'evaluation',
   'final_memory',
-  'attendance',
   'student',
   'academic_offering',
   'work_placement',
