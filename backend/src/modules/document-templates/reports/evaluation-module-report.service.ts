@@ -319,7 +319,7 @@ export async function buildEvaluationModuleReport(
   const students: EvaluationModuleReportStudentRow[] = studentRows.map((row) => {
     const numericGrade = toOptionalNumber(row.numeric_grade);
     const finalGrade = toOptionalNumber(row.final_grade);
-    const isEvaluable = toBoolean(row.is_evaluable) ?? numericGrade !== null || finalGrade !== null;
+    const isEvaluable = toBoolean(row.is_evaluable) ?? (numericGrade !== null || finalGrade !== null);
 
     return {
       studentId: toNumber(row.student_id),
