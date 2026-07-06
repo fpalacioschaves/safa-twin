@@ -260,11 +260,27 @@ const companyTrainingPermissions: PermissionSeed[] = [
   },
 ];
 
+const curriculumPermissions: PermissionSeed[] = [
+  {
+    name: 'Consultar currículo de módulos',
+    slug: 'curriculum.view',
+    description:
+      'Consultar resultados de aprendizaje y acciones formativas asociadas a los módulos profesionales.',
+  },
+  {
+    name: 'Gestionar currículo de módulos',
+    slug: 'curriculum.manage',
+    description:
+      'Importar y actualizar resultados de aprendizaje y acciones formativas asociadas a los módulos profesionales.',
+  },
+];
+
 const permissions: PermissionSeed[] = [
   ...userAndRolePermissions,
   ...academicPermissions,
   ...evaluationPermissions,
   ...companyTrainingPermissions,
+  ...curriculumPermissions,
 ];
 
 const administratorRoleSlug = 'administrador';
