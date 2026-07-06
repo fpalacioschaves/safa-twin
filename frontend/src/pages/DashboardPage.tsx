@@ -45,6 +45,9 @@ import {
   GradesPage,
 } from './GradesPage';
 import {
+  HelpPage,
+} from './HelpPage';
+import {
   ModulesPage,
 } from './ModulesPage';
 import {
@@ -84,7 +87,8 @@ type ActiveSection =
   | 'company-training'
   | 'company-training-reports'
   | 'document-templates'
-  | 'generated-documents';
+  | 'generated-documents'
+  | 'help';
 
 interface NavigationButtonProps {
   activeSection: ActiveSection;
@@ -227,6 +231,10 @@ function getPageHeader(
       eyebrow: 'Documentos generados',
       title: 'Historial documental',
     },
+    help: {
+      eyebrow: 'Ayuda',
+      title: 'Guía de uso de SAFA Twin',
+    },
   };
 
   return headers[activeSection];
@@ -296,6 +304,7 @@ function DashboardHome({
             <li>Informes de formación en empresa</li>
             <li>Plantillas documentales</li>
             <li>Historial documental</li>
+            <li>Ayuda integrada de la aplicación</li>
           </ul>
         </article>
       </section>
@@ -429,6 +438,8 @@ export function DashboardPage({
     activeContent = <DocumentTemplatesPage />;
   } else if (activeSection === 'generated-documents') {
     activeContent = <GeneratedDocumentsPage />;
+  } else if (activeSection === 'help') {
+    activeContent = <HelpPage />;
   } else {
     activeContent = <DashboardHome user={user} />;
   }
@@ -454,6 +465,7 @@ export function DashboardPage({
     { id: 'company-training-reports', label: 'Inf. empresa' },
     { id: 'document-templates', label: 'Plantillas' },
     { id: 'generated-documents', label: 'Documentos' },
+    { id: 'help', label: 'Ayuda' },
   ];
 
   return (
@@ -589,6 +601,14 @@ export function DashboardPage({
           <span className="nav-link nav-link-disabled">
             Gemelo digital
           </span>
+
+          <p className="nav-section-label">Soporte</p>
+          <NavigationButton
+            activeSection={activeSection}
+            id="help"
+            label="Ayuda"
+            onSelect={setActiveSection}
+          />
         </nav>
       </aside>
 
