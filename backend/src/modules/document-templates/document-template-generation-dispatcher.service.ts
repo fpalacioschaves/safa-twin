@@ -9,6 +9,9 @@ import {
 import {
   generateEvaluationModuleReportFromTemplate,
 } from './reports/evaluation-module-report-generator.service.js';
+import {
+  generateFinalMemoryProgrammeLevelFromTemplate,
+} from './reports/final-memory-programme-level-generator.service.js';
 
 export type {
   DocumentTemplateGenerationRequest,
@@ -28,6 +31,14 @@ export async function generateDocumentFromTemplate(
 
   if (template.code === 'evaluation_module_report') {
     return generateEvaluationModuleReportFromTemplate({
+      template,
+      request,
+      userId,
+    });
+  }
+
+  if (template.code === 'final_memory_programme_level') {
+    return generateFinalMemoryProgrammeLevelFromTemplate({
       template,
       request,
       userId,
