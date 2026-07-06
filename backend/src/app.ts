@@ -40,6 +40,10 @@ import {
 } from './modules/company-training/company-training.routes.js';
 
 import {
+  curriculumRouter,
+} from './modules/curriculum/curriculum.routes.js';
+
+import {
   documentTemplateRouterV2,
 } from './modules/document-templates/document-template.routes.v2.js';
 
@@ -188,6 +192,11 @@ export function createApp(): Express {
   app.use(
     '/api/statistics',
     statisticsRouter,
+  );
+
+  app.use(
+    '/api/curriculum',
+    curriculumRouter,
   );
 
   app.use(
