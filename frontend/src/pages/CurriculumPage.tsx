@@ -199,7 +199,7 @@ export function CurriculumPage() {
     try {
       const result = await getModules({
         page: 1,
-        pageSize: 200,
+        pageSize: 50,
         status: 'active',
       });
 
