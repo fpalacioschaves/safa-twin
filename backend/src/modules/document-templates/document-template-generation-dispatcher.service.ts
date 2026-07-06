@@ -12,6 +12,9 @@ import {
 import {
   generateFinalMemoryProgrammeLevelFromTemplate,
 } from './reports/final-memory-programme-level-generator.service.js';
+import {
+  generateStudentAcademicRecordFromTemplate,
+} from './reports/student-academic-record-generator.service.js';
 
 export type {
   DocumentTemplateGenerationRequest,
@@ -39,6 +42,14 @@ export async function generateDocumentFromTemplate(
 
   if (template.code === 'final_memory_programme_level') {
     return generateFinalMemoryProgrammeLevelFromTemplate({
+      template,
+      request,
+      userId,
+    });
+  }
+
+  if (template.code === 'student_academic_record') {
+    return generateStudentAcademicRecordFromTemplate({
       template,
       request,
       userId,
