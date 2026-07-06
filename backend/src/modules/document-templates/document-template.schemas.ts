@@ -76,6 +76,18 @@ export const documentTemplateValidationBodySchema = z.object({
     .optional(),
 });
 
+export const documentTemplateGenerationBodySchema = z.object({
+  outputFormat: z
+    .enum(DOCUMENT_OUTPUT_FORMATS),
+
+  context: z
+    .record(
+      z.string(),
+      z.unknown(),
+    )
+    .optional(),
+});
+
 export type DocumentTemplateParams =
   z.infer<typeof documentTemplateParamsSchema>;
 
@@ -84,3 +96,6 @@ export type DocumentTemplateListQuery =
 
 export type DocumentTemplateValidationBody =
   z.infer<typeof documentTemplateValidationBodySchema>;
+
+export type DocumentTemplateGenerationBody =
+  z.infer<typeof documentTemplateGenerationBodySchema>;

@@ -3,7 +3,7 @@ export const DOCUMENT_TEMPLATE_CATEGORIES = [
   'final_memory',
   'attendance',
   'student',
-  'group',
+  'academic_offering',
   'work_placement',
   'statistics',
   'incidents',
@@ -13,7 +13,7 @@ export const DOCUMENT_TEMPLATE_SCOPES = [
   'academic_year',
   'programme',
   'level',
-  'group',
+  'academic_offering',
   'module',
   'student',
   'company',
@@ -111,6 +111,17 @@ export interface DocumentTemplateRequiredInputsResponse {
   requiredInputs: DocumentTemplateInputDefinition[];
 }
 
+export interface DocumentTemplateContextOption {
+  value: string;
+  label: string;
+  description?: string;
+}
+
+export interface DocumentTemplateContextOptionsResponse {
+  templateCode: string;
+  options: Record<string, DocumentTemplateContextOption[]>;
+}
+
 export interface DocumentTemplateValidationRequest {
   outputFormat?: DocumentOutputFormat;
   context?: Record<string, unknown>;
@@ -128,4 +139,22 @@ export interface DocumentTemplateValidationResult {
   missingInputs: DocumentTemplateInputDefinition[];
   unsupportedFormat: boolean;
   issues: DocumentTemplateValidationIssue[];
+}
+
+export interface DocumentTemplateGenerationRequest {
+  outputFormat: DocumentOutputFormat;
+  context?: Record<string, unknown>;
+}
+
+export interface DocumentTemplateGenerationResult {
+  documentId: number;
+  templateCode: string;
+  templateName: string;
+  outputFormat: DocumentOutputFormat;
+  fileName: string;
+  filePath: string;
+  mimeType: string;
+  fileSizeBytes: number;
+  downloadUrl: string;
+  generatedAt: string;
 }

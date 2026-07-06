@@ -14,6 +14,10 @@ npm-debug.log*
 # Cobertura de pruebas
 coverage/
 
+# Documentos generados en ejecución local
+backend/storage/generated-documents/*
+!backend/storage/generated-documents/.gitkeep
+
 # Archivos del sistema
 .DS_Store
 Thumbs.db

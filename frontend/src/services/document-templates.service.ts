@@ -3,7 +3,10 @@ import {
 } from './api.service';
 
 import type {
+  DocumentTemplateContextOptionsResponse,
   DocumentTemplateDefinition,
+  DocumentTemplateGenerationRequest,
+  DocumentTemplateGenerationResult,
   DocumentTemplateListQuery,
   DocumentTemplateRequiredInputsResponse,
   DocumentTemplateValidationRequest,
@@ -79,12 +82,33 @@ export async function getDocumentTemplateRequiredInputs(
   );
 }
 
+export async function getDocumentTemplateContextOptions(
+  code: string,
+): Promise<DocumentTemplateContextOptionsResponse> {
+  return apiRequest<DocumentTemplateContextOptionsResponse>(
+    `${BASE_URL}/${encodeURIComponent(code)}/context-options`,
+  );
+}
+
 export async function validateDocumentTemplateContext(
   code: string,
   request: DocumentTemplateValidationRequest,
 ): Promise<DocumentTemplateValidationResult> {
   return apiRequest<DocumentTemplateValidationResult>(
     `${BASE_URL}/${encodeURIComponent(code)}/validate`,
+    {
+      method: 'POST',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function generateDocumentFromTemplate(
+  code: string,
+  request: DocumentTemplateGenerationRequest,
+): Promise<DocumentTemplateGenerationResult> {
+  return apiRequest<DocumentTemplateGenerationResult>(
+    `${BASE_URL}/${encodeURIComponent(code)}/generate`,
     {
       method: 'POST',
       body: JSON.stringify(request),
