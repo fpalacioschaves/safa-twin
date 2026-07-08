@@ -310,6 +310,34 @@
   gap: 1rem;
 }
 
+.incident-form-grid-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.incident-student-search {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.incident-form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  width: fit-content;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.9rem;
+  color: #334155;
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+.incident-form-checkbox input {
+  margin-top: 0.2rem;
+}
+
 .incident-form-note {
   padding: 0.9rem 1rem;
   border: 1px solid #bae6fd;
@@ -324,9 +352,16 @@
   font-weight: 700;
 }
 
+.field-help {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 @media (max-width: 1200px) {
   .incidents-filters,
-  .incident-form-grid {
+  .incident-form-grid,
+  .incident-form-grid-two {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -345,6 +380,8 @@
 
   .incidents-filters,
   .incident-form-grid,
+  .incident-form-grid-two,
+  .incident-student-search,
   .incidents-summary-grid {
     grid-template-columns: 1fr;
   }
