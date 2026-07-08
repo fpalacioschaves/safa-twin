@@ -10,7 +10,9 @@ export type DigitalTwinContextKind =
   | 'email-audience'
   | 'work-placement-summary'
   | 'curriculum-summary'
-  | 'students-summary';
+  | 'students-summary'
+  | 'attendance-summary'
+  | 'incidents-summary';
 
 export interface DigitalTwinContext {
   kind: DigitalTwinContextKind;
