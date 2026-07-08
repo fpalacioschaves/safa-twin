@@ -32,6 +32,10 @@ import type {
 } from '../types/modules';
 
 import {
+  EvaluationCriterionManager,
+} from './EvaluationCriterionManager';
+
+import {
   LearningOutcomeManager,
 } from './LearningOutcomeManager';
 
@@ -546,6 +550,13 @@ export function CurriculumPage() {
           <LearningOutcomeManager
             moduleOptions={moduleOptions}
             learningOutcomes={learningOutcomes}
+            onChanged={() => loadItems(1)}
+          />
+        ) : null}
+
+        {activeTab === 'evaluation-criteria' ? (
+          <EvaluationCriterionManager
+            evaluationCriteria={evaluationCriteria}
             onChanged={() => loadItems(1)}
           />
         ) : null}
