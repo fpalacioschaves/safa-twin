@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js",
-    "sync:permissions": "tsx prisma/sync-permissions.ts"
+    "sync:permissions": "tsx prisma/sync-permissions.ts",
+    "seed:evaluation-criteria": "tsx prisma/seed-official-evaluation-criteria.ts"
   },
   "engines": {
     "node": ">=22.0.0 <23.0.0"
