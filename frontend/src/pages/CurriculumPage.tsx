@@ -39,6 +39,10 @@ import {
   LearningOutcomeManager,
 } from './LearningOutcomeManager';
 
+import {
+  TrainingActionManager,
+} from './TrainingActionManager';
+
 import './CurriculumPage.css';
 
 const PAGE_SIZE = 10;
@@ -557,6 +561,14 @@ export function CurriculumPage() {
         {activeTab === 'evaluation-criteria' ? (
           <EvaluationCriterionManager
             evaluationCriteria={evaluationCriteria}
+            onChanged={() => loadItems(1)}
+          />
+        ) : null}
+
+        {activeTab === 'training-actions' ? (
+          <TrainingActionManager
+            moduleOptions={moduleOptions}
+            trainingActions={trainingActions}
             onChanged={() => loadItems(1)}
           />
         ) : null}
