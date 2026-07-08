@@ -10,9 +10,19 @@ import {
 import {
   curriculumImportSchema,
   curriculumListQuerySchema,
+  evaluationCriterionIdParamsSchema,
+  evaluationCriterionMutationSchema,
   learningOutcomeIdParamsSchema,
   learningOutcomeMutationSchema,
 } from './curriculum.schemas.js';
+
+import {
+  archiveEvaluationCriterion,
+  createEvaluationCriterion,
+  EvaluationCriterionMutationValidationError,
+  restoreEvaluationCriterion,
+  updateEvaluationCriterion,
+} from './curriculum-evaluation-criteria.crud.service.js';
 
 import {
   archiveLearningOutcome,
@@ -76,13 +86,26 @@ function sendImportReferenceError(
   });
 }
 
-function sendMutationReferenceError(
+function sendLearningOutcomeMutationError(
   response: Response,
   error: CurriculumMutationValidationError,
 ): void {
   response.status(422).json({
     error: {
       code: 'CURRICULUM_MUTATION_REFERENCE_ERROR',
+      message: error.message,
+      details: error.details,
+    },
+  });
+}
+
+function sendEvaluationCriterionMutationError(
+  response: Response,
+  error: EvaluationCriterionMutationValidationError,
+): void {
+  response.status(422).json({
+    error: {
+      code: 'EVALUATION_CRITERION_MUTATION_REFERENCE_ERROR',
       message: error.message,
       details: error.details,
     },
@@ -101,6 +124,27 @@ function validateLearningOutcomeId(
     sendValidationError(
       response,
       'El identificador del resultado de aprendizaje no es válido.',
+      validation.error.issues,
+    );
+
+    return null;
+  }
+
+  return validation.data.id;
+}
+
+function validateEvaluationCriterionId(
+  rawParams: unknown,
+  response: Response,
+): number | null {
+  const validation = evaluationCriterionIdParamsSchema.safeParse(
+    rawParams,
+  );
+
+  if (!validation.success) {
+    sendValidationError(
+      response,
+      'El identificador del criterio de evaluación no es válido.',
       validation.error.issues,
     );
 
@@ -180,7 +224,7 @@ curriculumRouter.post(
       });
     } catch (error: unknown) {
       if (error instanceof CurriculumMutationValidationError) {
-        sendMutationReferenceError(
+        sendLearningOutcomeMutationError(
           response,
           error,
         );
@@ -238,7 +282,7 @@ curriculumRouter.put(
       });
     } catch (error: unknown) {
       if (error instanceof CurriculumMutationValidationError) {
-        sendMutationReferenceError(
+        sendLearningOutcomeMutationError(
           response,
           error,
         );
@@ -278,7 +322,7 @@ curriculumRouter.delete(
       });
     } catch (error: unknown) {
       if (error instanceof CurriculumMutationValidationError) {
-        sendMutationReferenceError(
+        sendLearningOutcomeMutationError(
           response,
           error,
         );
@@ -318,7 +362,7 @@ curriculumRouter.patch(
       });
     } catch (error: unknown) {
       if (error instanceof CurriculumMutationValidationError) {
-        sendMutationReferenceError(
+        sendLearningOutcomeMutationError(
           response,
           error,
         );
@@ -361,6 +405,192 @@ curriculumRouter.get(
 
       response.status(200).json(result);
     } catch (error: unknown) {
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.post(
+  '/evaluation-criteria',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      evaluationCriterionMutationSchema.safeParse(
+        request.body,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'Los datos del criterio de evaluación no son válidos.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const evaluationCriterion = await createEvaluationCriterion(
+        validation.data,
+      );
+
+      response.status(201).json({
+        message:
+          'El criterio de evaluación se ha creado correctamente.',
+        evaluationCriterion,
+      });
+    } catch (error: unknown) {
+      if (error instanceof EvaluationCriterionMutationValidationError) {
+        sendEvaluationCriterionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.put(
+  '/evaluation-criteria/:id',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateEvaluationCriterionId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    const validation =
+      evaluationCriterionMutationSchema.safeParse(
+        request.body,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'Los datos del criterio de evaluación no son válidos.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const evaluationCriterion = await updateEvaluationCriterion(
+        id,
+        validation.data,
+      );
+
+      response.status(200).json({
+        message:
+          'El criterio de evaluación se ha actualizado correctamente.',
+        evaluationCriterion,
+      });
+    } catch (error: unknown) {
+      if (error instanceof EvaluationCriterionMutationValidationError) {
+        sendEvaluationCriterionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.delete(
+  '/evaluation-criteria/:id',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateEvaluationCriterionId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    try {
+      const evaluationCriterion = await archiveEvaluationCriterion(id);
+
+      response.status(200).json({
+        message:
+          'El criterio de evaluación se ha archivado correctamente.',
+        evaluationCriterion,
+      });
+    } catch (error: unknown) {
+      if (error instanceof EvaluationCriterionMutationValidationError) {
+        sendEvaluationCriterionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.patch(
+  '/evaluation-criteria/:id/restore',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateEvaluationCriterionId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    try {
+      const evaluationCriterion = await restoreEvaluationCriterion(id);
+
+      response.status(200).json({
+        message:
+          'El criterio de evaluación se ha restaurado correctamente.',
+        evaluationCriterion,
+      });
+    } catch (error: unknown) {
+      if (error instanceof EvaluationCriterionMutationValidationError) {
+        sendEvaluationCriterionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
       next(error);
     }
   },
