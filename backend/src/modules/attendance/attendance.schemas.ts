@@ -160,6 +160,30 @@ const optionalMinutesSchema = z.preprocess(
     .optional(),
 );
 
+const commonAttendanceFilterFields = {
+  type: z.enum(attendanceTypeFilters).default('all'),
+  justification: z.enum(justificationFilters).default('all'),
+  academicYearId: optionalPositiveIdSchema,
+  centreId: optionalPositiveIdSchema,
+  moduleId: optionalPositiveIdSchema,
+  studentId: optionalPositiveIdSchema,
+  vocationalProgrammeId: optionalPositiveIdSchema,
+  academicLevelId: optionalPositiveIdSchema,
+  dateFrom: optionalDateSchema,
+  dateTo: optionalDateSchema,
+};
+
+function validateDateRange(value: {
+  dateFrom?: string;
+  dateTo?: string;
+}): boolean {
+  if (!value.dateFrom || !value.dateTo) {
+    return true;
+  }
+
+  return value.dateFrom <= value.dateTo;
+}
+
 export const attendanceRecordIdParamsSchema = z
   .object({
     id: requiredPositiveIdSchema,
@@ -200,38 +224,27 @@ export const listAttendanceRecordsQuerySchema = z
       })
       .default(20),
 
-    type: z.enum(attendanceTypeFilters).default('all'),
-    justification: z.enum(justificationFilters).default('all'),
-    academicYearId: optionalPositiveIdSchema,
-    centreId: optionalPositiveIdSchema,
-    moduleId: optionalPositiveIdSchema,
-    studentId: optionalPositiveIdSchema,
-    vocationalProgrammeId: optionalPositiveIdSchema,
-    academicLevelId: optionalPositiveIdSchema,
-    dateFrom: optionalDateSchema,
-    dateTo: optionalDateSchema,
+    ...commonAttendanceFilterFields,
   })
   .strict()
   .refine(
-    (value) => {
-      if (!value.dateFrom || !value.dateTo) {
-        return true;
-      }
-
-      return value.dateFrom <= value.dateTo;
-    },
+    validateDateRange,
     {
       message: 'La fecha inicial no puede ser posterior a la fecha final.',
       path: ['dateFrom'],
     },
   );
 
-export const attendanceSummaryQuerySchema = listAttendanceRecordsQuerySchema
-  .omit({
-    search: true,
-    page: true,
-    pageSize: true,
-  });
+export const attendanceSummaryQuerySchema = z
+  .object(commonAttendanceFilterFields)
+  .strict()
+  .refine(
+    validateDateRange,
+    {
+      message: 'La fecha inicial no puede ser posterior a la fecha final.',
+      path: ['dateFrom'],
+    },
+  );
 
 const attendanceRecordFields = {
   studentId: requiredPositiveIdSchema,
@@ -243,7 +256,7 @@ const attendanceRecordFields = {
     message: 'El tipo de registro de asistencia no es válido.',
   }),
   minutes: optionalMinutesSchema,
-  isJustified: z.coerce.boolean().default(false),
+  isJustified: z.boolean().default(false),
   sessionLabel: optionalShortTextSchema,
   remarks: optionalTextSchema,
 };
