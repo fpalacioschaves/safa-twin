@@ -221,21 +221,6 @@ const evaluationPermissions: PermissionSeed[] = [
   },
 ];
 
-const attendancePermissions: PermissionSeed[] = [
-  {
-    name: 'Consultar asistencia',
-    slug: 'attendance.view',
-    description:
-      'Consultar registros y resúmenes de asistencia, faltas, retrasos y salidas anticipadas.',
-  },
-  {
-    name: 'Gestionar asistencia',
-    slug: 'attendance.manage',
-    description:
-      'Crear, modificar y archivar registros de asistencia del alumnado.',
-  },
-];
-
 const companyTrainingPermissions: PermissionSeed[] = [
   {
     name: 'Consultar formación en empresa',
@@ -303,7 +288,6 @@ const permissions: PermissionSeed[] = [
   ...userAndRolePermissions,
   ...academicPermissions,
   ...evaluationPermissions,
-  ...attendancePermissions,
   ...companyTrainingPermissions,
   ...curriculumPermissions,
   ...digitalTwinPermissions,
