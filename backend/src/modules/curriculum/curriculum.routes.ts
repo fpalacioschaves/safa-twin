@@ -14,6 +14,8 @@ import {
   evaluationCriterionMutationSchema,
   learningOutcomeIdParamsSchema,
   learningOutcomeMutationSchema,
+  trainingActionIdParamsSchema,
+  trainingActionMutationSchema,
 } from './curriculum.schemas.js';
 
 import {
@@ -31,6 +33,14 @@ import {
   restoreLearningOutcome,
   updateLearningOutcome,
 } from './curriculum-learning-outcomes.crud.service.js';
+
+import {
+  archiveTrainingAction,
+  createTrainingAction,
+  restoreTrainingAction,
+  TrainingActionMutationValidationError,
+  updateTrainingAction,
+} from './curriculum-training-actions.crud.service.js';
 
 import {
   CurriculumImportValidationError,
@@ -112,6 +122,19 @@ function sendEvaluationCriterionMutationError(
   });
 }
 
+function sendTrainingActionMutationError(
+  response: Response,
+  error: TrainingActionMutationValidationError,
+): void {
+  response.status(422).json({
+    error: {
+      code: 'TRAINING_ACTION_MUTATION_REFERENCE_ERROR',
+      message: error.message,
+      details: error.details,
+    },
+  });
+}
+
 function validateLearningOutcomeId(
   rawParams: unknown,
   response: Response,
@@ -145,6 +168,27 @@ function validateEvaluationCriterionId(
     sendValidationError(
       response,
       'El identificador del criterio de evaluación no es válido.',
+      validation.error.issues,
+    );
+
+    return null;
+  }
+
+  return validation.data.id;
+}
+
+function validateTrainingActionId(
+  rawParams: unknown,
+  response: Response,
+): number | null {
+  const validation = trainingActionIdParamsSchema.safeParse(
+    rawParams,
+  );
+
+  if (!validation.success) {
+    sendValidationError(
+      response,
+      'El identificador de la acción formativa no es válido.',
       validation.error.issues,
     );
 
@@ -626,6 +670,192 @@ curriculumRouter.get(
 
       response.status(200).json(result);
     } catch (error: unknown) {
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.post(
+  '/training-actions',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      trainingActionMutationSchema.safeParse(
+        request.body,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'Los datos de la acción formativa no son válidos.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const trainingAction = await createTrainingAction(
+        validation.data,
+      );
+
+      response.status(201).json({
+        message:
+          'La acción formativa se ha creado correctamente.',
+        trainingAction,
+      });
+    } catch (error: unknown) {
+      if (error instanceof TrainingActionMutationValidationError) {
+        sendTrainingActionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.put(
+  '/training-actions/:id',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateTrainingActionId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    const validation =
+      trainingActionMutationSchema.safeParse(
+        request.body,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'Los datos de la acción formativa no son válidos.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const trainingAction = await updateTrainingAction(
+        id,
+        validation.data,
+      );
+
+      response.status(200).json({
+        message:
+          'La acción formativa se ha actualizado correctamente.',
+        trainingAction,
+      });
+    } catch (error: unknown) {
+      if (error instanceof TrainingActionMutationValidationError) {
+        sendTrainingActionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.delete(
+  '/training-actions/:id',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateTrainingActionId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    try {
+      const trainingAction = await archiveTrainingAction(id);
+
+      response.status(200).json({
+        message:
+          'La acción formativa se ha archivado correctamente.',
+        trainingAction,
+      });
+    } catch (error: unknown) {
+      if (error instanceof TrainingActionMutationValidationError) {
+        sendTrainingActionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.patch(
+  '/training-actions/:id/restore',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateTrainingActionId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    try {
+      const trainingAction = await restoreTrainingAction(id);
+
+      response.status(200).json({
+        message:
+          'La acción formativa se ha restaurado correctamente.',
+        trainingAction,
+      });
+    } catch (error: unknown) {
+      if (error instanceof TrainingActionMutationValidationError) {
+        sendTrainingActionMutationError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
       next(error);
     }
   },
