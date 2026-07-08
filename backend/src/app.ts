@@ -44,6 +44,10 @@ import {
 } from './modules/curriculum/curriculum.routes.js';
 
 import {
+  digitalTwinRouter,
+} from './modules/digital-twin/digital-twin.routes.js';
+
+import {
   documentTemplateRouterV2,
 } from './modules/document-templates/document-template.routes.v2.js';
 
@@ -197,6 +201,11 @@ export function createApp(): Express {
   app.use(
     '/api/curriculum',
     curriculumRouter,
+  );
+
+  app.use(
+    '/api/digital-twin',
+    digitalTwinRouter,
   );
 
   app.use(
