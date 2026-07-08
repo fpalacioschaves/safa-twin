@@ -127,6 +127,7 @@ export const curriculumListQuerySchema = z
     pageSize: pageSizeSchema,
     status: curriculumStatusSchema,
     moduleId: optionalPositiveIdSchema,
+    learningOutcomeId: optionalPositiveIdSchema,
     vocationalProgrammeAcronym:
       optionalProgrammeAcronymSchema,
     academicLevelNumber:
@@ -159,9 +160,9 @@ const importTitleSchema = z
     message:
       'El título debe tener al menos 3 caracteres.',
   })
-  .max(191, {
+  .max(255, {
     message:
-      'El título no puede superar los 191 caracteres.',
+      'El título no puede superar los 255 caracteres.',
   });
 
 const optionalLongTextSchema = z.preprocess(
@@ -310,12 +311,33 @@ const trainingActionImportSchema = moduleLocatorSchema
   })
   .strict();
 
+const evaluationCriterionImportSchema = moduleLocatorSchema
+  .extend({
+    learningOutcomeCode: importCodeSchema,
+    code: importCodeSchema,
+    title: importTitleSchema,
+    description: optionalLongTextSchema,
+    sourceReference:
+      optionalSourceReferenceSchema,
+    sortOrder: sortOrderSchema,
+    isActive: z
+      .boolean({
+        message:
+          'El estado activo debe ser verdadero o falso.',
+      })
+      .default(true),
+  })
+  .strict();
+
 export const curriculumImportSchema = z
   .object({
     sourceName: optionalSourceReferenceSchema,
     sourceUrl: optionalSourceReferenceSchema,
     learningOutcomes: z
       .array(learningOutcomeImportSchema)
+      .default([]),
+    evaluationCriteria: z
+      .array(evaluationCriterionImportSchema)
       .default([]),
     trainingActions: z
       .array(trainingActionImportSchema)
@@ -325,11 +347,12 @@ export const curriculumImportSchema = z
   .refine(
     (value) => (
       value.learningOutcomes.length > 0
+      || value.evaluationCriteria.length > 0
       || value.trainingActions.length > 0
     ),
     {
       message:
-        'La importación debe incluir al menos un resultado de aprendizaje o una acción formativa.',
+        'La importación debe incluir al menos un resultado de aprendizaje, un criterio de evaluación o una acción formativa.',
       path: ['learningOutcomes'],
     },
   );
