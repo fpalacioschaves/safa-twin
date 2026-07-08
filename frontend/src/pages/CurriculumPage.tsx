@@ -9,6 +9,7 @@ import {
 } from '../services/api.service';
 
 import {
+  getCurriculumEvaluationCriteria,
   getCurriculumLearningOutcomes,
   getCurriculumTrainingActions,
 } from '../services/curriculum.service';
@@ -18,6 +19,7 @@ import {
 } from '../services/modules.service';
 
 import type {
+  CurriculumEvaluationCriterionItem,
   CurriculumLearningOutcomeItem,
   CurriculumPagination,
   CurriculumStatus,
@@ -103,6 +105,18 @@ function getStatusLabel(
   return labels[status];
 }
 
+function getTabTitle(
+  activeTab: CurriculumTab,
+): string {
+  const titles: Record<CurriculumTab, string> = {
+    'learning-outcomes': 'Resultados de Aprendizaje',
+    'evaluation-criteria': 'Criterios de Evaluación',
+    'training-actions': 'Acciones Formativas',
+  };
+
+  return titles[activeTab];
+}
+
 function formatHours(value: number | null): string {
   if (value === null) {
     return 'Sin horas';
@@ -178,6 +192,9 @@ export function CurriculumPage() {
   const [learningOutcomes, setLearningOutcomes] =
     useState<CurriculumLearningOutcomeItem[]>([]);
 
+  const [evaluationCriteria, setEvaluationCriteria] =
+    useState<CurriculumEvaluationCriterionItem[]>([]);
+
   const [trainingActions, setTrainingActions] =
     useState<CurriculumTrainingActionItem[]>([]);
 
@@ -230,6 +247,11 @@ export function CurriculumPage() {
 
         setLearningOutcomes(result.items);
         setPagination(result.pagination);
+      } else if (nextTab === 'evaluation-criteria') {
+        const result = await getCurriculumEvaluationCriteria(query);
+
+        setEvaluationCriteria(result.items);
+        setPagination(result.pagination);
       } else {
         const result = await getCurriculumTrainingActions(query);
 
@@ -280,7 +302,9 @@ export function CurriculumPage() {
 
   const visibleItemsCount = activeTab === 'learning-outcomes'
     ? learningOutcomes.length
-    : trainingActions.length;
+    : activeTab === 'evaluation-criteria'
+      ? evaluationCriteria.length
+      : trainingActions.length;
 
   const filteredModuleOptions = filterModuleOptions(
     moduleOptions,
@@ -292,10 +316,10 @@ export function CurriculumPage() {
       <section className="curriculum-hero">
         <div>
           <p className="eyebrow">Currículo oficial y dual</p>
-          <h2>Resultados de Aprendizaje y Acciones Formativas</h2>
+          <h2>Resultados, criterios y acciones formativas</h2>
           <p>
             Consulta el currículo asociado a cada módulo profesional. Usa los
-            filtros para separar DAW, DAM, curso, asignatura, RA y acciones
+            filtros para separar DAW, DAM, curso, asignatura, RA, CA y acciones
             formativas sin mezclar datos de ciclos o niveles distintos.
           </p>
         </div>
@@ -332,7 +356,7 @@ export function CurriculumPage() {
             Buscar
             <input
               type="search"
-              placeholder="RA1, AF1, programación, empresa..."
+              placeholder="RA1, CA1, AF1, programación, empresa..."
               value={filters.search}
               onChange={(event) => {
                 setFilters((current) => ({
@@ -464,6 +488,20 @@ export function CurriculumPage() {
 
           <button
             className={
+              activeTab === 'evaluation-criteria'
+                ? 'curriculum-tab curriculum-tab-active'
+                : 'curriculum-tab'
+            }
+            type="button"
+            onClick={() => {
+              handleTabChange('evaluation-criteria');
+            }}
+          >
+            Criterios de Evaluación
+          </button>
+
+          <button
+            className={
               activeTab === 'training-actions'
                 ? 'curriculum-tab curriculum-tab-active'
                 : 'curriculum-tab'
@@ -482,11 +520,7 @@ export function CurriculumPage() {
             <p className="eyebrow">
               {getStatusLabel(filters.status)}
             </p>
-            <h3>
-              {activeTab === 'learning-outcomes'
-                ? 'Resultados de Aprendizaje'
-                : 'Acciones Formativas'}
-            </h3>
+            <h3>{getTabTitle(activeTab)}</h3>
             <p>
               Mostrando {visibleItemsCount} elementos de {pagination.total}.
             </p>
@@ -527,6 +561,46 @@ export function CurriculumPage() {
                     <tr key={item.id}>
                       <td>{getProgrammeLevelLabel(item)}</td>
                       <td>{getModuleLabel(item)}</td>
+                      <td>
+                        <strong>{item.code}</strong>
+                      </td>
+                      <td>{item.title}</td>
+                      <td>{renderDescription(item.description)}</td>
+                      <td>{renderSource(item.sourceReference)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        ) : activeTab === 'evaluation-criteria' ? (
+          evaluationCriteria.length === 0 ? (
+            <p className="curriculum-empty">
+              No hay Criterios de Evaluación cargados con estos filtros.
+            </p>
+          ) : (
+            <div className="curriculum-table-wrapper">
+              <table className="curriculum-table">
+                <thead>
+                  <tr>
+                    <th>Ciclo / curso</th>
+                    <th>Módulo</th>
+                    <th>RA</th>
+                    <th>CA</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Fuente</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {evaluationCriteria.map((item) => (
+                    <tr key={item.id}>
+                      <td>{getProgrammeLevelLabel(item)}</td>
+                      <td>{getModuleLabel(item)}</td>
+                      <td>
+                        <strong>{item.learningOutcome.code}</strong>
+                        <span>{item.learningOutcome.title}</span>
+                      </td>
                       <td>
                         <strong>{item.code}</strong>
                       </td>
