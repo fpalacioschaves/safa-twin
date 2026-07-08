@@ -46,6 +46,8 @@ export const digitalTwinIntentSchema = z.object({
     'GENERAL_QUERY',
     'STUDENTS_QUERY',
     'EVALUATION_REPORT',
+    'ATTENDANCE_REPORT',
+    'INCIDENTS_SUMMARY',
     'WORK_PLACEMENT_SUMMARY',
     'EMAIL_DRAFT',
     'CURRICULUM_QUERY',
