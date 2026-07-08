@@ -331,12 +331,12 @@ export function EvaluationCriterionManager({
         </label>
 
         <label>
-          Código CA
+          Código CE
           <input
             required
             type="text"
             maxLength={50}
-            placeholder="CAA"
+            placeholder="CEA"
             value={form.code}
             disabled={isSaving}
             onChange={(event) => {
@@ -441,7 +441,7 @@ export function EvaluationCriterionManager({
               ? 'Guardando...'
               : editingItem
                 ? 'Guardar cambios'
-                : 'Crear CA'}
+                : 'Crear CE'}
           </button>
 
           <button
@@ -456,11 +456,11 @@ export function EvaluationCriterionManager({
       </form>
 
       <div className="evaluation-criterion-manager-list">
-        <h5>CA visibles en la consulta actual</h5>
+        <h5>CE visibles en la consulta actual</h5>
 
         {evaluationCriteria.length === 0 ? (
           <p>
-            No hay CA visibles con los filtros actuales.
+            No hay CE visibles con los filtros actuales.
           </p>
         ) : (
           evaluationCriteria.map((item) => (
