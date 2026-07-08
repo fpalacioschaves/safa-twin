@@ -9,6 +9,10 @@ import {
 } from '../services/api.service';
 
 import {
+  getEnrolments,
+} from '../services/enrolments.service';
+
+import {
   archiveIncident,
   createIncident,
   getIncident,
@@ -16,6 +20,14 @@ import {
   getIncidentsSummary,
   updateIncident,
 } from '../services/incidents.service';
+
+import {
+  getStudents,
+} from '../services/students.service';
+
+import type {
+  Enrolment,
+} from '../types/enrolments';
 
 import type {
   CreateIncidentInput,
@@ -30,9 +42,14 @@ import type {
   UpdateIncidentInput,
 } from '../types/incidents';
 
+import type {
+  Student,
+} from '../types/students';
+
 import './IncidentsPage.css';
 
 const PAGE_SIZE = 10;
+const SELECTOR_PAGE_SIZE = 100;
 
 const INCIDENT_TYPE_OPTIONS: {
   value: IncidentType;
@@ -61,9 +78,8 @@ interface IncidentsPageProps {
 
 interface IncidentFormState {
   studentId: string;
-  academicYearId: string;
-  centreId: string;
-  moduleId: string;
+  enrolmentId: string;
+  isModuleSpecific: boolean;
   type: IncidentType;
   severity: IncidentSeverity;
   occurredAt: string;
@@ -81,9 +97,7 @@ type FieldErrors = Record<string, string>;
 
 type IncidentTextField =
   | 'studentId'
-  | 'academicYearId'
-  | 'centreId'
-  | 'moduleId'
+  | 'enrolmentId'
   | 'occurredAt'
   | 'title'
   | 'description'
@@ -99,9 +113,8 @@ function getCurrentLocalDateTime(): string {
 function createEmptyIncidentForm(): IncidentFormState {
   return {
     studentId: '',
-    academicYearId: '',
-    centreId: '',
-    moduleId: '',
+    enrolmentId: '',
+    isModuleSpecific: true,
     type: 'ACADEMIC',
     severity: 'MEDIUM',
     occurredAt: getCurrentLocalDateTime(),
@@ -266,6 +279,36 @@ function getSeverityClassName(
   return 'incident-severity-low';
 }
 
+function getStudentOptionLabel(
+  student: Student,
+): string {
+  const code = student.studentCode
+    ? ` · ${student.studentCode}`
+    : '';
+
+  const email = student.email
+    ? ` · ${student.email}`
+    : '';
+
+  return `${student.fullName}${code}${email}`;
+}
+
+function getEnrolmentOptionLabel(
+  enrolment: Enrolment,
+): string {
+  const programme = enrolment.module.vocationalProgramme.acronym
+    ?? enrolment.module.vocationalProgramme.code;
+
+  const level = `${enrolment.module.academicLevel.number}º`;
+
+  return [
+    enrolment.academicYear.name,
+    enrolment.centre.name,
+    `${programme} ${level}`,
+    `${enrolment.module.code} · ${enrolment.module.name}`,
+  ].join(' · ');
+}
+
 function validateIncidentForm(
   form: IncidentFormState,
 ): FieldErrors {
@@ -273,25 +316,12 @@ function validateIncidentForm(
 
   if (!parsePositiveId(form.studentId)) {
     errors.studentId =
-      'El alumno es obligatorio y debe ser un ID válido.';
+      'Selecciona un alumno.';
   }
 
-  if (!parsePositiveId(form.academicYearId)) {
-    errors.academicYearId =
-      'El curso académico es obligatorio y debe ser un ID válido.';
-  }
-
-  if (!parsePositiveId(form.centreId)) {
-    errors.centreId =
-      'El centro es obligatorio y debe ser un ID válido.';
-  }
-
-  if (
-    form.moduleId.trim()
-    && !parsePositiveId(form.moduleId)
-  ) {
-    errors.moduleId =
-      'El módulo debe ser un ID válido o quedar vacío.';
+  if (!parsePositiveId(form.enrolmentId)) {
+    errors.enrolmentId =
+      'Selecciona una matrícula activa del alumno.';
   }
 
   if (!form.occurredAt) {
@@ -322,23 +352,34 @@ function validateIncidentForm(
 
 function createIncidentPayload(
   form: IncidentFormState,
+  enrolments: Enrolment[],
 ): CreateIncidentInput | UpdateIncidentInput {
   const studentId = parsePositiveId(form.studentId);
-  const academicYearId = parsePositiveId(form.academicYearId);
-  const centreId = parsePositiveId(form.centreId);
-  const moduleId = parsePositiveId(form.moduleId);
+  const enrolmentId = parsePositiveId(form.enrolmentId);
 
-  if (!studentId || !academicYearId || !centreId) {
+  if (!studentId || !enrolmentId) {
     throw new Error(
-      'Faltan identificadores obligatorios para crear la incidencia.',
+      'Selecciona un alumno y una matrícula activa.',
+    );
+  }
+
+  const selectedEnrolment = enrolments.find(
+    (enrolment) => enrolment.id === enrolmentId,
+  );
+
+  if (!selectedEnrolment) {
+    throw new Error(
+      'La matrícula seleccionada ya no está disponible. Vuelve a cargar las matrículas del alumno.',
     );
   }
 
   const payload: CreateIncidentInput = {
     studentId,
-    academicYearId,
-    centreId,
-    moduleId,
+    academicYearId: selectedEnrolment.academicYearId,
+    centreId: selectedEnrolment.centreId,
+    moduleId: form.isModuleSpecific
+      ? selectedEnrolment.moduleId
+      : null,
     type: form.type,
     severity: form.severity,
     occurredAt: toIsoFromLocalDateTime(
@@ -358,15 +399,41 @@ function createIncidentPayload(
   return payload;
 }
 
+function findMatchingEnrolment(
+  incident: Incident,
+  enrolments: Enrolment[],
+): Enrolment | null {
+  if (incident.module) {
+    return enrolments.find(
+      (enrolment) => (
+        enrolment.academicYearId === incident.academicYear.id
+        && enrolment.centreId === incident.centre.id
+        && enrolment.moduleId === incident.module?.id
+      ),
+    ) ?? null;
+  }
+
+  return enrolments.find(
+    (enrolment) => (
+      enrolment.academicYearId === incident.academicYear.id
+      && enrolment.centreId === incident.centre.id
+    ),
+  ) ?? null;
+}
+
 function getFormFromIncident(
   incident: Incident,
+  enrolments: Enrolment[],
 ): IncidentFormState {
+  const matchingEnrolment = findMatchingEnrolment(
+    incident,
+    enrolments,
+  );
+
   return {
     studentId: incident.student.id.toString(),
-    academicYearId:
-      incident.academicYear.id.toString(),
-    centreId: incident.centre.id.toString(),
-    moduleId: incident.module?.id.toString() ?? '',
+    enrolmentId: matchingEnrolment?.id.toString() ?? '',
+    isModuleSpecific: incident.module !== null,
     type: incident.type,
     severity: incident.severity,
     occurredAt: toLocalDateTimeInputValue(
@@ -452,6 +519,24 @@ export function IncidentsPage({
 
   const [actionKey, setActionKey] =
     useState<string | null>(null);
+
+  const [studentSearchInput, setStudentSearchInput] =
+    useState('');
+
+  const [studentOptions, setStudentOptions] =
+    useState<Student[]>([]);
+
+  const [selectedStudentLabel, setSelectedStudentLabel] =
+    useState<string | null>(null);
+
+  const [enrolmentOptions, setEnrolmentOptions] =
+    useState<Enrolment[]>([]);
+
+  const [isLoadingStudents, setIsLoadingStudents] =
+    useState(false);
+
+  const [isLoadingEnrolments, setIsLoadingEnrolments] =
+    useState(false);
 
   const modalIsOpen = formMode !== null;
 
@@ -539,11 +624,77 @@ export function IncidentsPage({
     setFieldErrors({});
   }
 
-  function openCreateModal(): void {
+  async function loadStudentOptions(
+    searchText: string,
+  ): Promise<void> {
+    setIsLoadingStudents(true);
+
+    try {
+      const response = await getStudents({
+        search: searchText.trim() || undefined,
+        page: 1,
+        pageSize: SELECTOR_PAGE_SIZE,
+        status: 'active',
+        documentType: 'all',
+      });
+
+      setStudentOptions(response.items);
+    } catch (error: unknown) {
+      if (error instanceof ApiError) {
+        setFormErrorMessage(error.message);
+      } else {
+        setFormErrorMessage(
+          'No se ha podido cargar el selector de alumnado.',
+        );
+      }
+    } finally {
+      setIsLoadingStudents(false);
+    }
+  }
+
+  async function loadEnrolmentsForStudent(
+    studentId: number,
+  ): Promise<Enrolment[]> {
+    setIsLoadingEnrolments(true);
+
+    try {
+      const response = await getEnrolments({
+        search: undefined,
+        page: 1,
+        pageSize: SELECTOR_PAGE_SIZE,
+        status: 'ENROLLED',
+        studentId,
+      });
+
+      setEnrolmentOptions(response.items);
+      return response.items;
+    } catch (error: unknown) {
+      setEnrolmentOptions([]);
+
+      if (error instanceof ApiError) {
+        setFormErrorMessage(error.message);
+      } else {
+        setFormErrorMessage(
+          'No se han podido cargar las matrículas activas del alumno.',
+        );
+      }
+
+      return [];
+    } finally {
+      setIsLoadingEnrolments(false);
+    }
+  }
+
+  async function openCreateModal(): Promise<void> {
     resetMessages();
     setSelectedIncidentId(null);
+    setSelectedStudentLabel(null);
+    setStudentSearchInput('');
+    setStudentOptions([]);
+    setEnrolmentOptions([]);
     setForm(createEmptyIncidentForm());
     setFormMode('create');
+    await loadStudentOptions('');
   }
 
   async function openEditModal(
@@ -553,12 +704,61 @@ export function IncidentsPage({
     setSelectedIncidentId(incidentId);
     setFormMode('edit');
     setIsLoadingIncident(true);
+    setStudentOptions([]);
+    setEnrolmentOptions([]);
 
     try {
       const response = await getIncident(incidentId);
-      setForm(
-        getFormFromIncident(response.incident),
-      );
+      const incident = response.incident;
+
+      setSelectedStudentLabel(incident.student.fullName);
+      setStudentSearchInput(incident.student.fullName);
+
+      const [studentsResponse, enrolments] = await Promise.all([
+        getStudents({
+          search: incident.student.fullName,
+          page: 1,
+          pageSize: SELECTOR_PAGE_SIZE,
+          status: 'active',
+          documentType: 'all',
+        }),
+        loadEnrolmentsForStudent(incident.student.id),
+      ]);
+
+      const students = studentsResponse.items.some(
+        (student) => student.id === incident.student.id,
+      )
+        ? studentsResponse.items
+        : [
+            {
+              id: incident.student.id,
+              studentCode: incident.student.code,
+              firstName: incident.student.fullName,
+              lastName1: '',
+              lastName2: null,
+              fullName: incident.student.fullName,
+              documentType: null,
+              documentNumber: null,
+              email: null,
+              phone: null,
+              birthDate: null,
+              address: null,
+              postalCode: null,
+              city: null,
+              province: null,
+              emergencyContactName: null,
+              emergencyContactPhone: null,
+              notes: null,
+              isActive: true,
+              createdAt: incident.createdAt,
+              updatedAt: incident.updatedAt,
+              deletedAt: null,
+            },
+            ...studentsResponse.items,
+          ];
+
+      setStudentOptions(students);
+      setForm(getFormFromIncident(incident, enrolments));
     } catch (error: unknown) {
       setFormMode(null);
 
@@ -582,6 +782,10 @@ export function IncidentsPage({
     setFormMode(null);
     setSelectedIncidentId(null);
     setForm(createEmptyIncidentForm());
+    setStudentSearchInput('');
+    setStudentOptions([]);
+    setSelectedStudentLabel(null);
+    setEnrolmentOptions([]);
     setFieldErrors({});
     setFormErrorMessage(null);
   }
@@ -611,6 +815,42 @@ export function IncidentsPage({
       ...currentForm,
       [field]: value,
     }));
+  }
+
+  async function handleStudentChange(
+    value: string,
+  ): Promise<void> {
+    updateTextField('studentId', value);
+    setForm((currentForm) => ({
+      ...currentForm,
+      studentId: value,
+      enrolmentId: '',
+    }));
+    setEnrolmentOptions([]);
+
+    const studentId = parsePositiveId(value);
+
+    if (!studentId) {
+      setSelectedStudentLabel(null);
+      return;
+    }
+
+    const selectedStudent = studentOptions.find(
+      (student) => student.id === studentId,
+    );
+
+    setSelectedStudentLabel(
+      selectedStudent?.fullName ?? null,
+    );
+
+    const enrolments = await loadEnrolmentsForStudent(studentId);
+
+    if (enrolments.length === 1) {
+      setForm((currentForm) => ({
+        ...currentForm,
+        enrolmentId: enrolments[0].id.toString(),
+      }));
+    }
   }
 
   function handleTypeChange(value: string): void {
@@ -651,7 +891,10 @@ export function IncidentsPage({
     setSuccessMessage(null);
 
     try {
-      const payload = createIncidentPayload(form);
+      const payload = createIncidentPayload(
+        form,
+        enrolmentOptions,
+      );
 
       if (formMode === 'create') {
         await createIncident(payload);
@@ -742,7 +985,9 @@ export function IncidentsPage({
           <button
             className="button button-primary"
             type="button"
-            onClick={openCreateModal}
+            onClick={() => {
+              void openCreateModal();
+            }}
           >
             Nueva incidencia
           </button>
@@ -1109,28 +1354,76 @@ export function IncidentsPage({
                 )}
 
                 <div className="incident-form-note">
-                  <strong>Nota:</strong> en esta primera versión se usan IDs.
-                  El siguiente refinamiento será sustituirlos por selectores de
-                  alumno, curso, centro y módulo basados en matrículas reales.
+                  <strong>Ámbito de la incidencia:</strong> selecciona primero
+                  el alumno y después una matrícula activa. Si la incidencia es
+                  general del alumno, se conserva curso y centro, pero no se
+                  asocia a un módulo concreto.
                 </div>
 
-                <div className="incident-form-grid">
+                <div className="incident-student-search">
                   <div className="incident-form-field">
-                    <label htmlFor="incident-student-id">
-                      ID alumno
+                    <label htmlFor="incident-student-search">
+                      Buscar alumno
                     </label>
                     <input
-                      id="incident-student-id"
-                      type="number"
-                      min="1"
-                      value={form.studentId}
+                      id="incident-student-search"
+                      type="search"
+                      placeholder="Nombre, apellidos, código o correo"
+                      value={studentSearchInput}
                       onChange={(event) => {
-                        updateTextField(
-                          'studentId',
-                          event.target.value,
-                        );
+                        setStudentSearchInput(event.target.value);
                       }}
                     />
+                  </div>
+
+                  <button
+                    className="button button-secondary"
+                    type="button"
+                    disabled={isLoadingStudents}
+                    onClick={() => {
+                      void loadStudentOptions(studentSearchInput);
+                    }}
+                  >
+                    {isLoadingStudents
+                      ? 'Buscando...'
+                      : 'Buscar alumno'}
+                  </button>
+                </div>
+
+                <div className="incident-form-grid incident-form-grid-two">
+                  <div className="incident-form-field">
+                    <label htmlFor="incident-student-id">
+                      Alumno
+                    </label>
+                    <select
+                      id="incident-student-id"
+                      value={form.studentId}
+                      disabled={isLoadingStudents}
+                      onChange={(event) => {
+                        void handleStudentChange(event.target.value);
+                      }}
+                    >
+                      <option value="">
+                        Selecciona un alumno
+                      </option>
+                      {selectedStudentLabel
+                        && form.studentId
+                        && !studentOptions.some(
+                          (student) => student.id.toString() === form.studentId,
+                        ) && (
+                          <option value={form.studentId}>
+                            {selectedStudentLabel}
+                          </option>
+                        )}
+                      {studentOptions.map((student) => (
+                        <option
+                          key={student.id}
+                          value={student.id}
+                        >
+                          {getStudentOptionLabel(student)}
+                        </option>
+                      ))}
+                    </select>
                     {fieldErrors.studentId && (
                       <span className="field-error">
                         {fieldErrors.studentId}
@@ -1139,74 +1432,69 @@ export function IncidentsPage({
                   </div>
 
                   <div className="incident-form-field">
-                    <label htmlFor="incident-academic-year-id">
-                      ID curso académico
+                    <label htmlFor="incident-enrolment-id">
+                      Matrícula activa
                     </label>
-                    <input
-                      id="incident-academic-year-id"
-                      type="number"
-                      min="1"
-                      value={form.academicYearId}
+                    <select
+                      id="incident-enrolment-id"
+                      value={form.enrolmentId}
+                      disabled={
+                        !form.studentId
+                        || isLoadingEnrolments
+                      }
                       onChange={(event) => {
                         updateTextField(
-                          'academicYearId',
+                          'enrolmentId',
                           event.target.value,
                         );
                       }}
-                    />
-                    {fieldErrors.academicYearId && (
+                    >
+                      <option value="">
+                        {isLoadingEnrolments
+                          ? 'Cargando matrículas...'
+                          : 'Selecciona una matrícula'}
+                      </option>
+                      {enrolmentOptions.map((enrolment) => (
+                        <option
+                          key={enrolment.id}
+                          value={enrolment.id}
+                        >
+                          {getEnrolmentOptionLabel(enrolment)}
+                        </option>
+                      ))}
+                    </select>
+                    {fieldErrors.enrolmentId && (
                       <span className="field-error">
-                        {fieldErrors.academicYearId}
+                        {fieldErrors.enrolmentId}
                       </span>
                     )}
+                    {form.studentId
+                      && !isLoadingEnrolments
+                      && enrolmentOptions.length === 0 && (
+                        <span className="field-help">
+                          El alumno seleccionado no tiene matrículas activas.
+                        </span>
+                      )}
                   </div>
+                </div>
 
-                  <div className="incident-form-field">
-                    <label htmlFor="incident-centre-id">
-                      ID centro
-                    </label>
-                    <input
-                      id="incident-centre-id"
-                      type="number"
-                      min="1"
-                      value={form.centreId}
-                      onChange={(event) => {
-                        updateTextField(
-                          'centreId',
-                          event.target.value,
-                        );
-                      }}
-                    />
-                    {fieldErrors.centreId && (
-                      <span className="field-error">
-                        {fieldErrors.centreId}
-                      </span>
-                    )}
-                  </div>
+                <label className="incident-form-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={!form.isModuleSpecific}
+                    onChange={(event) => {
+                      setForm((currentForm) => ({
+                        ...currentForm,
+                        isModuleSpecific: !event.target.checked,
+                      }));
+                    }}
+                  />
+                  <span>
+                    Registrar como incidencia general del alumno, sin módulo concreto.
+                  </span>
+                </label>
 
-                  <div className="incident-form-field">
-                    <label htmlFor="incident-module-id">
-                      ID módulo opcional
-                    </label>
-                    <input
-                      id="incident-module-id"
-                      type="number"
-                      min="1"
-                      value={form.moduleId}
-                      onChange={(event) => {
-                        updateTextField(
-                          'moduleId',
-                          event.target.value,
-                        );
-                      }}
-                    />
-                    {fieldErrors.moduleId && (
-                      <span className="field-error">
-                        {fieldErrors.moduleId}
-                      </span>
-                    )}
-                  </div>
-
+                <div className="incident-form-grid">
                   <div className="incident-form-field">
                     <label htmlFor="incident-type">
                       Tipo
