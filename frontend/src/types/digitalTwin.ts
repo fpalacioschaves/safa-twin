@@ -1,5 +1,6 @@
 export type DigitalTwinIntentName =
   | 'GENERAL_QUERY'
+  | 'STUDENTS_QUERY'
   | 'EVALUATION_REPORT'
   | 'WORK_PLACEMENT_SUMMARY'
   | 'EMAIL_DRAFT'
