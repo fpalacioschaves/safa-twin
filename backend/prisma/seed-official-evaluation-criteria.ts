@@ -160,7 +160,7 @@ function parseCriteria(criteriaText: string): ParsedCriterion[] {
     }
 
     criteria.push({
-      code: `CA${letter}`,
+      code: `CE${letter}`,
       text,
       sortOrder: criteria.length + 1,
     });
@@ -458,7 +458,7 @@ async function main(): Promise<void> {
     totalCriteria += result.criteriaProcessed;
 
     console.log(
-      `${source.programmeAcronym}: ${result.modulesProcessed} módulos, ${result.learningOutcomesProcessed} RA y ${result.criteriaProcessed} CA procesados.`,
+      `${source.programmeAcronym}: ${result.modulesProcessed} módulos, ${result.learningOutcomesProcessed} RA y ${result.criteriaProcessed} CE procesados.`,
     );
   }
 
