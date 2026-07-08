@@ -24,7 +24,7 @@ interface IncidentRow {
   module_code: string | null;
   module_name: string | null;
   vocational_programme_id: NumberLike;
-  vocational_programme_acronym: string;
+  vocational_programme_acronym: string | null;
   academic_level_id: NumberLike;
   academic_level_number: NumberLike;
   created_by_user_id: NumberLike;
@@ -480,7 +480,6 @@ export async function createIncident(
     input.centreId,
     input.moduleId,
     createdByUserId,
-    new Date(input.occurredAt),
     input.type,
     input.severity,
     new Date(input.occurredAt),
