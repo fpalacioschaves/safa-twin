@@ -33,7 +33,7 @@
 
 .digital-twin-form textarea {
   width: 100%;
-  min-height: 190px;
+  min-height: 240px;
   padding: 0.9rem 1rem;
   border: 1px solid #cfd9e7;
   border-radius: 12px;
@@ -45,17 +45,6 @@
 .digital-twin-form textarea:focus {
   border-color: #2155a5;
   outline: 3px solid rgb(33 85 165 / 15%);
-}
-
-.digital-twin-examples {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.digital-twin-examples .button {
-  white-space: normal;
-  text-align: left;
 }
 
 .digital-twin-help h3,
