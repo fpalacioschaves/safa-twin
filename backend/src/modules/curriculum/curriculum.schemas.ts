@@ -141,6 +141,12 @@ export const learningOutcomeIdParamsSchema = z
   })
   .strict();
 
+export const evaluationCriterionIdParamsSchema = z
+  .object({
+    id: positiveIdSchema,
+  })
+  .strict();
+
 const importCodeSchema = z
   .string({
     message:
@@ -156,10 +162,10 @@ const importCodeSchema = z
       'El código no puede superar los 50 caracteres.',
   });
 
-const learningOutcomeCodeSchema = importCodeSchema
+const normalizedCodeSchema = importCodeSchema
   .regex(/^[A-Za-z0-9]+(?:[-_.][A-Za-z0-9]+)*$/, {
     message:
-      'El código del RA solo puede contener letras, números, puntos, guiones y guiones bajos.',
+      'El código solo puede contener letras, números, puntos, guiones y guiones bajos.',
   })
   .transform((value) => value.toUpperCase());
 
@@ -261,8 +267,26 @@ const sortOrderSchema = z.coerce
 export const learningOutcomeMutationSchema = z
   .object({
     moduleId: positiveIdSchema,
-    code: learningOutcomeCodeSchema,
+    code: normalizedCodeSchema,
     title: importTitleSchema,
+    description: optionalLongTextSchema,
+    sourceReference:
+      optionalSourceReferenceSchema,
+    sortOrder: sortOrderSchema,
+    isActive: z
+      .boolean({
+        message:
+          'El estado activo debe ser verdadero o falso.',
+      })
+      .default(true),
+  })
+  .strict();
+
+export const evaluationCriterionMutationSchema = z
+  .object({
+    learningOutcomeId: positiveIdSchema,
+    code: normalizedCodeSchema,
+    title: importCriterionTitleSchema,
     description: optionalLongTextSchema,
     sourceReference:
       optionalSourceReferenceSchema,
@@ -402,6 +426,10 @@ export type CurriculumListQuery = z.infer<
 
 export type LearningOutcomeMutationInput = z.infer<
   typeof learningOutcomeMutationSchema
+>;
+
+export type EvaluationCriterionMutationInput = z.infer<
+  typeof evaluationCriterionMutationSchema
 >;
 
 export type CurriculumImportInput = z.infer<
