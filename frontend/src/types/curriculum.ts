@@ -120,6 +120,21 @@ export interface CurriculumLearningOutcomeMutationResponse {
   learningOutcome: CurriculumLearningOutcomeItem;
 }
 
+export interface CurriculumEvaluationCriterionMutationRequest {
+  learningOutcomeId: number;
+  code: string;
+  title: string;
+  description?: string;
+  sourceReference?: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface CurriculumEvaluationCriterionMutationResponse {
+  message: string;
+  evaluationCriterion: CurriculumEvaluationCriterionItem;
+}
+
 export interface CurriculumLearningOutcomeImportItem {
   moduleCode: string;
   vocationalProgrammeAcronym?: string;
