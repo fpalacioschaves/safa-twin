@@ -82,22 +82,6 @@ function getErrorMessage(error: unknown): string {
   return 'Se ha producido un error inesperado.';
 }
 
-function getModuleLabel(
-  item: {
-    module: CurriculumLearningOutcomeItem['module'];
-  },
-): string {
-  return `${item.module.code} · ${item.module.name}`;
-}
-
-function getProgrammeLevelLabel(
-  item: {
-    module: CurriculumLearningOutcomeItem['module'];
-  },
-): string {
-  return `${item.module.vocationalProgramme.acronym} · ${item.module.academicLevel.name}`;
-}
-
 function getModuleOptionLabel(
   module: ProfessionalModule,
 ): string {
@@ -129,14 +113,6 @@ function getTabTitle(
   return titles[activeTab];
 }
 
-function formatHours(value: number | null): string {
-  if (value === null) {
-    return 'Sin horas';
-  }
-
-  return `${value.toLocaleString('es-ES')} h`;
-}
-
 function buildQuery(
   filters: CurriculumFilters,
   page: number,
@@ -156,14 +132,6 @@ function buildQuery(
     page,
     pageSize: PAGE_SIZE,
   };
-}
-
-function renderSource(value: string | null): string {
-  return value ?? 'Sin referencia';
-}
-
-function renderDescription(value: string | null): string {
-  return value ?? 'Sin descripción';
 }
 
 function filterModuleOptions(
@@ -572,129 +540,6 @@ export function CurriculumPage() {
             onChanged={() => loadItems(1)}
           />
         ) : null}
-
-        {activeTab === 'learning-outcomes' ? (
-          learningOutcomes.length === 0 ? (
-            <p className="curriculum-empty">
-              No hay Resultados de Aprendizaje cargados con estos filtros.
-            </p>
-          ) : (
-            <div className="curriculum-table-wrapper">
-              <table className="curriculum-table">
-                <thead>
-                  <tr>
-                    <th>Ciclo / curso</th>
-                    <th>Módulo</th>
-                    <th>RA</th>
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Fuente</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {learningOutcomes.map((item) => (
-                    <tr key={item.id}>
-                      <td>{getProgrammeLevelLabel(item)}</td>
-                      <td>{getModuleLabel(item)}</td>
-                      <td>
-                        <strong>{item.code}</strong>
-                      </td>
-                      <td>{item.title}</td>
-                      <td>{renderDescription(item.description)}</td>
-                      <td>{renderSource(item.sourceReference)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )
-        ) : activeTab === 'evaluation-criteria' ? (
-          evaluationCriteria.length === 0 ? (
-            <p className="curriculum-empty">
-              No hay Criterios de Evaluación cargados con estos filtros.
-            </p>
-          ) : (
-            <div className="curriculum-table-wrapper">
-              <table className="curriculum-table">
-                <thead>
-                  <tr>
-                    <th>Ciclo / curso</th>
-                    <th>Módulo</th>
-                    <th>RA</th>
-                    <th>CA</th>
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Fuente</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {evaluationCriteria.map((item) => (
-                    <tr key={item.id}>
-                      <td>{getProgrammeLevelLabel(item)}</td>
-                      <td>{getModuleLabel(item)}</td>
-                      <td>
-                        <strong>{item.learningOutcome.code}</strong>
-                        <span>{item.learningOutcome.title}</span>
-                      </td>
-                      <td>
-                        <strong>{item.code}</strong>
-                      </td>
-                      <td>{item.title}</td>
-                      <td>{renderDescription(item.description)}</td>
-                      <td>{renderSource(item.sourceReference)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )
-        ) : (
-          trainingActions.length === 0 ? (
-            <p className="curriculum-empty">
-              No hay Acciones Formativas cargadas con estos filtros.
-            </p>
-          ) : (
-            <div className="curriculum-table-wrapper">
-              <table className="curriculum-table">
-                <thead>
-                  <tr>
-                    <th>Ciclo / curso</th>
-                    <th>Módulo</th>
-                    <th>AF</th>
-                    <th>Título</th>
-                    <th>Horas</th>
-                    <th>RA relacionados</th>
-                    <th>Fuente</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {trainingActions.map((item) => (
-                    <tr key={item.id}>
-                      <td>{getProgrammeLevelLabel(item)}</td>
-                      <td>{getModuleLabel(item)}</td>
-                      <td>
-                        <strong>{item.code}</strong>
-                      </td>
-                      <td>
-                        <strong>{item.title}</strong>
-                        <span>{renderDescription(item.description)}</span>
-                      </td>
-                      <td>{formatHours(item.plannedHours)}</td>
-                      <td>
-                        {item.relatedLearningOutcomes.length === 0
-                          ? 'Sin relación'
-                          : item.relatedLearningOutcomes
-                            .map((learningOutcome) => learningOutcome.code)
-                            .join(', ')}
-                      </td>
-                      <td>{renderSource(item.sourceReference)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )
-        )}
 
         <div className="curriculum-pagination">
           <button
