@@ -24,10 +24,6 @@ import {
 } from './modules/assessment-schemes/assessment-schemes.routes.js';
 
 import {
-  attendanceRouter,
-} from './modules/attendance/attendance.routes.js';
-
-import {
   authRouter,
 } from './modules/auth/auth.routes.js';
 
@@ -205,11 +201,6 @@ export function createApp(): Express {
   app.use(
     '/api/curriculum',
     curriculumRouter,
-  );
-
-  app.use(
-    '/api/attendance',
-    attendanceRouter,
   );
 
   app.use(
