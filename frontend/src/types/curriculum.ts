@@ -135,6 +135,23 @@ export interface CurriculumEvaluationCriterionMutationResponse {
   evaluationCriterion: CurriculumEvaluationCriterionItem;
 }
 
+export interface CurriculumTrainingActionMutationRequest {
+  moduleId: number;
+  code: string;
+  title: string;
+  description?: string;
+  plannedHours?: number;
+  sourceReference?: string;
+  sortOrder: number;
+  isActive: boolean;
+  relatedLearningOutcomeIds: number[];
+}
+
+export interface CurriculumTrainingActionMutationResponse {
+  message: string;
+  trainingAction: CurriculumTrainingActionItem;
+}
+
 export interface CurriculumLearningOutcomeImportItem {
   moduleCode: string;
   vocationalProgrammeAcronym?: string;
