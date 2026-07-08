@@ -11,7 +11,6 @@ export type DigitalTwinContextKind =
   | 'work-placement-summary'
   | 'curriculum-summary'
   | 'students-summary'
-  | 'attendance-summary'
   | 'incidents-summary';
 
 export interface DigitalTwinContext {
