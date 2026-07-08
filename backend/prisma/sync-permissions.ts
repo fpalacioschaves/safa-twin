@@ -221,6 +221,21 @@ const evaluationPermissions: PermissionSeed[] = [
   },
 ];
 
+const incidentPermissions: PermissionSeed[] = [
+  {
+    name: 'Consultar incidencias académicas',
+    slug: 'incidents.view',
+    description:
+      'Consultar incidencias académicas, técnicas, disciplinarias o relacionadas con seguimiento del alumnado.',
+  },
+  {
+    name: 'Gestionar incidencias académicas',
+    slug: 'incidents.manage',
+    description:
+      'Crear, modificar, resolver y archivar incidencias académicas del alumnado.',
+  },
+];
+
 const companyTrainingPermissions: PermissionSeed[] = [
   {
     name: 'Consultar formación en empresa',
@@ -288,6 +303,7 @@ const permissions: PermissionSeed[] = [
   ...userAndRolePermissions,
   ...academicPermissions,
   ...evaluationPermissions,
+  ...incidentPermissions,
   ...companyTrainingPermissions,
   ...curriculumPermissions,
   ...digitalTwinPermissions,
