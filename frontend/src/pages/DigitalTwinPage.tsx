@@ -38,7 +38,6 @@ function getIntentLabel(intent: string): string {
     GENERAL_QUERY: 'Consulta general',
     STUDENTS_QUERY: 'Consulta de alumnado',
     EVALUATION_REPORT: 'Informe de evaluación',
-    ATTENDANCE_REPORT: 'Informe de asistencia',
     INCIDENTS_SUMMARY: 'Resumen de incidencias',
     WORK_PLACEMENT_SUMMARY: 'Formación en empresa',
     EMAIL_DRAFT: 'Borrador de correo',
@@ -161,7 +160,7 @@ export function DigitalTwinPage() {
           <textarea
             id="digital-twin-message"
             name="message"
-            placeholder="Escribe aquí lo que necesitas: informes, consultas de alumnado, evaluaciones, asistencia, incidencias, prácticas, currículo o borradores de correo."
+            placeholder="Escribe aquí lo que necesitas: informes, consultas de alumnado, evaluaciones, seguimiento online, incidencias, prácticas, currículo o borradores de correo."
             rows={10}
             value={message}
             onChange={(event) => {
@@ -185,9 +184,8 @@ export function DigitalTwinPage() {
           <ul>
             <li>Consulta general del sistema académico.</li>
             <li>Consulta de alumnado activo y datos de contacto.</li>
-            <li>Resumen de evaluaciones y rendimiento.</li>
-            <li>Diagnóstico de asistencia y absentismo.</li>
-            <li>Resumen de incidencias de formación en empresa.</li>
+            <li>Seguimiento académico online por evaluación y rendimiento.</li>
+            <li>Resumen de incidencias académicas y de empresa.</li>
             <li>Estado de formación en empresa.</li>
             <li>Resumen curricular de RA, CE y AF.</li>
             <li>Borradores de correo sin envío automático.</li>
