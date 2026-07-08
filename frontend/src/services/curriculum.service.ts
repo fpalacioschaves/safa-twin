@@ -3,6 +3,7 @@ import {
 } from './api.service';
 
 import type {
+  CurriculumEvaluationCriteriaResponse,
   CurriculumImportRequest,
   CurriculumImportResponse,
   CurriculumLearningOutcomesResponse,
@@ -51,6 +52,13 @@ function appendCommonQueryParams(
     );
   }
 
+  if (query.learningOutcomeId) {
+    params.set(
+      'learningOutcomeId',
+      query.learningOutcomeId.toString(),
+    );
+  }
+
   if (query.vocationalProgrammeAcronym) {
     params.set(
       'vocationalProgrammeAcronym',
@@ -88,6 +96,18 @@ export async function getCurriculumLearningOutcomes(
     queryString
       ? `${BASE_URL}/learning-outcomes?${queryString}`
       : `${BASE_URL}/learning-outcomes`,
+  );
+}
+
+export async function getCurriculumEvaluationCriteria(
+  query: CurriculumListQuery = {},
+): Promise<CurriculumEvaluationCriteriaResponse> {
+  const queryString = buildQueryString(query);
+
+  return apiRequest<CurriculumEvaluationCriteriaResponse>(
+    queryString
+      ? `${BASE_URL}/evaluation-criteria?${queryString}`
+      : `${BASE_URL}/evaluation-criteria`,
   );
 }
 
