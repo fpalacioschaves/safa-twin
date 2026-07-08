@@ -1,0 +1,141 @@
+.training-action-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid #d9e2ef;
+  border-radius: 1rem;
+  background: #f8fbff;
+}
+
+.training-action-manager-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.training-action-manager-header h4,
+.training-action-manager-list h5 {
+  margin: 0.25rem 0 0.4rem;
+  color: #17324d;
+}
+
+.training-action-manager-header p,
+.training-action-manager-list p,
+.training-action-manager-item span,
+.training-action-form span {
+  margin: 0;
+  color: #60708c;
+  line-height: 1.5;
+}
+
+.training-action-form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(8rem, 0.6fr) minmax(8rem, 0.6fr) minmax(6rem, 0.4fr);
+  align-items: end;
+}
+
+.training-action-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: #253955;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.training-action-form input,
+.training-action-form select,
+.training-action-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #c8d5e5;
+  border-radius: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  color: #17324d;
+  background: #ffffff;
+  font: inherit;
+}
+
+.training-action-form select[multiple] {
+  min-height: 9rem;
+}
+
+.training-action-form textarea {
+  resize: vertical;
+}
+
+.training-action-form-wide {
+  grid-column: 1 / -1;
+}
+
+.training-action-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.training-action-checkbox input {
+  width: auto;
+}
+
+.training-action-form-actions,
+.training-action-manager-item-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.training-action-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.training-action-manager-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem;
+  border: 1px solid #e3ebf5;
+  border-radius: 0.85rem;
+  background: #ffffff;
+}
+
+.training-action-manager-item strong,
+.training-action-manager-item span {
+  display: block;
+}
+
+.training-action-manager-item strong {
+  color: #17324d;
+}
+
+@media (max-width: 1100px) {
+  .training-action-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .training-action-manager-header,
+  .training-action-manager-item,
+  .training-action-form-actions,
+  .training-action-manager-item-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .training-action-form {
+    grid-template-columns: 1fr;
+  }
+
+  .training-action-form-actions button,
+  .training-action-manager-item-actions button {
+    width: 100%;
+  }
+}
