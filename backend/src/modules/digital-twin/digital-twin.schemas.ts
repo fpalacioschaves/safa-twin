@@ -44,6 +44,7 @@ export const digitalTwinMessageSchema = z.object({
 export const digitalTwinIntentSchema = z.object({
   intent: z.enum([
     'GENERAL_QUERY',
+    'STUDENTS_QUERY',
     'EVALUATION_REPORT',
     'WORK_PLACEMENT_SUMMARY',
     'EMAIL_DRAFT',
