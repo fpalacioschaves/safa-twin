@@ -299,7 +299,7 @@ export function CurriculumPage() {
           <h2>Resultados, criterios y acciones formativas</h2>
           <p>
             Consulta el currículo asociado a cada módulo profesional. Usa los
-            filtros para separar DAW, DAM, curso, asignatura, RA, CA y acciones
+            filtros para separar DAW, DAM, curso, asignatura, RA, CE y acciones
             formativas sin mezclar datos de ciclos o niveles distintos.
           </p>
         </div>
@@ -336,7 +336,7 @@ export function CurriculumPage() {
             Buscar
             <input
               type="search"
-              placeholder="RA1, CA1, AF1, programación, empresa..."
+              placeholder="RA1, CE1, AF1, programación, empresa..."
               value={filters.search}
               onChange={(event) => {
                 setFilters((current) => ({
