@@ -12,6 +12,8 @@ import type {
   CurriculumLearningOutcomeMutationResponse,
   CurriculumLearningOutcomesResponse,
   CurriculumListQuery,
+  CurriculumTrainingActionMutationRequest,
+  CurriculumTrainingActionMutationResponse,
   CurriculumTrainingActionsResponse,
 } from '../types/curriculum';
 
@@ -218,6 +220,53 @@ export async function getCurriculumTrainingActions(
     queryString
       ? `${BASE_URL}/training-actions?${queryString}`
       : `${BASE_URL}/training-actions`,
+  );
+}
+
+export async function createCurriculumTrainingAction(
+  request: CurriculumTrainingActionMutationRequest,
+): Promise<CurriculumTrainingActionMutationResponse> {
+  return apiRequest<CurriculumTrainingActionMutationResponse>(
+    `${BASE_URL}/training-actions`,
+    {
+      method: 'POST',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function updateCurriculumTrainingAction(
+  id: number,
+  request: CurriculumTrainingActionMutationRequest,
+): Promise<CurriculumTrainingActionMutationResponse> {
+  return apiRequest<CurriculumTrainingActionMutationResponse>(
+    `${BASE_URL}/training-actions/${id}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function archiveCurriculumTrainingAction(
+  id: number,
+): Promise<CurriculumTrainingActionMutationResponse> {
+  return apiRequest<CurriculumTrainingActionMutationResponse>(
+    `${BASE_URL}/training-actions/${id}`,
+    {
+      method: 'DELETE',
+    },
+  );
+}
+
+export async function restoreCurriculumTrainingAction(
+  id: number,
+): Promise<CurriculumTrainingActionMutationResponse> {
+  return apiRequest<CurriculumTrainingActionMutationResponse>(
+    `${BASE_URL}/training-actions/${id}/restore`,
+    {
+      method: 'PATCH',
+    },
   );
 }
 
