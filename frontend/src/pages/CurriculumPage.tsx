@@ -31,6 +31,10 @@ import type {
   ProfessionalModule,
 } from '../types/modules';
 
+import {
+  LearningOutcomeManager,
+} from './LearningOutcomeManager';
+
 import './CurriculumPage.css';
 
 const PAGE_SIZE = 10;
@@ -537,6 +541,14 @@ export function CurriculumPage() {
             {isLoading ? 'Actualizando...' : 'Actualizar'}
           </button>
         </div>
+
+        {activeTab === 'learning-outcomes' ? (
+          <LearningOutcomeManager
+            moduleOptions={moduleOptions}
+            learningOutcomes={learningOutcomes}
+            onChanged={() => loadItems(1)}
+          />
+        ) : null}
 
         {activeTab === 'learning-outcomes' ? (
           learningOutcomes.length === 0 ? (
