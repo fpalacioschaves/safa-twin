@@ -105,6 +105,21 @@ export interface CurriculumListQuery {
   academicLevelNumber?: number;
 }
 
+export interface CurriculumLearningOutcomeMutationRequest {
+  moduleId: number;
+  code: string;
+  title: string;
+  description?: string;
+  sourceReference?: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface CurriculumLearningOutcomeMutationResponse {
+  message: string;
+  learningOutcome: CurriculumLearningOutcomeItem;
+}
+
 export interface CurriculumLearningOutcomeImportItem {
   moduleCode: string;
   vocationalProgrammeAcronym?: string;
