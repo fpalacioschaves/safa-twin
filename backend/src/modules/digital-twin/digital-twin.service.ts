@@ -11,6 +11,10 @@ import type {
 } from './digital-twin.types.js';
 
 import {
+  createDigitalTwinProposedAction,
+} from './digital-twin.actions.js';
+
+import {
   getAcademicFollowupContext,
 } from './tools/academic-followup.tool.js';
 
@@ -413,6 +417,7 @@ function buildSystemPrompt(): string {
     'Distingue siempre entre tasa de éxito y tasa de rendimiento.',
     'No conviertas estados no numéricos en notas.',
     'Si la petición implica enviar correos, redacta solo un borrador y deja claro que requiere confirmación humana.',
+    'Si existe una acción propuesta, informa de que no se ejecuta nada hasta que el usuario confirme desde la interfaz.',
   ].join(' ');
 }
 
@@ -454,44 +459,6 @@ function buildFallbackAssistantMessage(
     .join('\n\n');
 }
 
-function getProposedAction(
-  intent: DigitalTwinIntent,
-): DigitalTwinResponse['proposedAction'] {
-  if (intent.intent === 'EMAIL_DRAFT') {
-    return {
-      type: 'EMAIL_DRAFT',
-      label: 'Borrador de correo pendiente de revisión y confirmación',
-      status: 'preview_only',
-    };
-  }
-
-  if (intent.intent === 'EVALUATION_REPORT') {
-    return {
-      type: 'DOCUMENT_PREVIEW',
-      label: 'Vista previa de informe académico',
-      status: 'preview_only',
-    };
-  }
-
-  if (intent.intent === 'ACADEMIC_FOLLOWUP') {
-    return {
-      type: 'ACADEMIC_FOLLOWUP_PREVIEW',
-      label: 'Vista previa de seguimiento académico online',
-      status: 'preview_only',
-    };
-  }
-
-  if (intent.intent === 'INCIDENTS_SUMMARY') {
-    return {
-      type: 'INCIDENTS_SUMMARY_PREVIEW',
-      label: 'Vista previa de resumen de incidencias',
-      status: 'preview_only',
-    };
-  }
-
-  return null;
-}
-
 export function getDigitalTwinStatus(): DigitalTwinStatus {
   const provider = (
     process.env.AI_PROVIDER ?? 'ollama'
@@ -519,6 +486,11 @@ export async function processDigitalTwinMessage(
 
   const context = await getContextForIntent(
     classification.intent,
+  );
+
+  const proposedAction = createDigitalTwinProposedAction(
+    classification.intent,
+    context,
   );
 
   const allWarnings = [
@@ -573,9 +545,8 @@ export async function processDigitalTwinMessage(
       warnings: allWarnings,
     },
     requiresConfirmation:
-      classification.intent.intent === 'EMAIL_DRAFT',
-    proposedAction: getProposedAction(
-      classification.intent,
-    ),
+      proposedAction?.status === 'requires_confirmation'
+      || classification.intent.intent === 'EMAIL_DRAFT',
+    proposedAction,
   };
 }
