@@ -29,6 +29,10 @@ export interface DigitalTwinProposedAction {
   type: string;
   label: string;
   status: string;
+  documentType?: string;
+  confirmationEndpoint?: string;
+  confirmationToken?: string;
+  previewSummary?: string;
 }
 
 export interface DigitalTwinResponse {
@@ -48,4 +52,21 @@ export interface DigitalTwinStatus {
   model: string;
   baseUrl: string | null;
   enabled: boolean;
+}
+
+export interface DigitalTwinGeneratedDocument {
+  id: number;
+  documentType: string;
+  title: string;
+  fileName: string;
+  filePath: string;
+  mimeType: string;
+  fileSizeBytes: number;
+  downloadUrl: string;
+}
+
+export interface DigitalTwinActionConfirmationResponse {
+  message: string;
+  action: string;
+  document: DigitalTwinGeneratedDocument;
 }
