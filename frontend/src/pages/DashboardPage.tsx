@@ -54,6 +54,9 @@ import {
   HelpPage,
 } from './HelpPage';
 import {
+  IncidentsPage,
+} from './IncidentsPage';
+import {
   ModulesPage,
 } from './ModulesPage';
 import {
@@ -90,6 +93,7 @@ type ActiveSection =
   | 'evaluations'
   | 'assessment-schemes'
   | 'grades'
+  | 'incidents'
   | 'statistics'
   | 'company-training'
   | 'company-training-reports'
@@ -223,6 +227,10 @@ function getPageHeader(
       eyebrow: 'Evaluación académica',
       title: 'Calificaciones',
     },
+    incidents: {
+      eyebrow: 'Seguimiento académico',
+      title: 'Incidencias académicas',
+    },
     statistics: {
       eyebrow: 'Estadísticas académicas',
       title: 'Panel de estadísticas',
@@ -316,6 +324,7 @@ function DashboardHome({
             <li>Currículo de módulos profesionales</li>
             <li>Gestión de alumnado y matrículas</li>
             <li>Evaluaciones, sistemas de calificación y notas</li>
+            <li>Incidencias académicas</li>
             <li>Estadísticas académicas</li>
             <li>Formación en empresa</li>
             <li>Informes de formación en empresa</li>
@@ -440,6 +449,12 @@ export function DashboardPage({
     activeContent = <AssessmentSchemesPage />;
   } else if (activeSection === 'grades') {
     activeContent = <GradesPage />;
+  } else if (activeSection === 'incidents') {
+    activeContent = (
+      <IncidentsPage
+        canManageIncidents={canUseBuiltModules}
+      />
+    );
   } else if (activeSection === 'statistics') {
     activeContent = <StatisticsPage />;
   } else if (activeSection === 'company-training') {
@@ -483,6 +498,7 @@ export function DashboardPage({
     { id: 'evaluations', label: 'Evaluaciones' },
     { id: 'assessment-schemes', label: 'Sistemas' },
     { id: 'grades', label: 'Notas' },
+    { id: 'incidents', label: 'Incidencias' },
     { id: 'statistics', label: 'Estadísticas' },
     { id: 'company-training', label: 'Empresa' },
     { id: 'company-training-reports', label: 'Inf. empresa' },
@@ -594,6 +610,12 @@ export function DashboardPage({
             activeSection={activeSection}
             id="grades"
             label="Calificaciones"
+            onSelect={setActiveSection}
+          />
+          <NavigationButton
+            activeSection={activeSection}
+            id="incidents"
+            label="Incidencias"
             onSelect={setActiveSection}
           />
           <NavigationButton
