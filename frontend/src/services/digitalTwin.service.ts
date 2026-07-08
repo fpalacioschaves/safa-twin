@@ -1,4 +1,5 @@
 import type {
+  DigitalTwinActionConfirmationResponse,
   DigitalTwinResponse,
   DigitalTwinStatus,
 } from '../types/digitalTwin';
@@ -27,6 +28,20 @@ export async function sendDigitalTwinMessage(
       method: 'POST',
       body: JSON.stringify({
         message,
+      }),
+    },
+  );
+}
+
+export async function confirmDigitalTwinAction(
+  confirmationToken: string,
+): Promise<DigitalTwinActionConfirmationResponse> {
+  return await apiRequest<DigitalTwinActionConfirmationResponse>(
+    `${DIGITAL_TWIN_API_URL}/actions/confirm`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        confirmationToken,
       }),
     },
   );
