@@ -150,20 +150,28 @@ const importCodeSchema = z
       'El código no puede superar los 50 caracteres.',
   });
 
-const importTitleSchema = z
-  .string({
-    message:
-      'El título es obligatorio.',
-  })
-  .trim()
-  .min(3, {
-    message:
-      'El título debe tener al menos 3 caracteres.',
-  })
-  .max(255, {
-    message:
-      'El título no puede superar los 255 caracteres.',
-  });
+function createImportTitleSchema(
+  maximumLength: number,
+) {
+  return z
+    .string({
+      message:
+        'El título es obligatorio.',
+    })
+    .trim()
+    .min(3, {
+      message:
+        'El título debe tener al menos 3 caracteres.',
+    })
+    .max(maximumLength, {
+      message:
+        `El título no puede superar los ${maximumLength} caracteres.`,
+    });
+}
+
+const importTitleSchema = createImportTitleSchema(191);
+
+const importCriterionTitleSchema = createImportTitleSchema(255);
 
 const optionalLongTextSchema = z.preprocess(
   (value) => {
@@ -315,7 +323,7 @@ const evaluationCriterionImportSchema = moduleLocatorSchema
   .extend({
     learningOutcomeCode: importCodeSchema,
     code: importCodeSchema,
-    title: importTitleSchema,
+    title: importCriterionTitleSchema,
     description: optionalLongTextSchema,
     sourceReference:
       optionalSourceReferenceSchema,
