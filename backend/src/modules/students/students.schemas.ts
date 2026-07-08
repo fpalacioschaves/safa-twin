@@ -357,9 +357,9 @@ export const listStudentsQuerySchema = z
         message:
           'El tamaño de página debe ser mayor que cero.',
       })
-      .max(50, {
+      .max(100, {
         message:
-          'El tamaño de página no puede superar 50.',
+          'El tamaño de página no puede superar 100.',
       })
       .default(10),
 
