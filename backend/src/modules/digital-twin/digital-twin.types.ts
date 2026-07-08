@@ -7,6 +7,7 @@ export type NumberLike = bigint | number | string | null;
 export type DigitalTwinContextKind =
   | 'academic-overview'
   | 'evaluation-summary'
+  | 'academic-followup'
   | 'email-audience'
   | 'work-placement-summary'
   | 'curriculum-summary'
