@@ -15,6 +15,10 @@ import {
 } from './tools/academic-overview.tool.js';
 
 import {
+  getAttendanceContext,
+} from './tools/attendance.tool.js';
+
+import {
   getCurriculumContext,
 } from './tools/curriculum.tool.js';
 
@@ -25,6 +29,10 @@ import {
 import {
   getEvaluationContext,
 } from './tools/evaluations.tool.js';
+
+import {
+  getPlacementIncidentsContext,
+} from './tools/placement-incidents.tool.js';
 
 import {
   getStudentsContext,
@@ -244,13 +252,15 @@ async function classifyRequest(
             'Clasifica esta petición académica y extrae filtros. '
             + 'Los ciclos pueden ser DAM o DAW. El curso académico '
             + 'se expresa como 1, 2, primero o segundo. La evaluación '
-            + 'puede aparecer como primera, segunda, tercera, final, EV1, EV2 o EV3.\n\n'
+            + 'puede aparecer como primera, segunda, tercera, final, EV1, EV2 o EV3. '
+            + 'Las peticiones sobre faltas, ausencias, absentismo o asistencia son ATTENDANCE_REPORT. '
+            + 'Las peticiones sobre incidencias son INCIDENTS_SUMMARY.\n\n'
             + `Petición: ${input.message}`,
         },
       ],
       instruction:
         'Devuelve exactamente un objeto JSON con esta forma: '
-        + '{"intent":"GENERAL_QUERY|STUDENTS_QUERY|EVALUATION_REPORT|WORK_PLACEMENT_SUMMARY|EMAIL_DRAFT|CURRICULUM_QUERY",'
+        + '{"intent":"GENERAL_QUERY|STUDENTS_QUERY|EVALUATION_REPORT|ATTENDANCE_REPORT|INCIDENTS_SUMMARY|WORK_PLACEMENT_SUMMARY|EMAIL_DRAFT|CURRICULUM_QUERY",'
         + '"programmeAcronyms":["DAM","DAW"],'
         + '"academicLevelNumber":1,'
         + '"evaluationCode":"EV1|EV2|EV3|FINAL|null",'
@@ -331,6 +341,10 @@ function getFallbackIntent(
 
   if (/correo|email|mail|mensaje/.test(normalizedMessage)) {
     intent = 'EMAIL_DRAFT';
+  } else if (/asistencia|absentismo|ausencia|ausencias|falta|faltas/.test(normalizedMessage)) {
+    intent = 'ATTENDANCE_REPORT';
+  } else if (/incidencia|incidencias|conflicto|conflictos|parte disciplinario|partes disciplinarios/.test(normalizedMessage)) {
+    intent = 'INCIDENTS_SUMMARY';
   } else if (/evaluacion|nota|calificacion|aprobado|suspenso|rendimiento/.test(normalizedMessage)) {
     intent = 'EVALUATION_REPORT';
   } else if (/practica|empresa|formacion en empresa|estancia/.test(normalizedMessage)) {
@@ -358,6 +372,14 @@ async function getContextForIntent(
     return await getEvaluationContext(intent);
   }
 
+  if (intent.intent === 'ATTENDANCE_REPORT') {
+    return await getAttendanceContext(intent);
+  }
+
+  if (intent.intent === 'INCIDENTS_SUMMARY') {
+    return await getPlacementIncidentsContext(intent);
+  }
+
   if (intent.intent === 'EMAIL_DRAFT') {
     return await getEmailAudienceContext(intent);
   }
@@ -382,8 +404,8 @@ function buildSystemPrompt(): string {
     'Eres el Gemelo Digital académico de SAFA Twin.',
     'Respondes en español, con tono formal, claro y didáctico.',
     'Trabajas únicamente con los datos recibidos desde SAFA Twin.',
-    'No inventes cifras, alumnos, módulos, evaluaciones ni conclusiones.',
-    'Si faltan datos, indícalo expresamente.',
+    'No inventes cifras, alumnos, módulos, evaluaciones, faltas, incidencias ni conclusiones.',
+    'Si faltan datos o una tabla no está implementada, indícalo expresamente.',
     'Distingue siempre entre tasa de éxito y tasa de rendimiento.',
     'No conviertas estados no numéricos en notas.',
     'Si la petición implica enviar correos, redacta solo un borrador y deja claro que requiere confirmación humana.',
@@ -443,6 +465,22 @@ function getProposedAction(
     return {
       type: 'DOCUMENT_PREVIEW',
       label: 'Vista previa de informe académico',
+      status: 'preview_only',
+    };
+  }
+
+  if (intent.intent === 'ATTENDANCE_REPORT') {
+    return {
+      type: 'ATTENDANCE_REPORT_PREVIEW',
+      label: 'Vista previa de informe de asistencia',
+      status: 'requires_attendance_module',
+    };
+  }
+
+  if (intent.intent === 'INCIDENTS_SUMMARY') {
+    return {
+      type: 'INCIDENTS_SUMMARY_PREVIEW',
+      label: 'Vista previa de resumen de incidencias',
       status: 'preview_only',
     };
   }
