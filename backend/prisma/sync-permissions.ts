@@ -275,12 +275,22 @@ const curriculumPermissions: PermissionSeed[] = [
   },
 ];
 
+const digitalTwinPermissions: PermissionSeed[] = [
+  {
+    name: 'Usar gemelo digital',
+    slug: 'digital-twin.use',
+    description:
+      'Realizar consultas asistidas por IA sobre datos académicos y generar borradores o vistas previas.',
+  },
+];
+
 const permissions: PermissionSeed[] = [
   ...userAndRolePermissions,
   ...academicPermissions,
   ...evaluationPermissions,
   ...companyTrainingPermissions,
   ...curriculumPermissions,
+  ...digitalTwinPermissions,
 ];
 
 const administratorRoleSlug = 'administrador';
