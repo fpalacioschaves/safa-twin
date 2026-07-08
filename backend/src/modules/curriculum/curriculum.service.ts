@@ -53,6 +53,31 @@ interface LearningOutcomeRow {
   deleted_at: Date | string | null;
 }
 
+interface EvaluationCriterionRow {
+  id: bigint | number;
+  learning_outcome_id: bigint | number;
+  learning_outcome_code: string;
+  learning_outcome_title: string;
+  module_id: bigint | number;
+  module_code: string;
+  module_name: string;
+  vocational_programme_id: bigint | number;
+  vocational_programme_acronym: string;
+  vocational_programme_name: string;
+  academic_level_id: bigint | number;
+  academic_level_number: bigint | number;
+  academic_level_name: string;
+  code: string;
+  title: string;
+  description: string | null;
+  source_reference: string | null;
+  sort_order: bigint | number;
+  is_active: boolean | bigint | number;
+  created_at: Date | string;
+  updated_at: Date | string;
+  deleted_at: Date | string | null;
+}
+
 interface TrainingActionRow {
   id: bigint | number;
   module_id: bigint | number;
@@ -116,6 +141,27 @@ export interface CurriculumLearningOutcomeItem {
   deletedAt: string | null;
 }
 
+export interface CurriculumEvaluationCriterionItem {
+  id: number;
+  learningOutcomeId: number;
+  learningOutcome: {
+    id: number;
+    code: string;
+    title: string;
+  };
+  moduleId: number;
+  module: CurriculumModuleSummary;
+  code: string;
+  title: string;
+  description: string | null;
+  sourceReference: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
 export interface CurriculumTrainingActionItem {
   id: number;
   moduleId: number;
@@ -150,6 +196,7 @@ export interface CurriculumListResult<TItem> {
 export interface CurriculumImportResult {
   summary: {
     learningOutcomesProcessed: number;
+    evaluationCriteriaProcessed: number;
     trainingActionsProcessed: number;
     linksProcessed: number;
   };
@@ -199,6 +246,34 @@ async function ensureCurriculumTables(): Promise<void> {
       CONSTRAINT module_learning_outcomes_module_fk
         FOREIGN KEY (module_id)
         REFERENCES modules (id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS module_evaluation_criteria (
+      id INT NOT NULL AUTO_INCREMENT,
+      learning_outcome_id INT NOT NULL,
+      code VARCHAR(50) NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      description TEXT NULL,
+      source_reference VARCHAR(255) NULL,
+      sort_order INT NOT NULL DEFAULT 0,
+      is_active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at DATETIME NULL,
+      PRIMARY KEY (id),
+      UNIQUE KEY module_evaluation_criteria_outcome_code_unique (learning_outcome_id, code),
+      KEY module_evaluation_criteria_outcome_idx (learning_outcome_id),
+      KEY module_evaluation_criteria_code_idx (code),
+      KEY module_evaluation_criteria_sort_idx (sort_order),
+      KEY module_evaluation_criteria_active_idx (is_active),
+      KEY module_evaluation_criteria_deleted_idx (deleted_at),
+      CONSTRAINT module_evaluation_criteria_outcome_fk
+        FOREIGN KEY (learning_outcome_id)
+        REFERENCES module_learning_outcomes (id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -308,7 +383,7 @@ function getFallbackSourceReference(
 }
 
 function getModuleSummary(
-  row: LearningOutcomeRow | TrainingActionRow,
+  row: LearningOutcomeRow | EvaluationCriterionRow | TrainingActionRow,
 ): CurriculumModuleSummary {
   return {
     id: toNumber(row.module_id),
@@ -332,6 +407,31 @@ function mapLearningOutcome(
 ): CurriculumLearningOutcomeItem {
   return {
     id: toNumber(row.id),
+    moduleId: toNumber(row.module_id),
+    module: getModuleSummary(row),
+    code: row.code,
+    title: row.title,
+    description: row.description,
+    sourceReference: row.source_reference,
+    sortOrder: toNumber(row.sort_order),
+    isActive: toBoolean(row.is_active),
+    createdAt: toIsoString(row.created_at),
+    updatedAt: toIsoString(row.updated_at),
+    deletedAt: toIsoStringOrNull(row.deleted_at),
+  };
+}
+
+function mapEvaluationCriterion(
+  row: EvaluationCriterionRow,
+): CurriculumEvaluationCriterionItem {
+  return {
+    id: toNumber(row.id),
+    learningOutcomeId: toNumber(row.learning_outcome_id),
+    learningOutcome: {
+      id: toNumber(row.learning_outcome_id),
+      code: row.learning_outcome_code,
+      title: row.learning_outcome_title,
+    },
     moduleId: toNumber(row.module_id),
     module: getModuleSummary(row),
     code: row.code,
@@ -399,19 +499,28 @@ function addCommonFilters(
   values: unknown[],
   query: CurriculumListQuery,
   tableAlias: string,
+  learningOutcomeAlias: string | null = null,
 ): void {
   if (query.moduleId !== undefined) {
-    clauses.push(`m.id = ?`);
+    clauses.push('m.id = ?');
     values.push(query.moduleId);
   }
 
+  if (
+    query.learningOutcomeId !== undefined
+    && learningOutcomeAlias
+  ) {
+    clauses.push(`${learningOutcomeAlias}.id = ?`);
+    values.push(query.learningOutcomeId);
+  }
+
   if (query.vocationalProgrammeAcronym !== undefined) {
-    clauses.push(`vp.acronym = ?`);
+    clauses.push('vp.acronym = ?');
     values.push(query.vocationalProgrammeAcronym);
   }
 
   if (query.academicLevelNumber !== undefined) {
-    clauses.push(`al.number = ?`);
+    clauses.push('al.number = ?');
     values.push(query.academicLevelNumber);
   }
 
@@ -431,16 +540,15 @@ function addCommonFilters(
 
   if (query.search) {
     const pattern = `%${query.search}%`;
-
-    clauses.push(`(
-      ${tableAlias}.code LIKE ?
-      OR ${tableAlias}.title LIKE ?
-      OR ${tableAlias}.description LIKE ?
-      OR m.code LIKE ?
-      OR m.name LIKE ?
-      OR vp.acronym LIKE ?
-      OR vp.name LIKE ?
-    )`);
+    const searchParts = [
+      `${tableAlias}.code LIKE ?`,
+      `${tableAlias}.title LIKE ?`,
+      `${tableAlias}.description LIKE ?`,
+      'm.code LIKE ?',
+      'm.name LIKE ?',
+      'vp.acronym LIKE ?',
+      'vp.name LIKE ?',
+    ];
 
     values.push(
       pattern,
@@ -451,6 +559,20 @@ function addCommonFilters(
       pattern,
       pattern,
     );
+
+    if (
+      learningOutcomeAlias
+      && learningOutcomeAlias !== tableAlias
+    ) {
+      searchParts.push(`${learningOutcomeAlias}.code LIKE ?`);
+      searchParts.push(`${learningOutcomeAlias}.title LIKE ?`);
+      values.push(
+        pattern,
+        pattern,
+      );
+    }
+
+    clauses.push(`(${searchParts.join(' OR ')})`);
   }
 }
 
@@ -489,6 +611,7 @@ export async function listLearningOutcomes(
     clauses,
     values,
     query,
+    'lo',
     'lo',
   );
 
@@ -553,6 +676,97 @@ export async function listLearningOutcomes(
 
   return {
     items: rows.map(mapLearningOutcome),
+    pagination: getPagination(
+      query,
+      total,
+    ),
+  };
+}
+
+export async function listEvaluationCriteria(
+  query: CurriculumListQuery,
+): Promise<CurriculumListResult<CurriculumEvaluationCriterionItem>> {
+  await ensureCurriculumTables();
+
+  const clauses: string[] = [];
+  const values: unknown[] = [];
+
+  addCommonFilters(
+    clauses,
+    values,
+    query,
+    'ec',
+    'lo',
+  );
+
+  const whereSql = getWhereSql(clauses);
+  const offset = (query.page - 1) * query.pageSize;
+
+  const countRows = await prisma.$queryRawUnsafe<CountRow[]>(
+    `
+      SELECT COUNT(*) AS total
+      FROM module_evaluation_criteria ec
+      INNER JOIN module_learning_outcomes lo ON lo.id = ec.learning_outcome_id
+      INNER JOIN modules m ON m.id = lo.module_id
+      INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
+      INNER JOIN academic_levels al ON al.id = m.academic_level_id
+      ${whereSql}
+    `,
+    ...values,
+  );
+
+  const rows = await prisma.$queryRawUnsafe<EvaluationCriterionRow[]>(
+    `
+      SELECT
+        ec.id,
+        ec.learning_outcome_id,
+        lo.code AS learning_outcome_code,
+        lo.title AS learning_outcome_title,
+        m.id AS module_id,
+        m.code AS module_code,
+        m.name AS module_name,
+        vp.id AS vocational_programme_id,
+        vp.acronym AS vocational_programme_acronym,
+        vp.name AS vocational_programme_name,
+        al.id AS academic_level_id,
+        al.number AS academic_level_number,
+        al.name AS academic_level_name,
+        ec.code,
+        ec.title,
+        ec.description,
+        ec.source_reference,
+        ec.sort_order,
+        ec.is_active,
+        ec.created_at,
+        ec.updated_at,
+        ec.deleted_at
+      FROM module_evaluation_criteria ec
+      INNER JOIN module_learning_outcomes lo ON lo.id = ec.learning_outcome_id
+      INNER JOIN modules m ON m.id = lo.module_id
+      INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
+      INNER JOIN academic_levels al ON al.id = m.academic_level_id
+      ${whereSql}
+      ORDER BY
+        vp.acronym ASC,
+        al.number ASC,
+        m.sort_order ASC,
+        m.name ASC,
+        lo.sort_order ASC,
+        lo.code ASC,
+        ec.sort_order ASC,
+        ec.code ASC
+      LIMIT ?
+      OFFSET ?
+    `,
+    ...values,
+    query.pageSize,
+    offset,
+  );
+
+  const total = Number(countRows[0]?.total ?? 0);
+
+  return {
+    items: rows.map(mapEvaluationCriterion),
     pagination: getPagination(
       query,
       total,
@@ -828,6 +1042,43 @@ async function upsertLearningOutcome(
   );
 }
 
+async function upsertEvaluationCriterion(
+  database: RawDatabase,
+  learningOutcomeId: number,
+  item: CurriculumImportInput['evaluationCriteria'][number],
+  fallbackSourceReference: string | null,
+): Promise<void> {
+  await database.$executeRawUnsafe(
+    `
+      INSERT INTO module_evaluation_criteria (
+        learning_outcome_id,
+        code,
+        title,
+        description,
+        source_reference,
+        sort_order,
+        is_active,
+        deleted_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, NULL)
+      ON DUPLICATE KEY UPDATE
+        title = VALUES(title),
+        description = VALUES(description),
+        source_reference = VALUES(source_reference),
+        sort_order = VALUES(sort_order),
+        is_active = VALUES(is_active),
+        deleted_at = NULL
+    `,
+    learningOutcomeId,
+    normalizeCode(item.code),
+    item.title.trim(),
+    normalizeOptionalText(item.description),
+    normalizeOptionalText(item.sourceReference)
+      ?? fallbackSourceReference,
+    item.sortOrder,
+    item.isActive,
+  );
+}
+
 async function upsertTrainingAction(
   database: RawDatabase,
   moduleId: number,
@@ -939,6 +1190,7 @@ export async function importCurriculum(
     getFallbackSourceReference(input);
 
   let learningOutcomesProcessed = 0;
+  let evaluationCriteriaProcessed = 0;
   let trainingActionsProcessed = 0;
   let linksProcessed = 0;
 
@@ -963,6 +1215,44 @@ export async function importCurriculum(
       );
 
       learningOutcomesProcessed += 1;
+    }
+
+    for (
+      const [index, item]
+      of input.evaluationCriteria.entries()
+    ) {
+      const module = await resolveModule(
+        database,
+        item,
+        `evaluationCriteria.${index}`,
+      );
+
+      const moduleId = toNumber(module.id);
+      const learningOutcomeId = await getLearningOutcomeId(
+        database,
+        moduleId,
+        item.learningOutcomeCode,
+      );
+
+      if (learningOutcomeId === null) {
+        throw new CurriculumImportValidationError([
+          {
+            field:
+              `evaluationCriteria.${index}.learningOutcomeCode`,
+            message:
+              `El criterio referencia el RA "${item.learningOutcomeCode}", pero ese RA no existe en el mismo módulo.`,
+          },
+        ]);
+      }
+
+      await upsertEvaluationCriterion(
+        database,
+        learningOutcomeId,
+        item,
+        fallbackSourceReference,
+      );
+
+      evaluationCriteriaProcessed += 1;
     }
 
     for (
@@ -999,6 +1289,7 @@ export async function importCurriculum(
   return {
     summary: {
       learningOutcomesProcessed,
+      evaluationCriteriaProcessed,
       trainingActionsProcessed,
       linksProcessed,
     },
