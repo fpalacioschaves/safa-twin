@@ -10,7 +10,17 @@ import {
 import {
   curriculumImportSchema,
   curriculumListQuerySchema,
+  learningOutcomeIdParamsSchema,
+  learningOutcomeMutationSchema,
 } from './curriculum.schemas.js';
+
+import {
+  archiveLearningOutcome,
+  createLearningOutcome,
+  CurriculumMutationValidationError,
+  restoreLearningOutcome,
+  updateLearningOutcome,
+} from './curriculum-learning-outcomes.crud.service.js';
 
 import {
   CurriculumImportValidationError,
@@ -66,6 +76,40 @@ function sendImportReferenceError(
   });
 }
 
+function sendMutationReferenceError(
+  response: Response,
+  error: CurriculumMutationValidationError,
+): void {
+  response.status(422).json({
+    error: {
+      code: 'CURRICULUM_MUTATION_REFERENCE_ERROR',
+      message: error.message,
+      details: error.details,
+    },
+  });
+}
+
+function validateLearningOutcomeId(
+  rawParams: unknown,
+  response: Response,
+): number | null {
+  const validation = learningOutcomeIdParamsSchema.safeParse(
+    rawParams,
+  );
+
+  if (!validation.success) {
+    sendValidationError(
+      response,
+      'El identificador del resultado de aprendizaje no es válido.',
+      validation.error.issues,
+    );
+
+    return null;
+  }
+
+  return validation.data.id;
+}
+
 curriculumRouter.get(
   '/learning-outcomes',
   requirePermission('curriculum.view'),
@@ -96,6 +140,192 @@ curriculumRouter.get(
 
       response.status(200).json(result);
     } catch (error: unknown) {
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.post(
+  '/learning-outcomes',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      learningOutcomeMutationSchema.safeParse(
+        request.body,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'Los datos del resultado de aprendizaje no son válidos.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const learningOutcome = await createLearningOutcome(
+        validation.data,
+      );
+
+      response.status(201).json({
+        message:
+          'El resultado de aprendizaje se ha creado correctamente.',
+        learningOutcome,
+      });
+    } catch (error: unknown) {
+      if (error instanceof CurriculumMutationValidationError) {
+        sendMutationReferenceError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.put(
+  '/learning-outcomes/:id',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateLearningOutcomeId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    const validation =
+      learningOutcomeMutationSchema.safeParse(
+        request.body,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'Los datos del resultado de aprendizaje no son válidos.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const learningOutcome = await updateLearningOutcome(
+        id,
+        validation.data,
+      );
+
+      response.status(200).json({
+        message:
+          'El resultado de aprendizaje se ha actualizado correctamente.',
+        learningOutcome,
+      });
+    } catch (error: unknown) {
+      if (error instanceof CurriculumMutationValidationError) {
+        sendMutationReferenceError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.delete(
+  '/learning-outcomes/:id',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateLearningOutcomeId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    try {
+      const learningOutcome = await archiveLearningOutcome(id);
+
+      response.status(200).json({
+        message:
+          'El resultado de aprendizaje se ha archivado correctamente.',
+        learningOutcome,
+      });
+    } catch (error: unknown) {
+      if (error instanceof CurriculumMutationValidationError) {
+        sendMutationReferenceError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.patch(
+  '/learning-outcomes/:id/restore',
+  requirePermission('curriculum.manage'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const id = validateLearningOutcomeId(
+      request.params,
+      response,
+    );
+
+    if (id === null) {
+      return;
+    }
+
+    try {
+      const learningOutcome = await restoreLearningOutcome(id);
+
+      response.status(200).json({
+        message:
+          'El resultado de aprendizaje se ha restaurado correctamente.',
+        learningOutcome,
+      });
+    } catch (error: unknown) {
+      if (error instanceof CurriculumMutationValidationError) {
+        sendMutationReferenceError(
+          response,
+          error,
+        );
+
+        return;
+      }
+
       next(error);
     }
   },
