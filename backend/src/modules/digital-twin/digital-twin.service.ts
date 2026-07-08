@@ -11,6 +11,10 @@ import type {
 } from './digital-twin.types.js';
 
 import {
+  getAcademicFollowupContext,
+} from './tools/academic-followup.tool.js';
+
+import {
   getAcademicOverviewContext,
 } from './tools/academic-overview.tool.js';
 
@@ -250,14 +254,15 @@ async function classifyRequest(
             + 'se expresa como 1, 2, primero o segundo. La evaluación '
             + 'puede aparecer como primera, segunda, tercera, final, EV1, EV2 o EV3. '
             + 'SAFA Twin se usa en formación online y no recoge asistencia, faltas ni absentismo. '
-            + 'Si una petición habla de seguimiento online, progreso, riesgo, falta de evidencias o rendimiento, usa EVALUATION_REPORT o STUDENTS_QUERY. '
+            + 'Las peticiones sobre seguimiento online, progreso, riesgo académico, abandono, falta de evidencias, alumnos sin notas, bajo rendimiento o cruce de incidencias con notas son ACADEMIC_FOLLOWUP. '
+            + 'Las peticiones sobre actas, resultados, tasas, notas o comparación de evaluaciones son EVALUATION_REPORT. '
             + 'Las peticiones sobre incidencias son INCIDENTS_SUMMARY.\n\n'
             + `Petición: ${input.message}`,
         },
       ],
       instruction:
         'Devuelve exactamente un objeto JSON con esta forma: '
-        + '{"intent":"GENERAL_QUERY|STUDENTS_QUERY|EVALUATION_REPORT|INCIDENTS_SUMMARY|WORK_PLACEMENT_SUMMARY|EMAIL_DRAFT|CURRICULUM_QUERY",'
+        + '{"intent":"GENERAL_QUERY|STUDENTS_QUERY|EVALUATION_REPORT|ACADEMIC_FOLLOWUP|INCIDENTS_SUMMARY|WORK_PLACEMENT_SUMMARY|EMAIL_DRAFT|CURRICULUM_QUERY",'
         + '"programmeAcronyms":["DAM","DAW"],'
         + '"academicLevelNumber":1,'
         + '"evaluationCode":"EV1|EV2|EV3|FINAL|null",'
@@ -340,7 +345,9 @@ function getFallbackIntent(
     intent = 'EMAIL_DRAFT';
   } else if (/incidencia|incidencias|conflicto|conflictos|parte disciplinario|partes disciplinarios/.test(normalizedMessage)) {
     intent = 'INCIDENTS_SUMMARY';
-  } else if (/evaluacion|nota|calificacion|aprobado|suspenso|rendimiento|seguimiento|progreso|evidencia|evidencias|riesgo|abandono/.test(normalizedMessage)) {
+  } else if (/seguimiento|progreso|evidencia|evidencias|riesgo|abandono|sin nota|sin notas|no superar|bajo rendimiento|peor rendimiento/.test(normalizedMessage)) {
+    intent = 'ACADEMIC_FOLLOWUP';
+  } else if (/evaluacion|nota|calificacion|aprobado|suspenso|rendimiento/.test(normalizedMessage)) {
     intent = 'EVALUATION_REPORT';
   } else if (/practica|empresa|formacion en empresa|estancia/.test(normalizedMessage)) {
     intent = 'WORK_PLACEMENT_SUMMARY';
@@ -363,6 +370,10 @@ function getFallbackIntent(
 async function getContextForIntent(
   intent: DigitalTwinIntent,
 ): Promise<DigitalTwinContext> {
+  if (intent.intent === 'ACADEMIC_FOLLOWUP') {
+    return await getAcademicFollowupContext(intent);
+  }
+
   if (intent.intent === 'EVALUATION_REPORT') {
     return await getEvaluationContext(intent);
   }
@@ -397,6 +408,7 @@ function buildSystemPrompt(): string {
     'Trabajas únicamente con los datos recibidos desde SAFA Twin.',
     'SAFA Twin se usa para formación online; no inventes asistencia, faltas ni absentismo porque no se recogen en el sistema.',
     'No inventes cifras, alumnos, módulos, evaluaciones, incidencias ni conclusiones.',
+    'Cuando hables de riesgo académico, explica los indicadores reales usados: calificaciones ausentes, suspensos, estados no evaluables e incidencias abiertas.',
     'Si faltan datos o una tabla no está implementada, indícalo expresamente.',
     'Distingue siempre entre tasa de éxito y tasa de rendimiento.',
     'No conviertas estados no numéricos en notas.',
@@ -457,6 +469,14 @@ function getProposedAction(
     return {
       type: 'DOCUMENT_PREVIEW',
       label: 'Vista previa de informe académico',
+      status: 'preview_only',
+    };
+  }
+
+  if (intent.intent === 'ACADEMIC_FOLLOWUP') {
+    return {
+      type: 'ACADEMIC_FOLLOWUP_PREVIEW',
+      label: 'Vista previa de seguimiento académico online',
       status: 'preview_only',
     };
   }
