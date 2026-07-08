@@ -21,13 +21,6 @@ import type {
 
 import './DigitalTwinPage.css';
 
-const EXAMPLE_PROMPTS = [
-  'Genera un resumen de la segunda evaluación de 1º de DAM y DAW.',
-  'Prepara un correo para el alumnado de 2º de DAM y DAW sobre la reunión de prácticas.',
-  'Muéstrame el estado de la formación en empresa de 2º de DAW.',
-  'Resume el currículo cargado de DAM y DAW.',
-];
-
 function getErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
     return error.message;
@@ -43,6 +36,7 @@ function getErrorMessage(error: unknown): string {
 function getIntentLabel(intent: string): string {
   const labels: Record<string, string> = {
     GENERAL_QUERY: 'Consulta general',
+    STUDENTS_QUERY: 'Consulta de alumnado',
     EVALUATION_REPORT: 'Informe de evaluación',
     WORK_PLACEMENT_SUMMARY: 'Formación en empresa',
     EMAIL_DRAFT: 'Borrador de correo',
@@ -130,9 +124,9 @@ export function DigitalTwinPage() {
           <p className="eyebrow">Gemelo digital</p>
           <h2>Asistente académico local con Ollama</h2>
           <p>
-            Escribe una petición libre. SAFA Twin interpretará la consulta,
-            preparará datos académicos controlados desde el backend y pedirá
-            a Ollama una respuesta o una vista previa.
+            Escribe una petición libre en lenguaje natural. SAFA Twin
+            interpretará la consulta, preparará datos académicos controlados
+            desde el backend y pedirá a Ollama una respuesta o una vista previa.
           </p>
         </div>
 
@@ -165,28 +159,13 @@ export function DigitalTwinPage() {
           <textarea
             id="digital-twin-message"
             name="message"
-            placeholder="Ejemplo: Genera un informe de la segunda evaluación de 1º de DAM y DAW."
-            rows={8}
+            placeholder="Escribe aquí lo que necesitas: informes, consultas de alumnado, evaluaciones, prácticas, currículo o borradores de correo."
+            rows={10}
             value={message}
             onChange={(event) => {
               setMessage(event.target.value);
             }}
           />
-
-          <div className="digital-twin-examples">
-            {EXAMPLE_PROMPTS.map((example) => (
-              <button
-                className="button button-secondary"
-                key={example}
-                type="button"
-                onClick={() => {
-                  setMessage(example);
-                }}
-              >
-                {example}
-              </button>
-            ))}
-          </div>
 
           <button
             className="button button-primary"
@@ -200,13 +179,14 @@ export function DigitalTwinPage() {
         </form>
 
         <aside className="digital-twin-card digital-twin-help">
-          <h3>Qué hace esta primera versión</h3>
+          <h3>Capacidades internas disponibles</h3>
           <ul>
-            <li>Interpreta peticiones libres con Ollama.</li>
-            <li>Consulta datos reales mediante el backend.</li>
-            <li>Genera resúmenes, informes y borradores.</li>
-            <li>No envía correos automáticamente.</li>
-            <li>No modifica notas, matrículas ni documentos oficiales.</li>
+            <li>Consulta general del sistema académico.</li>
+            <li>Consulta de alumnado activo y datos de contacto.</li>
+            <li>Resumen de evaluaciones y rendimiento.</li>
+            <li>Estado de formación en empresa.</li>
+            <li>Resumen curricular de RA, CE y AF.</li>
+            <li>Borradores de correo sin envío automático.</li>
           </ul>
         </aside>
       </section>
