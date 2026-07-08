@@ -147,6 +147,12 @@ export const evaluationCriterionIdParamsSchema = z
   })
   .strict();
 
+export const trainingActionIdParamsSchema = z
+  .object({
+    id: positiveIdSchema,
+  })
+  .strict();
+
 const importCodeSchema = z
   .string({
     message:
@@ -264,6 +270,34 @@ const sortOrderSchema = z.coerce
   })
   .default(0);
 
+const optionalPlannedHoursSchema = z.preprocess(
+  (value) => {
+    if (
+      value === ''
+      || value === null
+      || value === undefined
+    ) {
+      return undefined;
+    }
+
+    return value;
+  },
+  z.coerce
+    .number({
+      message:
+        'Las horas previstas deben ser un número.',
+    })
+    .positive({
+      message:
+        'Las horas previstas deben ser mayores que cero.',
+    })
+    .max(9999.99, {
+      message:
+        'Las horas previstas no pueden superar 9999,99.',
+    })
+    .optional(),
+);
+
 export const learningOutcomeMutationSchema = z
   .object({
     moduleId: positiveIdSchema,
@@ -300,6 +334,28 @@ export const evaluationCriterionMutationSchema = z
   })
   .strict();
 
+export const trainingActionMutationSchema = z
+  .object({
+    moduleId: positiveIdSchema,
+    code: normalizedCodeSchema,
+    title: importTitleSchema,
+    description: optionalLongTextSchema,
+    plannedHours: optionalPlannedHoursSchema,
+    sourceReference:
+      optionalSourceReferenceSchema,
+    sortOrder: sortOrderSchema,
+    isActive: z
+      .boolean({
+        message:
+          'El estado activo debe ser verdadero o falso.',
+      })
+      .default(true),
+    relatedLearningOutcomeIds: z
+      .array(positiveIdSchema)
+      .default([]),
+  })
+  .strict();
+
 const moduleLocatorSchema = z
   .object({
     moduleCode: importCodeSchema,
@@ -332,33 +388,7 @@ const trainingActionImportSchema = moduleLocatorSchema
     code: importCodeSchema,
     title: importTitleSchema,
     description: optionalLongTextSchema,
-    plannedHours: z.preprocess(
-      (value) => {
-        if (
-          value === ''
-          || value === null
-          || value === undefined
-        ) {
-          return undefined;
-        }
-
-        return value;
-      },
-      z.coerce
-        .number({
-          message:
-            'Las horas previstas deben ser un número.',
-        })
-        .positive({
-          message:
-            'Las horas previstas deben ser mayores que cero.',
-        })
-        .max(9999.99, {
-          message:
-            'Las horas previstas no pueden superar 9999,99.',
-        })
-        .optional(),
-    ),
+    plannedHours: optionalPlannedHoursSchema,
     sourceReference:
       optionalSourceReferenceSchema,
     sortOrder: sortOrderSchema,
@@ -430,6 +460,10 @@ export type LearningOutcomeMutationInput = z.infer<
 
 export type EvaluationCriterionMutationInput = z.infer<
   typeof evaluationCriterionMutationSchema
+>;
+
+export type TrainingActionMutationInput = z.infer<
+  typeof trainingActionMutationSchema
 >;
 
 export type CurriculumImportInput = z.infer<
