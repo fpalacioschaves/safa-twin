@@ -41,6 +41,16 @@ export const digitalTwinMessageSchema = z.object({
     .max(4000, 'La petición no puede superar los 4000 caracteres.'),
 });
 
+export const digitalTwinConfirmActionSchema = z.object({
+  confirmationToken: z
+    .string({
+      message: 'El token de confirmación es obligatorio.',
+    })
+    .trim()
+    .min(20, 'El token de confirmación no es válido.')
+    .max(10000, 'El token de confirmación es demasiado largo.'),
+});
+
 export const digitalTwinIntentSchema = z.object({
   intent: z.enum([
     'GENERAL_QUERY',
@@ -76,6 +86,10 @@ export const digitalTwinIntentSchema = z.object({
 
 export type DigitalTwinMessageInput = z.infer<
   typeof digitalTwinMessageSchema
+>;
+
+export type DigitalTwinConfirmActionInput = z.infer<
+  typeof digitalTwinConfirmActionSchema
 >;
 
 export type DigitalTwinIntent = z.infer<
