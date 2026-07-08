@@ -1,14 +1,40 @@
-import { prisma } from '../../config/database.js';
-
 import {
   digitalTwinIntentSchema,
   type DigitalTwinIntent,
   type DigitalTwinMessageInput,
 } from './digital-twin.schemas.js';
 
-type AiRole = 'system' | 'user' | 'assistant';
+import type {
+  DigitalTwinContext,
+  DigitalTwinResponse,
+  DigitalTwinStatus,
+} from './digital-twin.types.js';
 
-type NumberLike = bigint | number | string | null;
+import {
+  getAcademicOverviewContext,
+} from './tools/academic-overview.tool.js';
+
+import {
+  getCurriculumContext,
+} from './tools/curriculum.tool.js';
+
+import {
+  getEmailAudienceContext,
+} from './tools/email-audience.tool.js';
+
+import {
+  getEvaluationContext,
+} from './tools/evaluations.tool.js';
+
+import {
+  getStudentsContext,
+} from './tools/students.tool.js';
+
+import {
+  getWorkPlacementContext,
+} from './tools/work-placements.tool.js';
+
+type AiRole = 'system' | 'user' | 'assistant';
 
 interface AiMessage {
   role: AiRole;
@@ -37,86 +63,6 @@ interface OllamaChatResponse {
   message?: {
     content?: unknown;
   };
-}
-
-interface EvaluationSummaryRow {
-  academic_year_name: string | null;
-  evaluation_code: string | null;
-  evaluation_name: string | null;
-  evaluation_status: string | null;
-  programme_acronym: string;
-  academic_level_number: NumberLike;
-  module_code: string;
-  module_name: string;
-  enrolled: NumberLike;
-  grades_recorded: NumberLike;
-  evaluated: NumberLike;
-  passed: NumberLike;
-  failed: NumberLike;
-  not_evaluated: NumberLike;
-  average_grade: NumberLike;
-}
-
-interface EmailAudienceRow {
-  id: NumberLike;
-  full_name: string;
-  email: string | null;
-  programme_acronym: string;
-  academic_level_number: NumberLike;
-}
-
-interface WorkPlacementSummaryRow {
-  programme_acronym: string;
-  academic_level_number: NumberLike;
-  students: NumberLike;
-  without_placement: NumberLike;
-  pending: NumberLike;
-  assigned: NumberLike;
-  active: NumberLike;
-  completed: NumberLike;
-  cancelled: NumberLike;
-  documentation_pending: NumberLike;
-}
-
-interface AcademicOverviewRow {
-  label: string;
-  total: NumberLike;
-}
-
-interface DigitalTwinContext {
-  kind:
-    | 'academic-overview'
-    | 'evaluation-summary'
-    | 'email-audience'
-    | 'work-placement-summary'
-    | 'curriculum-summary';
-  title: string;
-  summary: string;
-  warnings: string[];
-  data: unknown;
-}
-
-export interface DigitalTwinResponse {
-  provider: {
-    name: string;
-    model: string;
-  };
-  intent: DigitalTwinIntent;
-  assistantMessage: string;
-  context: DigitalTwinContext;
-  requiresConfirmation: boolean;
-  proposedAction: {
-    type: string;
-    label: string;
-    status: string;
-  } | null;
-}
-
-export interface DigitalTwinStatus {
-  provider: string;
-  model: string;
-  baseUrl: string | null;
-  enabled: boolean;
 }
 
 class OllamaProvider implements AiProvider {
@@ -273,71 +219,6 @@ function getAiProvider(): AiProvider {
   );
 }
 
-function toNumber(value: NumberLike): number {
-  if (value === null) {
-    return 0;
-  }
-
-  return Number(value);
-}
-
-function toNullableNumber(value: NumberLike): number | null {
-  if (value === null) {
-    return null;
-  }
-
-  const parsedValue = Number(value);
-
-  return Number.isFinite(parsedValue)
-    ? parsedValue
-    : null;
-}
-
-function roundPercentage(value: number): number {
-  return Math.round(value * 100) / 100;
-}
-
-function normalizeProgrammeAcronyms(
-  acronyms: string[],
-): string[] {
-  return Array.from(
-    new Set(
-      acronyms
-        .map((item) => item.trim().toUpperCase())
-        .filter((item) => /^[A-Z0-9]+$/.test(item)),
-    ),
-  );
-}
-
-function addProgrammeAndLevelFilters(
-  clauses: string[],
-  values: unknown[],
-  intent: DigitalTwinIntent,
-): void {
-  const acronyms = normalizeProgrammeAcronyms(
-    intent.programmeAcronyms,
-  );
-
-  if (acronyms.length > 0) {
-    clauses.push(
-      `vp.acronym IN (${acronyms.map(() => '?').join(', ')})`,
-    );
-
-    values.push(...acronyms);
-  }
-
-  if (intent.academicLevelNumber !== null) {
-    clauses.push('al.number = ?');
-    values.push(intent.academicLevelNumber);
-  }
-}
-
-function getWhereSql(clauses: string[]): string {
-  return clauses.length === 0
-    ? ''
-    : `WHERE ${clauses.join(' AND ')}`;
-}
-
 async function classifyRequest(
   provider: AiProvider,
   input: DigitalTwinMessageInput,
@@ -369,7 +250,7 @@ async function classifyRequest(
       ],
       instruction:
         'Devuelve exactamente un objeto JSON con esta forma: '
-        + '{"intent":"GENERAL_QUERY|EVALUATION_REPORT|WORK_PLACEMENT_SUMMARY|EMAIL_DRAFT|CURRICULUM_QUERY",'
+        + '{"intent":"GENERAL_QUERY|STUDENTS_QUERY|EVALUATION_REPORT|WORK_PLACEMENT_SUMMARY|EMAIL_DRAFT|CURRICULUM_QUERY",'
         + '"programmeAcronyms":["DAM","DAW"],'
         + '"academicLevelNumber":1,'
         + '"evaluationCode":"EV1|EV2|EV3|FINAL|null",'
@@ -456,6 +337,8 @@ function getFallbackIntent(
     intent = 'WORK_PLACEMENT_SUMMARY';
   } else if (/curriculo|ra|resultado de aprendizaje|ce|criterio|af|accion formativa/.test(normalizedMessage)) {
     intent = 'CURRICULUM_QUERY';
+  } else if (/alumno|alumna|alumnado|estudiante|matricula/.test(normalizedMessage)) {
+    intent = 'STUDENTS_QUERY';
   }
 
   return {
@@ -465,519 +348,6 @@ function getFallbackIntent(
     evaluationCode,
     topic: message,
     confidence: 0.35,
-  };
-}
-
-async function getEvaluationContext(
-  intent: DigitalTwinIntent,
-): Promise<DigitalTwinContext> {
-  const clauses = [
-    'ay.is_current = TRUE',
-    'en.deleted_at IS NULL',
-    'en.status = \'ENROLLED\'',
-    'e.deleted_at IS NULL',
-  ];
-
-  const values: unknown[] = [];
-
-  addProgrammeAndLevelFilters(
-    clauses,
-    values,
-    intent,
-  );
-
-  if (intent.evaluationCode !== null) {
-    clauses.push(
-      '(UPPER(e.code) = ? OR UPPER(e.name) LIKE ?)',
-    );
-
-    values.push(
-      intent.evaluationCode.toUpperCase(),
-      `%${intent.evaluationCode.toUpperCase()}%`,
-    );
-  }
-
-  const rows = await prisma.$queryRawUnsafe<EvaluationSummaryRow[]>(
-    `
-      SELECT
-        ay.name AS academic_year_name,
-        e.code AS evaluation_code,
-        e.name AS evaluation_name,
-        e.status AS evaluation_status,
-        vp.acronym AS programme_acronym,
-        al.number AS academic_level_number,
-        m.code AS module_code,
-        m.name AS module_name,
-        COUNT(DISTINCT en.id) AS enrolled,
-        COUNT(DISTINCT g.id) AS grades_recorded,
-        SUM(
-          CASE
-            WHEN g.id IS NOT NULL
-              AND (
-                g.final_grade IS NOT NULL
-                OR g.numeric_grade IS NOT NULL
-                OR COALESCE(gs.is_evaluable, FALSE) = TRUE
-              )
-            THEN 1
-            ELSE 0
-          END
-        ) AS evaluated,
-        SUM(
-          CASE
-            WHEN g.id IS NOT NULL
-              AND (
-                g.is_passed = TRUE
-                OR COALESCE(g.final_grade, g.numeric_grade) >= 5
-              )
-            THEN 1
-            ELSE 0
-          END
-        ) AS passed,
-        SUM(
-          CASE
-            WHEN g.id IS NOT NULL
-              AND (
-                g.final_grade IS NOT NULL
-                OR g.numeric_grade IS NOT NULL
-                OR COALESCE(gs.is_evaluable, FALSE) = TRUE
-              )
-              AND NOT (
-                g.is_passed = TRUE
-                OR COALESCE(g.final_grade, g.numeric_grade) >= 5
-              )
-            THEN 1
-            ELSE 0
-          END
-        ) AS failed,
-        SUM(
-          CASE
-            WHEN g.id IS NULL
-              OR NOT (
-                g.final_grade IS NOT NULL
-                OR g.numeric_grade IS NOT NULL
-                OR COALESCE(gs.is_evaluable, FALSE) = TRUE
-              )
-            THEN 1
-            ELSE 0
-          END
-        ) AS not_evaluated,
-        AVG(COALESCE(g.final_grade, g.numeric_grade)) AS average_grade
-      FROM enrolments en
-      INNER JOIN academic_years ay ON ay.id = en.academic_year_id
-      INNER JOIN modules m ON m.id = en.module_id
-      INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
-      INNER JOIN academic_levels al ON al.id = m.academic_level_id
-      INNER JOIN evaluations e
-        ON e.academic_year_id = en.academic_year_id
-        AND e.centre_id = en.centre_id
-      LEFT JOIN grades g
-        ON g.enrolment_id = en.id
-        AND g.evaluation_id = e.id
-        AND g.deleted_at IS NULL
-      LEFT JOIN grade_statuses gs ON gs.id = g.grade_status_id
-      ${getWhereSql(clauses)}
-      GROUP BY
-        ay.name,
-        e.code,
-        e.name,
-        e.status,
-        vp.acronym,
-        al.number,
-        m.code,
-        m.name,
-        m.sort_order
-      ORDER BY
-        ay.name DESC,
-        e.sequence ASC,
-        vp.acronym ASC,
-        al.number ASC,
-        m.sort_order ASC,
-        m.name ASC
-      LIMIT 120
-    `,
-    ...values,
-  );
-
-  const items = rows.map((row) => {
-    const enrolled = toNumber(row.enrolled);
-    const evaluated = toNumber(row.evaluated);
-    const passed = toNumber(row.passed);
-
-    return {
-      academicYear: row.academic_year_name,
-      evaluation: {
-        code: row.evaluation_code,
-        name: row.evaluation_name,
-        status: row.evaluation_status,
-      },
-      programme: row.programme_acronym,
-      academicLevel: toNumber(row.academic_level_number),
-      module: {
-        code: row.module_code,
-        name: row.module_name,
-      },
-      enrolled,
-      gradesRecorded: toNumber(row.grades_recorded),
-      evaluated,
-      passed,
-      failed: toNumber(row.failed),
-      notEvaluated: toNumber(row.not_evaluated),
-      successRate: evaluated > 0
-        ? roundPercentage((passed / evaluated) * 100)
-        : null,
-      performanceRate: enrolled > 0
-        ? roundPercentage((passed / enrolled) * 100)
-        : null,
-      averageGrade: toNullableNumber(row.average_grade),
-    };
-  });
-
-  const warnings: string[] = [];
-
-  if (items.length === 0) {
-    warnings.push(
-      'No se han encontrado datos de evaluación con los filtros interpretados.',
-    );
-  }
-
-  if (intent.evaluationCode === null) {
-    warnings.push(
-      'No se indicó una evaluación concreta. Se han incluido las evaluaciones disponibles del curso actual.',
-    );
-  }
-
-  return {
-    kind: 'evaluation-summary',
-    title: 'Resumen de evaluación',
-    summary:
-      `Se han localizado ${items.length} combinaciones de evaluación, ciclo, curso y módulo.`,
-    warnings,
-    data: {
-      filters: intent,
-      items,
-    },
-  };
-}
-
-async function getEmailAudienceContext(
-  intent: DigitalTwinIntent,
-): Promise<DigitalTwinContext> {
-  const clauses = [
-    'ay.is_current = TRUE',
-    'en.deleted_at IS NULL',
-    'en.status = \'ENROLLED\'',
-    's.deleted_at IS NULL',
-    's.is_active = TRUE',
-  ];
-
-  const values: unknown[] = [];
-
-  addProgrammeAndLevelFilters(
-    clauses,
-    values,
-    intent,
-  );
-
-  const rows = await prisma.$queryRawUnsafe<EmailAudienceRow[]>(
-    `
-      SELECT DISTINCT
-        s.id,
-        CONCAT(
-          s.first_name,
-          ' ',
-          s.last_name_1,
-          COALESCE(CONCAT(' ', s.last_name_2), '')
-        ) AS full_name,
-        s.email,
-        vp.acronym AS programme_acronym,
-        al.number AS academic_level_number
-      FROM students s
-      INNER JOIN enrolments en ON en.student_id = s.id
-      INNER JOIN academic_years ay ON ay.id = en.academic_year_id
-      INNER JOIN modules m ON m.id = en.module_id
-      INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
-      INNER JOIN academic_levels al ON al.id = m.academic_level_id
-      ${getWhereSql(clauses)}
-      ORDER BY
-        vp.acronym ASC,
-        al.number ASC,
-        s.last_name_1 ASC,
-        s.last_name_2 ASC,
-        s.first_name ASC
-      LIMIT 250
-    `,
-    ...values,
-  );
-
-  const recipients = rows.map((row) => ({
-    id: toNumber(row.id),
-    name: row.full_name,
-    email: row.email,
-    programme: row.programme_acronym,
-    academicLevel: toNumber(row.academic_level_number),
-  }));
-
-  const withEmail = recipients.filter(
-    (recipient) => Boolean(recipient.email),
-  );
-
-  const withoutEmail = recipients.filter(
-    (recipient) => !recipient.email,
-  );
-
-  const warnings: string[] = [];
-
-  if (recipients.length === 0) {
-    warnings.push(
-      'No se han encontrado alumnos con los filtros interpretados.',
-    );
-  }
-
-  if (withoutEmail.length > 0) {
-    warnings.push(
-      `${withoutEmail.length} alumnos no tienen correo electrónico registrado.`,
-    );
-  }
-
-  return {
-    kind: 'email-audience',
-    title: 'Audiencia para borrador de correo',
-    summary:
-      `Se han localizado ${recipients.length} alumnos; ${withEmail.length} tienen email registrado.`,
-    warnings,
-    data: {
-      filters: intent,
-      topic: intent.topic,
-      recipientsTotal: recipients.length,
-      recipientsWithEmail: withEmail.length,
-      recipientsWithoutEmail: withoutEmail.length,
-      recipientPreview: withEmail.slice(0, 25),
-      missingEmailPreview: withoutEmail.slice(0, 10),
-    },
-  };
-}
-
-async function getWorkPlacementContext(
-  intent: DigitalTwinIntent,
-): Promise<DigitalTwinContext> {
-  const clauses = [
-    'ay.is_current = TRUE',
-    'en.deleted_at IS NULL',
-    'en.status = \'ENROLLED\'',
-    's.deleted_at IS NULL',
-    's.is_active = TRUE',
-  ];
-
-  const values: unknown[] = [];
-
-  addProgrammeAndLevelFilters(
-    clauses,
-    values,
-    intent,
-  );
-
-  const rows = await prisma.$queryRawUnsafe<WorkPlacementSummaryRow[]>(
-    `
-      WITH student_scope AS (
-        SELECT DISTINCT
-          s.id AS student_id,
-          ay.id AS academic_year_id,
-          en.centre_id,
-          vp.acronym AS programme_acronym,
-          al.number AS academic_level_number
-        FROM students s
-        INNER JOIN enrolments en ON en.student_id = s.id
-        INNER JOIN academic_years ay ON ay.id = en.academic_year_id
-        INNER JOIN modules m ON m.id = en.module_id
-        INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
-        INNER JOIN academic_levels al ON al.id = m.academic_level_id
-        ${getWhereSql(clauses)}
-      )
-      SELECT
-        student_scope.programme_acronym,
-        student_scope.academic_level_number,
-        COUNT(DISTINCT student_scope.student_id) AS students,
-        SUM(CASE WHEN wp.id IS NULL THEN 1 ELSE 0 END) AS without_placement,
-        SUM(CASE WHEN wp.status = 'PENDING' THEN 1 ELSE 0 END) AS pending,
-        SUM(CASE WHEN wp.status = 'ASSIGNED' THEN 1 ELSE 0 END) AS assigned,
-        SUM(CASE WHEN wp.status = 'ACTIVE' THEN 1 ELSE 0 END) AS active,
-        SUM(CASE WHEN wp.status = 'COMPLETED' THEN 1 ELSE 0 END) AS completed,
-        SUM(CASE WHEN wp.status = 'CANCELLED' THEN 1 ELSE 0 END) AS cancelled,
-        SUM(CASE WHEN wp.documentation_pending = TRUE THEN 1 ELSE 0 END) AS documentation_pending
-      FROM student_scope
-      LEFT JOIN work_placements wp
-        ON wp.student_id = student_scope.student_id
-        AND wp.academic_year_id = student_scope.academic_year_id
-        AND wp.centre_id = student_scope.centre_id
-        AND wp.deleted_at IS NULL
-      GROUP BY
-        student_scope.programme_acronym,
-        student_scope.academic_level_number
-      ORDER BY
-        student_scope.programme_acronym ASC,
-        student_scope.academic_level_number ASC
-      LIMIT 50
-    `,
-    ...values,
-  );
-
-  const items = rows.map((row) => ({
-    programme: row.programme_acronym,
-    academicLevel: toNumber(row.academic_level_number),
-    students: toNumber(row.students),
-    withoutPlacement: toNumber(row.without_placement),
-    pending: toNumber(row.pending),
-    assigned: toNumber(row.assigned),
-    active: toNumber(row.active),
-    completed: toNumber(row.completed),
-    cancelled: toNumber(row.cancelled),
-    documentationPending: toNumber(row.documentation_pending),
-  }));
-
-  const warnings = items.length === 0
-    ? [
-      'No se han encontrado alumnos o estancias formativas con los filtros interpretados.',
-    ]
-    : [];
-
-  return {
-    kind: 'work-placement-summary',
-    title: 'Resumen de formación en empresa',
-    summary:
-      `Se han localizado ${items.length} agrupaciones de formación en empresa.`,
-    warnings,
-    data: {
-      filters: intent,
-      items,
-    },
-  };
-}
-
-async function getCurriculumContext(
-  intent: DigitalTwinIntent,
-): Promise<DigitalTwinContext> {
-  const clauses = [
-    'lo.deleted_at IS NULL',
-    'lo.is_active = TRUE',
-  ];
-
-  const values: unknown[] = [];
-
-  addProgrammeAndLevelFilters(
-    clauses,
-    values,
-    intent,
-  );
-
-  const rows = await prisma.$queryRawUnsafe<AcademicOverviewRow[]>(
-    `
-      SELECT 'Resultados de Aprendizaje' AS label, COUNT(DISTINCT lo.id) AS total
-      FROM module_learning_outcomes lo
-      INNER JOIN modules m ON m.id = lo.module_id
-      INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
-      INNER JOIN academic_levels al ON al.id = m.academic_level_id
-      ${getWhereSql(clauses)}
-      UNION ALL
-      SELECT 'Criterios de Evaluación' AS label, COUNT(DISTINCT ec.id) AS total
-      FROM module_evaluation_criteria ec
-      INNER JOIN module_learning_outcomes lo ON lo.id = ec.learning_outcome_id
-      INNER JOIN modules m ON m.id = lo.module_id
-      INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
-      INNER JOIN academic_levels al ON al.id = m.academic_level_id
-      ${getWhereSql(clauses)}
-      UNION ALL
-      SELECT 'Acciones Formativas' AS label, COUNT(DISTINCT ta.id) AS total
-      FROM module_training_actions ta
-      INNER JOIN modules m ON m.id = ta.module_id
-      INNER JOIN vocational_programmes vp ON vp.id = m.vocational_programme_id
-      INNER JOIN academic_levels al ON al.id = m.academic_level_id
-      WHERE ta.deleted_at IS NULL
-        AND ta.is_active = TRUE
-    `,
-    ...values,
-    ...values,
-  );
-
-  const items = rows.map((row) => ({
-    label: row.label,
-    total: toNumber(row.total),
-  }));
-
-  return {
-    kind: 'curriculum-summary',
-    title: 'Resumen curricular',
-    summary:
-      'Se ha preparado un resumen de Resultados de Aprendizaje, Criterios de Evaluación y Acciones Formativas.',
-    warnings: [],
-    data: {
-      filters: intent,
-      items,
-    },
-  };
-}
-
-async function getAcademicOverviewContext(
-  intent: DigitalTwinIntent,
-): Promise<DigitalTwinContext> {
-  const rows = await prisma.$queryRawUnsafe<AcademicOverviewRow[]>(
-    `
-      SELECT 'Cursos académicos activos' AS label, COUNT(*) AS total
-      FROM academic_years
-      WHERE deleted_at IS NULL AND is_active = TRUE
-      UNION ALL
-      SELECT 'Ciclos formativos activos' AS label, COUNT(*) AS total
-      FROM vocational_programmes
-      WHERE deleted_at IS NULL AND is_active = TRUE
-      UNION ALL
-      SELECT 'Módulos profesionales activos' AS label, COUNT(*) AS total
-      FROM modules
-      WHERE deleted_at IS NULL AND is_active = TRUE
-      UNION ALL
-      SELECT 'Alumnos activos' AS label, COUNT(*) AS total
-      FROM students
-      WHERE deleted_at IS NULL AND is_active = TRUE
-      UNION ALL
-      SELECT 'Matrículas activas del curso actual' AS label, COUNT(*) AS total
-      FROM enrolments en
-      INNER JOIN academic_years ay ON ay.id = en.academic_year_id
-      WHERE ay.is_current = TRUE
-        AND en.deleted_at IS NULL
-        AND en.status = 'ENROLLED'
-      UNION ALL
-      SELECT 'Evaluaciones del curso actual' AS label, COUNT(*) AS total
-      FROM evaluations e
-      INNER JOIN academic_years ay ON ay.id = e.academic_year_id
-      WHERE ay.is_current = TRUE
-        AND e.deleted_at IS NULL
-      UNION ALL
-      SELECT 'Estancias formativas del curso actual' AS label, COUNT(*) AS total
-      FROM work_placements wp
-      INNER JOIN academic_years ay ON ay.id = wp.academic_year_id
-      WHERE ay.is_current = TRUE
-        AND wp.deleted_at IS NULL
-    `,
-  );
-
-  const items = rows.map((row) => ({
-    label: row.label,
-    total: toNumber(row.total),
-  }));
-
-  return {
-    kind: 'academic-overview',
-    title: 'Resumen general de SAFA Twin',
-    summary:
-      'Se ha preparado un resumen global con los principales datos académicos disponibles.',
-    warnings: intent.programmeAcronyms.length > 0
-      || intent.academicLevelNumber !== null
-      ? [
-        'La petición se ha tratado como consulta general; algunos filtros interpretados pueden no aplicarse al resumen global.',
-      ]
-      : [],
-    data: {
-      filters: intent,
-      items,
-    },
   };
 }
 
@@ -998,6 +368,10 @@ async function getContextForIntent(
 
   if (intent.intent === 'CURRICULUM_QUERY') {
     return await getCurriculumContext(intent);
+  }
+
+  if (intent.intent === 'STUDENTS_QUERY') {
+    return await getStudentsContext(intent);
   }
 
   return await getAcademicOverviewContext(intent);
