@@ -33,6 +33,9 @@ import {
   CurriculumPage,
 } from './CurriculumPage';
 import {
+  DigitalTwinPage,
+} from './DigitalTwinPage';
+import {
   DocumentTemplatesPage,
 } from './DocumentTemplatesPage';
 import {
@@ -92,6 +95,7 @@ type ActiveSection =
   | 'company-training-reports'
   | 'document-templates'
   | 'generated-documents'
+  | 'digital-twin'
   | 'help';
 
 interface NavigationButtonProps {
@@ -239,6 +243,10 @@ function getPageHeader(
       eyebrow: 'Documentos generados',
       title: 'Historial documental',
     },
+    'digital-twin': {
+      eyebrow: 'Gemelo digital',
+      title: 'Asistente académico con IA local',
+    },
     help: {
       eyebrow: 'Ayuda',
       title: 'Guía de uso de SAFA Twin',
@@ -313,6 +321,7 @@ function DashboardHome({
             <li>Informes de formación en empresa</li>
             <li>Plantillas documentales</li>
             <li>Historial documental</li>
+            <li>Gemelo digital con Ollama</li>
             <li>Ayuda integrada de la aplicación</li>
           </ul>
         </article>
@@ -449,6 +458,8 @@ export function DashboardPage({
     activeContent = <DocumentTemplatesPage />;
   } else if (activeSection === 'generated-documents') {
     activeContent = <GeneratedDocumentsPage />;
+  } else if (activeSection === 'digital-twin') {
+    activeContent = <DigitalTwinPage />;
   } else if (activeSection === 'help') {
     activeContent = <HelpPage />;
   } else {
@@ -477,6 +488,7 @@ export function DashboardPage({
     { id: 'company-training-reports', label: 'Inf. empresa' },
     { id: 'document-templates', label: 'Plantillas' },
     { id: 'generated-documents', label: 'Documentos' },
+    { id: 'digital-twin', label: 'Gemelo digital' },
     { id: 'help', label: 'Ayuda' },
   ];
 
@@ -616,9 +628,12 @@ export function DashboardPage({
             label="Historial documental"
             onSelect={setActiveSection}
           />
-          <span className="nav-link nav-link-disabled">
-            Gemelo digital
-          </span>
+          <NavigationButton
+            activeSection={activeSection}
+            id="digital-twin"
+            label="Gemelo digital"
+            onSelect={setActiveSection}
+          />
 
           <p className="nav-section-label">Soporte</p>
           <NavigationButton
