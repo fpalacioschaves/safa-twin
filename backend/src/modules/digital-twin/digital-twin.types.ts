@@ -22,6 +22,16 @@ export interface DigitalTwinContext {
   data: unknown;
 }
 
+export interface DigitalTwinProposedAction {
+  type: string;
+  label: string;
+  status: string;
+  documentType?: string;
+  confirmationEndpoint?: string;
+  confirmationToken?: string;
+  previewSummary?: string;
+}
+
 export interface DigitalTwinResponse {
   provider: {
     name: string;
@@ -31,11 +41,7 @@ export interface DigitalTwinResponse {
   assistantMessage: string;
   context: DigitalTwinContext;
   requiresConfirmation: boolean;
-  proposedAction: {
-    type: string;
-    label: string;
-    status: string;
-  } | null;
+  proposedAction: DigitalTwinProposedAction | null;
 }
 
 export interface DigitalTwinStatus {
