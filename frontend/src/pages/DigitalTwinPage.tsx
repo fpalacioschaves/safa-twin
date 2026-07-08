@@ -10,11 +10,13 @@ import {
 } from '../services/api.service';
 
 import {
+  confirmDigitalTwinAction,
   getDigitalTwinStatus,
   sendDigitalTwinMessage,
 } from '../services/digitalTwin.service';
 
 import type {
+  DigitalTwinActionConfirmationResponse,
   DigitalTwinResponse,
   DigitalTwinStatus,
 } from '../types/digitalTwin';
@@ -65,10 +67,16 @@ export function DigitalTwinPage() {
   const [response, setResponse] =
     useState<DigitalTwinResponse | null>(null);
 
+  const [confirmationResult, setConfirmationResult] =
+    useState<DigitalTwinActionConfirmationResponse | null>(null);
+
   const [isLoadingStatus, setIsLoadingStatus] =
     useState(false);
 
   const [isSending, setIsSending] = useState(false);
+
+  const [isConfirmingAction, setIsConfirmingAction] =
+    useState(false);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -105,6 +113,7 @@ export function DigitalTwinPage() {
 
     setIsSending(true);
     setError(null);
+    setConfirmationResult(null);
 
     try {
       const result = await sendDigitalTwinMessage(
@@ -116,6 +125,40 @@ export function DigitalTwinPage() {
       setError(getErrorMessage(sendError));
     } finally {
       setIsSending(false);
+    }
+  }
+
+  async function handleConfirmAction(): Promise<void> {
+    const confirmationToken = response
+      ?.proposedAction
+      ?.confirmationToken;
+
+    if (!confirmationToken) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      '¿Confirmas la generación del documento propuesto por el Gemelo Digital?',
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsConfirmingAction(true);
+    setError(null);
+    setConfirmationResult(null);
+
+    try {
+      const result = await confirmDigitalTwinAction(
+        confirmationToken,
+      );
+
+      setConfirmationResult(result);
+    } catch (confirmationError: unknown) {
+      setError(getErrorMessage(confirmationError));
+    } finally {
+      setIsConfirmingAction(false);
     }
   }
 
@@ -144,6 +187,18 @@ export function DigitalTwinPage() {
       {error && (
         <div className="alert alert-error">
           {error}
+        </div>
+      )}
+
+      {confirmationResult && (
+        <div className="alert alert-success digital-twin-document-result">
+          <strong>{confirmationResult.message}</strong>
+          <a
+            className="digital-twin-download-link"
+            href={confirmationResult.document.downloadUrl}
+          >
+            Descargar {confirmationResult.document.fileName}
+          </a>
         </div>
       )}
 
@@ -186,7 +241,9 @@ export function DigitalTwinPage() {
             <li>Consulta general del sistema académico.</li>
             <li>Consulta de alumnado activo y datos de contacto.</li>
             <li>Seguimiento académico online por calificaciones, estados e incidencias.</li>
+            <li>Generación confirmada de CSV de seguimiento académico.</li>
             <li>Resumen de evaluaciones y rendimiento.</li>
+            <li>Generación confirmada de CSV de evaluación.</li>
             <li>Resumen de incidencias académicas y de empresa.</li>
             <li>Estado de formación en empresa.</li>
             <li>Resumen curricular de RA, CE y AF.</li>
@@ -225,6 +282,33 @@ export function DigitalTwinPage() {
                   Estado: {response.proposedAction.status}. Esta acción
                   queda como vista previa y requiere confirmación humana.
                 </span>
+
+                {response.proposedAction.documentType && (
+                  <span>
+                    Tipo documental: {response.proposedAction.documentType}
+                  </span>
+                )}
+
+                {response.proposedAction.previewSummary && (
+                  <span>{response.proposedAction.previewSummary}</span>
+                )}
+
+                {response.proposedAction.confirmationToken && (
+                  <button
+                    className="button button-primary digital-twin-confirm-button"
+                    type="button"
+                    disabled={isConfirmingAction || confirmationResult !== null}
+                    onClick={() => {
+                      void handleConfirmAction();
+                    }}
+                  >
+                    {isConfirmingAction
+                      ? 'Generando documento...'
+                      : confirmationResult
+                        ? 'Documento generado'
+                        : 'Confirmar y generar documento'}
+                  </button>
+                )}
               </div>
             )}
           </article>
