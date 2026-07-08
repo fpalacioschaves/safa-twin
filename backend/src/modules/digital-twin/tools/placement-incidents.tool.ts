@@ -63,7 +63,8 @@ function toIsoStringOrNull(
 }
 
 function buildScope(
-  intent: DigitalTwinIntent): {
+  intent: DigitalTwinIntent,
+): {
   clauses: string[];
   values: unknown[];
 } {
@@ -161,7 +162,6 @@ export async function getPlacementIncidentsContext(
       LIMIT 100
     `,
     ...scope.values,
-    ...scope.values,
   );
 
   const previewRows = await prisma.$queryRawUnsafe<CombinedIncidentPreviewRow[]>(
@@ -239,7 +239,6 @@ export async function getPlacementIncidentsContext(
         student_name ASC
       LIMIT 25
     `,
-    ...scope.values,
     ...scope.values,
   );
 
