@@ -15,6 +15,7 @@ import {
 import {
   CurriculumImportValidationError,
   importCurriculum,
+  listEvaluationCriteria,
   listLearningOutcomes,
   listTrainingActions,
 } from './curriculum.service.js';
@@ -90,6 +91,41 @@ curriculumRouter.get(
 
     try {
       const result = await listLearningOutcomes(
+        validation.data,
+      );
+
+      response.status(200).json(result);
+    } catch (error: unknown) {
+      next(error);
+    }
+  },
+);
+
+curriculumRouter.get(
+  '/evaluation-criteria',
+  requirePermission('curriculum.view'),
+  async (
+    request,
+    response,
+    next,
+  ): Promise<void> => {
+    const validation =
+      curriculumListQuerySchema.safeParse(
+        request.query,
+      );
+
+    if (!validation.success) {
+      sendValidationError(
+        response,
+        'Los filtros para consultar criterios de evaluación no son válidos.',
+        validation.error.issues,
+      );
+
+      return;
+    }
+
+    try {
+      const result = await listEvaluationCriteria(
         validation.data,
       );
 
