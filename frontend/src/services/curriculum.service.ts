@@ -6,6 +6,8 @@ import type {
   CurriculumEvaluationCriteriaResponse,
   CurriculumImportRequest,
   CurriculumImportResponse,
+  CurriculumLearningOutcomeMutationRequest,
+  CurriculumLearningOutcomeMutationResponse,
   CurriculumLearningOutcomesResponse,
   CurriculumListQuery,
   CurriculumTrainingActionsResponse,
@@ -96,6 +98,53 @@ export async function getCurriculumLearningOutcomes(
     queryString
       ? `${BASE_URL}/learning-outcomes?${queryString}`
       : `${BASE_URL}/learning-outcomes`,
+  );
+}
+
+export async function createCurriculumLearningOutcome(
+  request: CurriculumLearningOutcomeMutationRequest,
+): Promise<CurriculumLearningOutcomeMutationResponse> {
+  return apiRequest<CurriculumLearningOutcomeMutationResponse>(
+    `${BASE_URL}/learning-outcomes`,
+    {
+      method: 'POST',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function updateCurriculumLearningOutcome(
+  id: number,
+  request: CurriculumLearningOutcomeMutationRequest,
+): Promise<CurriculumLearningOutcomeMutationResponse> {
+  return apiRequest<CurriculumLearningOutcomeMutationResponse>(
+    `${BASE_URL}/learning-outcomes/${id}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function archiveCurriculumLearningOutcome(
+  id: number,
+): Promise<CurriculumLearningOutcomeMutationResponse> {
+  return apiRequest<CurriculumLearningOutcomeMutationResponse>(
+    `${BASE_URL}/learning-outcomes/${id}`,
+    {
+      method: 'DELETE',
+    },
+  );
+}
+
+export async function restoreCurriculumLearningOutcome(
+  id: number,
+): Promise<CurriculumLearningOutcomeMutationResponse> {
+  return apiRequest<CurriculumLearningOutcomeMutationResponse>(
+    `${BASE_URL}/learning-outcomes/${id}/restore`,
+    {
+      method: 'PATCH',
+    },
   );
 }
 
