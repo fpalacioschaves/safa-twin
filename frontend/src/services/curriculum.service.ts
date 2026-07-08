@@ -4,6 +4,8 @@ import {
 
 import type {
   CurriculumEvaluationCriteriaResponse,
+  CurriculumEvaluationCriterionMutationRequest,
+  CurriculumEvaluationCriterionMutationResponse,
   CurriculumImportRequest,
   CurriculumImportResponse,
   CurriculumLearningOutcomeMutationRequest,
@@ -157,6 +159,53 @@ export async function getCurriculumEvaluationCriteria(
     queryString
       ? `${BASE_URL}/evaluation-criteria?${queryString}`
       : `${BASE_URL}/evaluation-criteria`,
+  );
+}
+
+export async function createCurriculumEvaluationCriterion(
+  request: CurriculumEvaluationCriterionMutationRequest,
+): Promise<CurriculumEvaluationCriterionMutationResponse> {
+  return apiRequest<CurriculumEvaluationCriterionMutationResponse>(
+    `${BASE_URL}/evaluation-criteria`,
+    {
+      method: 'POST',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function updateCurriculumEvaluationCriterion(
+  id: number,
+  request: CurriculumEvaluationCriterionMutationRequest,
+): Promise<CurriculumEvaluationCriterionMutationResponse> {
+  return apiRequest<CurriculumEvaluationCriterionMutationResponse>(
+    `${BASE_URL}/evaluation-criteria/${id}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function archiveCurriculumEvaluationCriterion(
+  id: number,
+): Promise<CurriculumEvaluationCriterionMutationResponse> {
+  return apiRequest<CurriculumEvaluationCriterionMutationResponse>(
+    `${BASE_URL}/evaluation-criteria/${id}`,
+    {
+      method: 'DELETE',
+    },
+  );
+}
+
+export async function restoreCurriculumEvaluationCriterion(
+  id: number,
+): Promise<CurriculumEvaluationCriterionMutationResponse> {
+  return apiRequest<CurriculumEvaluationCriterionMutationResponse>(
+    `${BASE_URL}/evaluation-criteria/${id}/restore`,
+    {
+      method: 'PATCH',
+    },
   );
 }
 
