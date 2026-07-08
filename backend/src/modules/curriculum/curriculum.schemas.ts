@@ -135,6 +135,12 @@ export const curriculumListQuerySchema = z
   })
   .strict();
 
+export const learningOutcomeIdParamsSchema = z
+  .object({
+    id: positiveIdSchema,
+  })
+  .strict();
+
 const importCodeSchema = z
   .string({
     message:
@@ -149,6 +155,13 @@ const importCodeSchema = z
     message:
       'El código no puede superar los 50 caracteres.',
   });
+
+const learningOutcomeCodeSchema = importCodeSchema
+  .regex(/^[A-Za-z0-9]+(?:[-_.][A-Za-z0-9]+)*$/, {
+    message:
+      'El código del RA solo puede contener letras, números, puntos, guiones y guiones bajos.',
+  })
+  .transform((value) => value.toUpperCase());
 
 function createImportTitleSchema(
   maximumLength: number,
@@ -244,6 +257,24 @@ const sortOrderSchema = z.coerce
       'El orden no puede superar 9999.',
   })
   .default(0);
+
+export const learningOutcomeMutationSchema = z
+  .object({
+    moduleId: positiveIdSchema,
+    code: learningOutcomeCodeSchema,
+    title: importTitleSchema,
+    description: optionalLongTextSchema,
+    sourceReference:
+      optionalSourceReferenceSchema,
+    sortOrder: sortOrderSchema,
+    isActive: z
+      .boolean({
+        message:
+          'El estado activo debe ser verdadero o falso.',
+      })
+      .default(true),
+  })
+  .strict();
 
 const moduleLocatorSchema = z
   .object({
@@ -367,6 +398,10 @@ export const curriculumImportSchema = z
 
 export type CurriculumListQuery = z.infer<
   typeof curriculumListQuerySchema
+>;
+
+export type LearningOutcomeMutationInput = z.infer<
+  typeof learningOutcomeMutationSchema
 >;
 
 export type CurriculumImportInput = z.infer<
