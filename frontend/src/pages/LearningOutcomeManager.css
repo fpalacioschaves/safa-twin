@@ -1,0 +1,136 @@
+.learning-outcome-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid #d9e2ef;
+  border-radius: 1rem;
+  background: #f8fbff;
+}
+
+.learning-outcome-manager-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.learning-outcome-manager-header h4,
+.learning-outcome-manager-list h5 {
+  margin: 0.25rem 0 0.4rem;
+  color: #17324d;
+}
+
+.learning-outcome-manager-header p,
+.learning-outcome-manager-list p,
+.learning-outcome-manager-item span {
+  margin: 0;
+  color: #60708c;
+  line-height: 1.5;
+}
+
+.learning-outcome-form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(18rem, 1.5fr) minmax(8rem, 0.6fr) minmax(6rem, 0.4fr);
+  align-items: end;
+}
+
+.learning-outcome-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: #253955;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.learning-outcome-form input,
+.learning-outcome-form select,
+.learning-outcome-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #c8d5e5;
+  border-radius: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  color: #17324d;
+  background: #ffffff;
+  font: inherit;
+}
+
+.learning-outcome-form textarea {
+  resize: vertical;
+}
+
+.learning-outcome-form-wide {
+  grid-column: 1 / -1;
+}
+
+.learning-outcome-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.learning-outcome-checkbox input {
+  width: auto;
+}
+
+.learning-outcome-form-actions,
+.learning-outcome-manager-item-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.learning-outcome-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.learning-outcome-manager-item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem;
+  border: 1px solid #e3ebf5;
+  border-radius: 0.85rem;
+  background: #ffffff;
+}
+
+.learning-outcome-manager-item strong,
+.learning-outcome-manager-item span {
+  display: block;
+}
+
+.learning-outcome-manager-item strong {
+  color: #17324d;
+}
+
+@media (max-width: 1100px) {
+  .learning-outcome-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .learning-outcome-manager-header,
+  .learning-outcome-manager-item,
+  .learning-outcome-form-actions,
+  .learning-outcome-manager-item-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .learning-outcome-form {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-outcome-form-actions button,
+  .learning-outcome-manager-item-actions button {
+    width: 100%;
+  }
+}
