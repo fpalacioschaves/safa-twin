@@ -15,7 +15,8 @@ import {
   toNumber,
 } from './digital-twin-tool.helpers.js';
 
-interface PlacementIncidentSummaryRow {
+interface CombinedIncidentSummaryRow {
+  source: string;
   programme_acronym: string;
   academic_level_number: NumberLike;
   total_incidents: NumberLike;
@@ -26,12 +27,13 @@ interface PlacementIncidentSummaryRow {
   unresolved_incidents: NumberLike;
 }
 
-interface PlacementIncidentPreviewRow {
+interface CombinedIncidentPreviewRow {
+  source: string;
   id: NumberLike;
   student_name: string;
   programme_acronym: string;
   academic_level_number: NumberLike;
-  company_name: string;
+  related_entity: string | null;
   severity: string;
   occurred_at: Date | string;
   title: string;
@@ -60,10 +62,12 @@ function toIsoStringOrNull(
     : toIsoString(value);
 }
 
-export async function getPlacementIncidentsContext(
-  intent: DigitalTwinIntent,
-): Promise<DigitalTwinContext> {
-  const scopeClauses = [
+function buildScope(
+  intent: DigitalTwinIntent): {
+  clauses: string[];
+  values: unknown[];
+} {
+  const clauses = [
     'ay.is_current = TRUE',
     'en.deleted_at IS NULL',
     'en.status = \'ENROLLED\'',
@@ -71,17 +75,27 @@ export async function getPlacementIncidentsContext(
     's.is_active = TRUE',
   ];
 
-  const scopeValues: unknown[] = [];
+  const values: unknown[] = [];
 
   addProgrammeAndLevelFilters(
-    scopeClauses,
-    scopeValues,
+    clauses,
+    values,
     intent,
   );
 
-  const scopeSql = getWhereSql(scopeClauses);
+  return {
+    clauses,
+    values,
+  };
+}
 
-  const summaryRows = await prisma.$queryRawUnsafe<PlacementIncidentSummaryRow[]>(
+export async function getPlacementIncidentsContext(
+  intent: DigitalTwinIntent,
+): Promise<DigitalTwinContext> {
+  const scope = buildScope(intent);
+  const scopeSql = getWhereSql(scope.clauses);
+
+  const summaryRows = await prisma.$queryRawUnsafe<CombinedIncidentSummaryRow[]>(
     `
       WITH student_scope AS (
         SELECT DISTINCT
@@ -99,6 +113,27 @@ export async function getPlacementIncidentsContext(
         ${scopeSql}
       )
       SELECT
+        'academic' AS source,
+        student_scope.programme_acronym,
+        student_scope.academic_level_number,
+        COUNT(DISTINCT i.id) AS total_incidents,
+        COUNT(DISTINCT CASE WHEN i.severity = 'LOW' THEN i.id END) AS low_incidents,
+        COUNT(DISTINCT CASE WHEN i.severity = 'MEDIUM' THEN i.id END) AS medium_incidents,
+        COUNT(DISTINCT CASE WHEN i.severity = 'HIGH' THEN i.id END) AS high_incidents,
+        COUNT(DISTINCT CASE WHEN i.resolved_at IS NOT NULL THEN i.id END) AS resolved_incidents,
+        COUNT(DISTINCT CASE WHEN i.resolved_at IS NULL THEN i.id END) AS unresolved_incidents
+      FROM student_scope
+      INNER JOIN incidents i
+        ON i.student_id = student_scope.student_id
+        AND i.academic_year_id = student_scope.academic_year_id
+        AND i.centre_id = student_scope.centre_id
+        AND i.deleted_at IS NULL
+      GROUP BY
+        student_scope.programme_acronym,
+        student_scope.academic_level_number
+      UNION ALL
+      SELECT
+        'company' AS source,
         student_scope.programme_acronym,
         student_scope.academic_level_number,
         COUNT(DISTINCT pi.id) AS total_incidents,
@@ -120,14 +155,16 @@ export async function getPlacementIncidentsContext(
         student_scope.programme_acronym,
         student_scope.academic_level_number
       ORDER BY
-        student_scope.programme_acronym ASC,
-        student_scope.academic_level_number ASC
-      LIMIT 50
+        source ASC,
+        programme_acronym ASC,
+        academic_level_number ASC
+      LIMIT 100
     `,
-    ...scopeValues,
+    ...scope.values,
+    ...scope.values,
   );
 
-  const previewRows = await prisma.$queryRawUnsafe<PlacementIncidentPreviewRow[]>(
+  const previewRows = await prisma.$queryRawUnsafe<CombinedIncidentPreviewRow[]>(
     `
       WITH student_scope AS (
         SELECT DISTINCT
@@ -145,6 +182,32 @@ export async function getPlacementIncidentsContext(
         ${scopeSql}
       )
       SELECT DISTINCT
+        'academic' AS source,
+        i.id,
+        CONCAT(
+          s.first_name,
+          ' ',
+          s.last_name_1,
+          COALESCE(CONCAT(' ', s.last_name_2), '')
+        ) AS student_name,
+        student_scope.programme_acronym,
+        student_scope.academic_level_number,
+        m.name AS related_entity,
+        i.severity,
+        i.occurred_at,
+        i.title,
+        i.resolved_at
+      FROM student_scope
+      INNER JOIN students s ON s.id = student_scope.student_id
+      INNER JOIN incidents i
+        ON i.student_id = student_scope.student_id
+        AND i.academic_year_id = student_scope.academic_year_id
+        AND i.centre_id = student_scope.centre_id
+        AND i.deleted_at IS NULL
+      LEFT JOIN modules m ON m.id = i.module_id
+      UNION ALL
+      SELECT DISTINCT
+        'company' AS source,
         pi.id,
         CONCAT(
           s.first_name,
@@ -154,7 +217,7 @@ export async function getPlacementIncidentsContext(
         ) AS student_name,
         student_scope.programme_acronym,
         student_scope.academic_level_number,
-        c.name AS company_name,
+        c.name AS related_entity,
         pi.severity,
         pi.occurred_at,
         pi.title,
@@ -171,17 +234,17 @@ export async function getPlacementIncidentsContext(
         ON pi.work_placement_id = wp.id
         AND pi.deleted_at IS NULL
       ORDER BY
-        pi.occurred_at DESC,
-        pi.severity DESC,
-        s.last_name_1 ASC,
-        s.last_name_2 ASC,
-        s.first_name ASC
+        occurred_at DESC,
+        severity DESC,
+        student_name ASC
       LIMIT 25
     `,
-    ...scopeValues,
+    ...scope.values,
+    ...scope.values,
   );
 
   const summary = summaryRows.map((row) => ({
+    source: row.source,
     programme: row.programme_acronym,
     academicLevel: toNumber(row.academic_level_number),
     totalIncidents: toNumber(row.total_incidents),
@@ -193,38 +256,57 @@ export async function getPlacementIncidentsContext(
   }));
 
   const preview = previewRows.map((row) => ({
+    source: row.source,
     id: toNumber(row.id),
     student: row.student_name,
     programme: row.programme_acronym,
     academicLevel: toNumber(row.academic_level_number),
-    company: row.company_name,
+    relatedEntity: row.related_entity,
     severity: row.severity,
     occurredAt: toIsoString(row.occurred_at),
     title: row.title,
     resolvedAt: toIsoStringOrNull(row.resolved_at),
   }));
 
-  const totalIncidents = summary.reduce(
-    (total, item) => total + item.totalIncidents,
-    0,
+  const totals = summary.reduce(
+    (total, item) => ({
+      totalIncidents:
+        total.totalIncidents + item.totalIncidents,
+      academicIncidents:
+        total.academicIncidents
+        + (item.source === 'academic' ? item.totalIncidents : 0),
+      companyIncidents:
+        total.companyIncidents
+        + (item.source === 'company' ? item.totalIncidents : 0),
+      highIncidents:
+        total.highIncidents + item.highIncidents,
+      unresolvedIncidents:
+        total.unresolvedIncidents + item.unresolvedIncidents,
+    }),
+    {
+      totalIncidents: 0,
+      academicIncidents: 0,
+      companyIncidents: 0,
+      highIncidents: 0,
+      unresolvedIncidents: 0,
+    },
   );
 
-  const warnings = totalIncidents === 0
+  const warnings = totals.totalIncidents === 0
     ? [
-      'No se han encontrado incidencias de formación en empresa con los filtros interpretados.',
+      'No se han encontrado incidencias académicas ni de formación en empresa con los filtros interpretados.',
     ]
-    : [
-      'Esta consulta usa placement_incidents, es decir, incidencias de formación en empresa. El modelo actual aún no contiene una tabla general de incidencias académicas.',
-    ];
+    : [];
 
   return {
     kind: 'incidents-summary',
-    title: 'Resumen de incidencias de formación en empresa',
+    title: 'Resumen combinado de incidencias',
     summary:
-      `Se han localizado ${totalIncidents} incidencias de formación en empresa.`,
+      `Se han localizado ${totals.totalIncidents} incidencias: ${totals.academicIncidents} académicas y ${totals.companyIncidents} de formación en empresa.`,
     warnings,
     data: {
       filters: intent,
+      totals,
       summary,
       preview,
     },
